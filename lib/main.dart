@@ -1,3 +1,5 @@
+import 'package:encrypted_notes/presentation/screens/LoginScreen.dart';
+import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,15 +12,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.getTheme(),
       home:  Scaffold(
           appBar: AppBar(
-            title: const Text("Encrypted notes"),
+            // title: const Text("Encrypted notes"),
           ),
-          body: const Text("Hello")),
+          body: const LoginScreen(),
+          ),
     );
   }
 }
