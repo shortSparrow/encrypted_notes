@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
+import 'package:encrypted_notes/domain/usecases/biometrics/biometric_auth_usease.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../domain/usecases/biometrics/biometric_auth_usease.dart';
 
 part 'login_state.dart';
 

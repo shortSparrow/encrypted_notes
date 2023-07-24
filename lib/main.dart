@@ -1,7 +1,8 @@
-import 'package:encrypted_notes/presentation/screens/LoginScreen.dart';
 import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypted_notes/injection.dart' as di;
+
+import 'presentation/screens/sign_up/SignUpScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.getTheme(),
       home: Scaffold(
         appBar: AppBar(),
-        body: const LoginScreenWrapperProvider(),
+        // body: const LoginScreenWrapperProvider(),
+        body: const SignUpScreen(),
       ),
     );
   }

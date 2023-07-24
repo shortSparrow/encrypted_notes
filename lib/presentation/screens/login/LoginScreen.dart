@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:encrypted_notes/presentation/core/widgets/Button.dart';
-import 'package:encrypted_notes/presentation/screens/cubit/login_cubit.dart';
 
-import '../../injection.dart';
-import '../core/widgets/AppIconButton.dart';
+import '../../../injection.dart';
+import '../../core/widgets/AppIconButton.dart';
+import 'cubit/login_cubit.dart';
 
 class LoginScreenWrapperProvider extends StatelessWidget {
   const LoginScreenWrapperProvider({super.key});
