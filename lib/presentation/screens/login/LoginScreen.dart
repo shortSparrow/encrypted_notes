@@ -40,50 +40,59 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     final loginCubit = BlocProvider.of<LoginCubit>(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'Password',
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Login"),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  labelText: 'Password',
+                ),
+                obscureText: true,
+              ),
             ),
-            obscureText: true,
-          ),
-          const SizedBox(height: 60),
-          SizedBox(
-            height: 40,
-            child: Center(
-              child: BlocListener<LoginCubit, LoginState>(
-                listener: (context, state) {
-                  if (state is LoginHasBiometricAbility) {
-                    // without setState animation don't applies
-                    setState(() {
-                      _showBiometricsButton = true;
-                    });
-                  } else {
-                    setState(() {
-                      _showBiometricsButton = false;
-                    });
-                  }
-                },
-                child: AnimatedOpacity(
-                  opacity: _showBiometricsButton ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 2000),
-                  child: AppIconButton(
-                    onPressed: loginCubit.callBiometricAuth,
-                    svgIconPath: "assets/images/touchId.svg",
-                    iconSize: const Size(20.0, 20.0),
+            const SizedBox(height: 60),
+            SizedBox(
+              height: 40,
+              child: Center(
+                child: BlocListener<LoginCubit, LoginState>(
+                  listener: (context, state) {
+                    if (state is LoginHasBiometricAbility) {
+                      // without setState animation don't applies
+                      setState(() {
+                        _showBiometricsButton = true;
+                      });
+                    } else {
+                      setState(() {
+                        _showBiometricsButton = false;
+                      });
+                    }
+                  },
+                  child: AnimatedOpacity(
+                    opacity: _showBiometricsButton ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 2000),
+                    child: AppIconButton(
+                      onPressed: loginCubit.callBiometricAuth,
+                      svgIconPath: "assets/images/touchId.svg",
+                      iconSize: const Size(20.0, 20.0),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 60),
-          Button(text: "Login", onPressed: loginCubit.onPressLogin),
-        ],
+            const SizedBox(height: 60),
+            Button(text: "Login", onPressed: loginCubit.onPressLogin),
+          ],
+        ),
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypted_notes/injection.dart' as di;
 
-import 'presentation/screens/sign_up/SignUpScreen.dart';
+import 'presentation/navigation/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,13 +16,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       theme: AppTheme.getTheme(),
-      home: Scaffold(
-        appBar: AppBar(),
-        // body: const LoginScreenWrapperProvider(),
-        body: const SignUpScreen(),
-      ),
     );
   }
 }
