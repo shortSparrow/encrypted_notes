@@ -4,12 +4,12 @@ import 'package:encrypted_notes/domain/usecases/biometrics/biometric_auth_usease
 import 'package:equatable/equatable.dart';
 
 
-part 'login_state.dart';
+part 'Auth_state.dart';
 
-class LoginCubit extends Cubit<LoginState> {
+class AuthCubit extends Cubit<AuthState> {
   BiometricAuthUseCase getAvailableBiometricsUseCase;
 
-  LoginCubit({required this.getAvailableBiometricsUseCase})
+  AuthCubit({required this.getAvailableBiometricsUseCase})
       : super(LoginInitial());
 
   void checkIfBiometricsAvailable() async {

@@ -1,4 +1,5 @@
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
+import 'package:encrypted_notes/presentation/screens/auth/AuthScreen.dart';
 import 'package:encrypted_notes/presentation/screens/login/LoginScreen.dart';
 import 'package:encrypted_notes/presentation/screens/sign_up/SignUpScreen.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,12 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppScreens.login.path,
       name: AppScreens.login.name,
-      builder: (context, state) => const LoginScreenWrapperProvider(),
+      builder: (context, state) => const LoginScreen(),
+    ),
+        GoRoute(
+      path: AppScreens.auth.path,
+      name: AppScreens.auth.name,
+      builder: (context, state) => const AuthScreenWrapperProvider(),
     ),
   ],
   redirect: (context, state) {

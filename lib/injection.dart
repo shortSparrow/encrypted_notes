@@ -1,9 +1,10 @@
+import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 import 'data/repositories/bio_web_auth/bio_web_auth_repository_impl.dart';
 import 'domain/repositories/bio_auth_repository.dart';
 import 'domain/usecases/biometrics/biometric_auth_usease.dart';
-import 'presentation/screens/login/cubit/login_cubit.dart';
+
 
 final sl = GetIt.I; // sl == Service Locator
 
@@ -19,8 +20,8 @@ Future<void> init() async {
     () => BiometricAuthUseCase(bioAuthRepository: sl()),
   );
 
-  sl.registerFactory<LoginCubit>(
-    () => LoginCubit(getAvailableBiometricsUseCase: sl()),
+  sl.registerFactory<AuthCubit>(
+    () => AuthCubit(getAvailableBiometricsUseCase: sl()),
   );
   // ** data layer
 
