@@ -6,22 +6,22 @@ import 'package:encrypted_notes/domain/repositories/sign_in_up_repository.dart';
 // TODO implement requiest with Dio
 class SignInUpRepositoryImpl extends SignInUpRepository {
   @override
-  Future<Either<Failure, User>>singIn(
+  Future<User>singIn(
     String deviceId,
     String phone,
     String password,
   ) async {
     await Future.delayed(const Duration(seconds: 2));
-    return right(User());
+    return User();
   }
 
   @override
-  Future<Either<Failure, User>> signUp(
+  Future<User> signUp(
     String deviceId,
     String phone,
     String password,
   ) async {
     await Future.delayed(const Duration(seconds: 2));
-    return right(User());
+    return User();
   }
 }
