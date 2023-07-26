@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
+import 'package:encrypted_notes/extensions/Either.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -18,7 +20,7 @@ class BiometricAuthUseCase {
     return userRawId;
   }
 
-  Future<Either<Failure, List<int>>> registerBioForWeb(
+  Future<Either<Failure, bool>> registerBioForWeb(
     String userName,
   ) async {
     if (kIsWeb) {
@@ -28,36 +30,51 @@ class BiometricAuthUseCase {
         userName,
       );
 
-      return userRawIdArray;
+      if (userRawIdArray.isRight()) {
+        // TODO save rawId
+
+        return right(true);
+      }
+
+      return left(userRawIdArray.asLeft());
     }
-    return left(GeneralFailure(message: "device is not a web browser"));
+    return left(DeviceIsNotBrowser());
   }
 
   Future<Either<Failure, bool>> loginBioForWeb() async {
     if (kIsWeb) {
       final userRawId = getUserRawId();
-      if(userRawId == null) {
-        return left(GeneralFailure(message: "there is no user id"));
+      if (userRawId == null) {
+        return left(NoSavedUserId());
       }
       final loginResult = await bioAuthRepository.loginWebBio(
         "randomStringFromServer",
         userRawId,
       );
 
+      loginResult.fold(
+        (failure) {},
+        (isSuccess) {
+          if (isSuccess) {
+            // TODO ADD global key that user authorized
+          }
+        },
+      );
+
       return loginResult;
     }
-    return left(GeneralFailure(message: "device is not a web browser"));
+    return left(DeviceIsNotBrowser());
   }
 
   Future<Either<Failure, bool>> isBiometricSupported() async {
     bool isDeviceSupported = false;
 
     try {
-      // if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {} // FIXME return error on web
-
       if (kIsWeb) {
         isDeviceSupported = await bioAuthRepository.isWebBiometricSupported();
       }
+
+      // if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {} // TODO
     } catch (e) {
       left(GeneralFailure(message: "Unknown Error"));
     }

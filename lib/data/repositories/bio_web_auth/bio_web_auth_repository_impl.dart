@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 
 import '../../../domain/repositories/bio_auth_repository.dart';
-import 'web_dummy.dart'
-    if (dart.library.js) 'web_js.dart'; // <-For web
+import 'web_dummy.dart' if (dart.library.js) 'web_js.dart'; // <-For web
 
 class BioWebAuthRepositoryImpl extends BioAuthRepository {
   final js = Js();
@@ -29,6 +29,9 @@ class BioWebAuthRepositoryImpl extends BioAuthRepository {
       return right(true);
     } catch (e) {
       JsFailure jsFailure = JsFailure.decodeFromJson(e as String);
+      if (jsFailure.reason == "FAILED_LOGIN") {
+        return left(FailureAuthUsingBIO());
+      }
 
       return left(GeneralFailure(message: jsFailure.message));
     }
@@ -46,12 +49,20 @@ class BioWebAuthRepositoryImpl extends BioAuthRepository {
       return right(rawId);
     } catch (e) {
       JsFailure jsFailure = JsFailure.decodeFromJson(e as String);
-      if (jsFailure.reason == 'BIO_NOT_SUPPORTED' ||
-          jsFailure.reason == 'FAILED_CREATE_WEBAUTH') {
-        return left(GeneralFailure(message: jsFailure.message));
+      if (jsFailure.reason == 'BIO_NOT_SUPPORTED') {
+        return left(BioNotSupported());
+      }
+      if (jsFailure.reason == 'FAILED_CREATE_WEBAUTH') {
+        return left(FailedCreateWebAuth());
       }
 
       return left(GeneralFailure(message: "unkown error"));
     }
+  }
+  
+  @override
+  Future<bool> loginBio() {
+    // TODO: implement loginBio. Use library
+    throw UnimplementedError();
   }
 }

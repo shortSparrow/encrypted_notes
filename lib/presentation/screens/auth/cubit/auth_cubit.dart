@@ -1,9 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/usecases/biometrics/biometric_auth_usease.dart';
 import 'auth_state.dart';
-
-
 
 class AuthCubit extends Cubit<AuthState> {
   BiometricAuthUseCase getAvailableBiometricsUseCase;
@@ -29,13 +28,21 @@ class AuthCubit extends Cubit<AuthState> {
         await getAvailableBiometricsUseCase.registerBioForWeb('sasha');
 
     return didAuthenticate.fold(
-      (error) {
+      (failure) {
         // TODO handle error, probably show toast
-        if (error is GeneralFailure) {
-          print("ERROR: ${error.message}");
-        } else {
-          print("ERROR: ${error}");
+        if (failure is GeneralFailure) {
+          print("ERROR: ${failure.message}");
         }
+        if (failure is DeviceIsNotBrowser) {
+          print("DeviceIsNotBrowser");
+        }
+        if (failure is BioNotSupported) {
+          print("BioNotSupported");
+        }
+        if (failure is FailedCreateWebAuth) {
+          print("FailedCreateWebAuth");
+        }
+
         return false;
       },
       (rawIdArray) {
@@ -48,9 +55,18 @@ class AuthCubit extends Cubit<AuthState> {
   void callBiometricAuth() async {
     final loginResult = await getAvailableBiometricsUseCase.loginBioForWeb();
     loginResult.fold(
-      (l) {
-        if (l is GeneralFailure) {
-          print("${l.message}");
+      (failure) {
+        if (failure is GeneralFailure) {
+          print("${failure.message}");
+        }
+        if (failure is DeviceIsNotBrowser) {
+          print("DeviceIsNotBrowser");
+        }
+        if (failure is NoSavedUserId) {
+          print("NoSavedUserId");
+        }
+        if (failure is FailureAuthUsingBIO) {
+          print("FailureAuthUsingBIO");
         }
         print("FAILED LOGIN");
       },

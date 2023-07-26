@@ -13,4 +13,6 @@ abstract class BioAuthRepository {
     String randomStringFromServer,
     dynamic rawId,
   );
+
+  Future<bool> loginBio();
 }
