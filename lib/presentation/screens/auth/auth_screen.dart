@@ -6,6 +6,7 @@ import 'package:encrypted_notes/presentation/core/widgets/Button.dart';
 import '../../../injection.dart';
 import '../../core/widgets/AppIconButton.dart';
 import 'cubit/auth_cubit.dart';
+import 'cubit/auth_state.dart';
 
 class AuthScreenWrapperProvider extends StatelessWidget {
   const AuthScreenWrapperProvider({super.key});

@@ -27,7 +27,7 @@ class EnterCredentials extends StatelessWidget {
                   LinkedButton(
                     text: "login",
                     onTap: () {
-                      context.push(AppScreens.login.path);
+                      context.push(AppScreens.sign_in.path);
                     },
                   )
                 ]

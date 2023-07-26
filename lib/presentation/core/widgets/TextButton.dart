@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 class LinkedButton extends StatelessWidget {
   final Function()? onTap;
   final String text;
-  const LinkedButton({super.key, required this.onTap, required this.text});
+  const LinkedButton({
+    super.key,
+    required this.text,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

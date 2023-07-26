@@ -6,8 +6,18 @@ import 'dart:io' show Platform;
 // TODO add tests
 class GenerateDeviceId {
   DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+  String? _deviceId;
 
   Future<String> getDeviceId() async {
+    if (_deviceId != null) {
+      return _deviceId as String;
+    }
+    final deviceId = await _loadDeviceId();
+    _deviceId = deviceId;
+    return deviceId;
+  }
+
+  Future<String> _loadDeviceId() async {
     if (kIsWeb) {
       final WebBrowserInfo webBrowserInfo = await _deviceInfo.webBrowserInfo;
       return webBrowserInfo.userAgent ??
@@ -30,7 +40,8 @@ class GenerateDeviceId {
 
     if (Platform.isMacOS) {
       final MacOsDeviceInfo macOsInfo = await _deviceInfo.macOsInfo;
-      return macOsInfo.systemGUID ?? '${macOsInfo.model} ${macOsInfo.computerName}';
+      return macOsInfo.systemGUID ??
+          '${macOsInfo.model} ${macOsInfo.computerName}';
     }
 
     if (Platform.isLinux) {
