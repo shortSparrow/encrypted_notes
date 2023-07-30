@@ -1,6 +1,4 @@
-import 'package:dartz/dartz.dart';
-import 'package:encrypted_notes/domain/entities/user.dart';
-import 'package:encrypted_notes/domain/failures/failures.dart';
+import 'package:encrypted_notes/domain/models/user.dart';
 
 // TODO probably add special sightUpFailure
 abstract class SignInUpRepository {

@@ -5,9 +5,24 @@ import 'package:go_router/go_router.dart';
 
 enum RequestType { login, signUp }
 
+// errorStyle and errorBorder must be set manually because on the web, when Input takes an error style and onHover occurs, the bottom border and text become transparent
 class EnterCredentials extends StatelessWidget {
   final RequestType requestType;
-  const EnterCredentials({super.key, required this.requestType});
+  final Function(String value) onPhoneInput;
+  final Function(String value) onPasswordInput;
+  final String? phoneErrorMessage;
+  final String? passwordErrorMessage;
+  final bool isTextFieldDisabled;
+
+  const EnterCredentials({
+    super.key,
+    required this.requestType,
+    required this.onPhoneInput,
+    required this.onPasswordInput,
+    this.phoneErrorMessage,
+    this.passwordErrorMessage,
+    this.isTextFieldDisabled = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,28 +54,52 @@ class EnterCredentials extends StatelessWidget {
                 ],
         ),
         const SizedBox(height: 30),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'phone number',
+        Column(
+          children: [
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  border: const UnderlineInputBorder(),
+                  labelText: 'phone number',
+                  errorText: phoneErrorMessage,
+                  errorStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  errorBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+                keyboardType: TextInputType.phone,
+                textInputAction: TextInputAction.next,
+                onChanged: onPhoneInput,
+                enabled: !isTextFieldDisabled,
+              ),
             ),
-            keyboardType: TextInputType.phone,
-            textInputAction: TextInputAction.next,
-          ),
+            const SizedBox(height: 30),
+            ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  border: const UnderlineInputBorder(),
+                  labelText: 'password',
+                  errorText: passwordErrorMessage,
+                         errorStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  errorBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+                obscureText: true,
+                onChanged: onPasswordInput,
+                enabled: !isTextFieldDisabled,
+              ),
+            )
+          ],
         ),
-        const SizedBox(height: 30),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 100, maxWidth: 500),
-          child: TextFormField(
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-              labelText: 'password',
-            ),
-            obscureText: true,
-          ),
-        )
       ],
     );
   }

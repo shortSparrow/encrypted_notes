@@ -1,15 +1,10 @@
-import 'package:encrypted_notes/injection.dart';
-import 'package:encrypted_notes/presentation/navigation/screens.dart';
-import 'package:encrypted_notes/presentation/screens/sign_up/cubit/sign_up_cubit.dart';
 import 'package:flutter/material.dart';
-
-import 'package:flutter/foundation.dart' show kIsWeb;
-
-import 'package:encrypted_notes/presentation/core/widgets/Button.dart';
-import 'package:encrypted_notes/presentation/core/widgets/auth/AuthHeader.dart';
-import 'package:encrypted_notes/presentation/core/widgets/auth/EnterCredentials.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
+import 'package:encrypted_notes/injection.dart';
+
+import 'bloc/sign_up_bloc.dart';
+import 'widgets/sign_up_body.dart';
 
 class SignUpScreenWrapperProvider extends StatelessWidget {
   const SignUpScreenWrapperProvider({super.key});
@@ -17,7 +12,7 @@ class SignUpScreenWrapperProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<SignUpCubit>(),
+      create: (context) => sl<SignUpBloc>(),
       child: const SignUpScreen(),
     );
   }
@@ -28,61 +23,28 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final signUpCubit = BlocProvider.of<SignUpCubit>(context);
-
     AppBar appBar = AppBar();
     var topOffset =
         appBar.preferredSize.height + MediaQuery.of(context).viewPadding.top;
+
     return Scaffold(
-      body: Stack(children: [
-        BlocListener<SignUpCubit, SignUpState>(
-          listener: (context, state) {
-            if (state.runtimeType == SignUpSuccess) {
-              if (kIsWeb) {
-                context.go(AppScreens.register_web_bio.path);
-              } else {
-                context.go(AppScreens.home.path);
-              }
-            }
-          },
-          child: Padding(
+      body: Stack(
+        children: [
+          Padding(
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
               bottom: 20,
               top: topOffset,
             ),
-            child: Column(
-              children: [
-                const AuthHeader(),
-                const Expanded(
-                  child: EnterCredentials(
-                    requestType: RequestType.signUp,
-                  ),
-                ),
-                Button(text: "Sign Up", onPressed: signUpCubit.signUp),
-                const SizedBox(height: 20),
+            child: const CustomScrollView(
+              slivers: [
+                SliverFillRemaining(hasScrollBody: false, child: SingUpBody()),
               ],
             ),
           ),
-        ),
-        BlocBuilder<SignUpCubit, SignUpState>(
-          builder: (context, state) {
-            switch (state.runtimeType) {
-              case SignUpLoading:
-                return Container(
-                  foregroundDecoration:
-                      const BoxDecoration(color: Colors.black26),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: const Center(child: CircularProgressIndicator()),
-                );
-              default:
-                return const SizedBox();
-            }
-          },
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
