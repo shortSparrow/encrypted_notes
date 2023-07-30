@@ -8,11 +8,17 @@ class SharedPreferencesRepositoryImpl extends SharedPreferencesRepository {
   @override
   UserStateDb getUserState() {
     final isLogged = userState.get(UserStateKeys.isLogged);
-    return UserStateDb(isLogged: isLogged);
+    final bioWebId = userState.get(UserStateKeys.bioWebId);
+    return UserStateDb(isLogged: isLogged, bioWebId: bioWebId);
   }
 
   @override
   setIsLogged(bool isLogged) async {
-    userState.put(UserStateKeys.isLogged, isLogged);
+    await userState.put(UserStateKeys.isLogged, isLogged);
+  }
+  
+  @override
+  setBioWebId(List<int> id) async {
+    await userState.put(UserStateKeys.bioWebId, id);
   }
 }

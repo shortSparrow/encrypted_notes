@@ -1,4 +1,6 @@
+import 'package:encrypted_notes/data/repositories/shared_preferences_repository/shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/sign_in_up_repository/sign_in_up_repository_impl.dart';
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
 import 'package:encrypted_notes/presentation/screens/sign_up/cubit/sign_up_cubit.dart';
@@ -22,13 +24,14 @@ Future<void> init() async {
   // ** domain layer
   sl.registerSingleton<BioAuthRepository>(BioWebAuthRepositoryImpl());
   sl.registerSingleton<SignInUpRepository>(SignInUpRepositoryImpl());
+  sl.registerSingleton<SharedPreferencesRepository>(SharedPreferencesRepositoryImpl());
 
   sl.registerFactory<BiometricAuthUseCase>(
-    () => BiometricAuthUseCase(bioAuthRepository: sl()),
+    () => BiometricAuthUseCase(bioAuthRepository: sl(), sharedPreferencesRepository: sl()),
   );
 
   sl.registerFactory<SignInUpUseCase>(
-    () => SignInUpUseCase(signInUpRepository: sl(), generateDeviceId: sl()),
+    () => SignInUpUseCase(signInUpRepository: sl(), generateDeviceId: sl(), sharedPreferencesRepository: sl()),
   );
 
   sl.registerFactory<AuthCubit>(

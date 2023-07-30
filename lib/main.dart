@@ -8,9 +8,9 @@ import 'presentation/navigation/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
   await Hive.initFlutter();
   await Hive.openBox(userStateBox);
+  await di.init();
 
   runApp(const MyApp());
 }
