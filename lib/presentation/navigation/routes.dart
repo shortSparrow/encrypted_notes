@@ -1,18 +1,20 @@
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
 import 'package:encrypted_notes/presentation/screens/auth/auth_screen.dart';
+import 'package:encrypted_notes/presentation/screens/home/home_screen.dart';
 import 'package:encrypted_notes/presentation/screens/register_web_bio/register_web_bio.dart';
 import 'package:encrypted_notes/presentation/screens/sign_in/sign_in_screen.dart';
 import 'package:encrypted_notes/presentation/screens/sign_up/sign_up_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: AppScreens.sign_up.path,
+  initialLocation: AppScreens.home.path,
   routes: [
     GoRoute(
       path: AppScreens.home.path,
       name: AppScreens.home.name,
-      builder: (context, state) => const Center(child: Text("HOME")),
+      builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
       path: AppScreens.sign_up.path,
@@ -36,10 +38,13 @@ final GoRouter router = GoRouter(
     ),
   ],
   redirect: (context, state) {
-    // if (state.matchedLocation == AppScreens.login.path) {
-    //   return AppScreens.login.path;
-    // }
+    final isLogged = sl<SharedPreferencesRepository>().getUserState().isLogged;
+    if(!isLogged) {
+      if (state.matchedLocation == AppScreens.sign_in.path) {
+      return AppScreens.sign_in.path;
+    }
 
-    // return AppScreens.sign_up.path;
+    return AppScreens.sign_up.path;
+    }
   },
 );

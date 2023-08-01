@@ -7,8 +7,8 @@ class SharedPreferencesRepositoryImpl extends SharedPreferencesRepository {
 
   @override
   UserStateDb getUserState() {
-    final isLogged = userState.get(UserStateKeys.isLogged);
-    final bioWebId = userState.get(UserStateKeys.bioWebId);
+    final isLogged = userState.get(UserStateKeys.isLogged, defaultValue: false);
+    final bioWebId = userState.get(UserStateKeys.bioWebId, defaultValue: null);
     return UserStateDb(isLogged: isLogged, bioWebId: bioWebId);
   }
 
