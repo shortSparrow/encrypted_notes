@@ -14,7 +14,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppScreens.home.path,
       name: AppScreens.home.name,
-      builder: (context, state) => const HomeScreen(),
+      builder: (context, state) =>  HomeScreen(),
     ),
     GoRoute(
       path: AppScreens.sign_up.path,
