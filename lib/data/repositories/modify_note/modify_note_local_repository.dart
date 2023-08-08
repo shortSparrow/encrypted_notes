@@ -2,13 +2,13 @@ import 'package:encrypted_notes/data/database/dao/notes_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/models/notes.dart';
-import 'package:encrypted_notes/domain/repositories/modify_note_repository.dart';
+import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 
-class ModifyNoteRepositoryImpl extends ModifyNoteRepository {
+class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   final NotesDao notesDao;
   final NotesMapper notesMapper = NotesMapper();
 
-  ModifyNoteRepositoryImpl({required this.notesDao});
+  ModifyNoteLocalRepositoryImpl({required this.notesDao});
 
   @override
   Future<bool> addNote(NotesCompanion note) async {
@@ -34,4 +34,5 @@ class ModifyNoteRepositoryImpl extends ModifyNoteRepository {
     return notesDao.getNotes().watch().map((list) =>
         list.map((noteDb) => notesMapper.dbNoteToNote(noteDb)).toList());
   }
+
 }
