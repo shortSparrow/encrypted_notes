@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
 
+import 'note_syncing.dart';
+
 @DataClassName("NoteDb")
 class Notes extends Table {
   IntColumn get id => integer().autoIncrement()();

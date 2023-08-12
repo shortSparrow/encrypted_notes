@@ -9,6 +9,7 @@ class NotesMapper {
       createdAt: noteDb.createdAt,
       updatedAt: noteDb.updatedAt,
       id: noteDb.id,
+      syncedDevices: [],
     );
   }
 

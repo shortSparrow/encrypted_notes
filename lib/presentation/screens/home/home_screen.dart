@@ -1,3 +1,6 @@
+import 'package:drift_db_viewer/drift_db_viewer.dart';
+import 'package:encrypted_notes/data/database/database.dart';
+import 'package:encrypted_notes/domain/models/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/core/widgets/Button.dart';
@@ -87,6 +90,13 @@ class _HomeViewState extends State<HomeView> {
           Button(text: "add", onPressed: () => addNewNote(context)),
           Button(text: "edit", onPressed: editNote),
           Button(text: "delete", onPressed: deleteNote),
+          Button(
+              text: "database",
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        DriftDbViewer(AppDatabase.getInstance())));
+              }),
           BlocBuilder<NoteBloc, NoteState>(
             builder: (context, state) {
               if (state.loadingLocalStatus == RequestStatus.loading) {
@@ -97,9 +107,14 @@ class _HomeViewState extends State<HomeView> {
                 child: ListView.builder(
                   itemCount: state.filteredNotes.length,
                   itemBuilder: (context, index) {
-                    return NoteView(
-                      message: state.filteredNotes[index].message,
-                      updatedAt: state.filteredNotes[index].updatedAt,
+                    return Column(
+                      children: [
+                        NoteView(
+                          message: state.filteredNotes[index].message,
+                          updatedAt: state.filteredNotes[index].updatedAt,
+                        ),
+                        CHIL(state.filteredNotes[index].syncedDevices)
+                      ],
                     );
                   },
                 ),
@@ -107,6 +122,33 @@ class _HomeViewState extends State<HomeView> {
             },
           )
         ],
+      ),
+    );
+  }
+}
+
+class CHIL extends StatelessWidget {
+  final List<SyncedDevice> syncedDevices;
+  CHIL(this.syncedDevices);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: syncedDevices.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Text("DeviceId: ${syncedDevices[index].deviceId}"),
+                Text("isSynced: ${syncedDevices[index].isSynced}"),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

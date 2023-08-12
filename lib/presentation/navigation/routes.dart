@@ -38,13 +38,13 @@ final GoRouter router = GoRouter(
     ),
   ],
   redirect: (context, state) {
-    final isLogged = sl<SharedPreferencesRepository>().getUserState().isLogged;
-    if(!isLogged) {
-      if (state.matchedLocation == AppScreens.sign_in.path) {
-      return AppScreens.sign_in.path;
-    }
+    // final isLogged = sl<SharedPreferencesRepository>().getUserState().isLogged;
+    // if(!isLogged) {
+    //   if (state.matchedLocation == AppScreens.sign_in.path) {
+    //   return AppScreens.sign_in.path;
+    // }
 
-    return AppScreens.sign_up.path;
-    }
+    // return AppScreens.sign_up.path;
+    // }
   },
 );

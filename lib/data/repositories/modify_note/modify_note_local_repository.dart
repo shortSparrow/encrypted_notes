@@ -3,6 +3,7 @@ import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/models/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
+import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 
 class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   final NotesDao notesDao;
@@ -31,8 +32,21 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
 
   @override
   Stream<List<Note>> getNotes() {
-    return notesDao.getNotes().watch().map((list) =>
-        list.map((noteDb) => notesMapper.dbNoteToNote(noteDb)).toList());
+    return notesDao.getNotesWatch();
   }
 
+  @override
+  Future<List<SyncingNoteData>> getSyncingDeviceForNote(int noteId) {
+    return notesDao.getSyncingDeviceForNote(noteId);
+  }
+
+  @override
+  Future addSyncingDeviceForNote(List<SyncedDeviceProps> data) async {
+    return notesDao.addSyncingDeviceForNote(data);
+  }
+
+  @override
+  Future updateSyncingDeviceForNote(List<SyncedDeviceProps> data) {
+    return notesDao.updateSyncingDeviceForNote(data);
+  }
 }
