@@ -51,7 +51,7 @@ Future<void> init() async {
   );
 
   // **************** DATA LAYER
-  sl.registerSingleton<NotesDao>(AppDatabase().notesDao);
+  sl.registerSingleton<NotesDao>(AppDatabase.getInstance().notesDao);
 
   // **************** DOMAIN LAYER
 

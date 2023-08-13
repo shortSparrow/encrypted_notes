@@ -1,7 +1,5 @@
 import 'package:drift/drift.dart';
 
-import 'note_syncing.dart';
-
 @DataClassName("NoteDb")
 class Notes extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -10,4 +8,8 @@ class Notes extends Table {
       .clientDefault(() => DateTime.now().millisecondsSinceEpoch.toString())();
   TextColumn get updatedAt => text()
       .clientDefault(() => DateTime.now().millisecondsSinceEpoch.toString())();
+
+  // Add a TextColumn to store the JSON-encoded list of synced devices.
+  TextColumn get syncedDevicesJson =>
+      text().withDefault(const Constant('[]'))();
 }

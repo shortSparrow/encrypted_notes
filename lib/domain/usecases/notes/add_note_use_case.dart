@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:encrypted_notes/data/database/dao/notes_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/comnied_local_remote_response.dart';
@@ -56,15 +56,9 @@ class AddNoteUseCase {
       NotesCompanion note, Note remoteNote) async {
     try {
       await _modifyNoteLocalRepository.addNote(note);
-
-      await _modifyNoteLocalRepository.addSyncingDeviceForNote(
-        remoteNote.syncedDevices
-            .map((device) => SyncedDeviceProps(
-                  deviceId: device.deviceId,
-                  noteId: remoteNote.id,
-                  isSynced: false,
-                ))
-            .toList(),
+      await _modifyNoteLocalRepository.updateSyncingDeviceForNote(
+        jsonEncode(remoteNote.syncedDevices),
+        remoteNote.id,
       );
 
       return right(true);
@@ -116,18 +110,15 @@ class AddNoteUseCase {
   }
 
   Future _synchronizeRemoteResponse(
-      List<AddNotesResponse> response, int noteId) async {
-    // TODO write transaction
-    print("start transaction");
+    List<AddNotesResponse> response,
+    int noteId,
+  ) async {
+    final syncingDeviceStatusList = response
+        .map((item) =>
+            SyncedDevice(deviceId: item.deviceId, isSynced: item.isSuccess))
+        .toList();
 
     await _modifyNoteLocalRepository.updateSyncingDeviceForNote(
-      response
-          .map((device) => SyncedDeviceProps(
-                deviceId: device.deviceId,
-                noteId: noteId,
-                isSynced: device.isSuccess,
-              ))
-          .toList(),
-    );
+        jsonEncode(syncingDeviceStatusList), noteId);
   }
 }

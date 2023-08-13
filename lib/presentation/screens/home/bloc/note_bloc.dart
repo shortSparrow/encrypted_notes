@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart';
@@ -32,8 +33,8 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     NavigateToAddNote event,
     Emitter<NoteState> emit,
   ) async {
-    final response =
-        _addNoteUseCase.addNote(const NotesCompanion(message: Value("2")));
+    final response = _addNoteUseCase.addNote(NotesCompanion(
+        message: const Value("2"), syncedDevicesJson: Value(jsonEncode([]))));
     final local = await response.local;
     local.fold(
       (l) {
@@ -77,6 +78,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       this.emit(state.copyWith(loadingFromServerStatus: status));
       print("loading fromserver status: ${status}");
     });
+
     notesStream = response.notesStream.listen((notes) {
       print("note: ${notes}");
       this.emit(

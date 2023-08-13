@@ -4,6 +4,15 @@ class SyncedDevice {
   final String deviceId;
   final bool isSynced;
 
+  Map toJson() => {
+        'deviceId': deviceId,
+        'isSynced': isSynced,
+      };
+
+  factory SyncedDevice.fromJson(Map<String, dynamic> json) {
+    return SyncedDevice(deviceId: json['deviceId'], isSynced: json['isSynced']);
+  }
+
   SyncedDevice({required this.deviceId, required this.isSynced});
 }
 
