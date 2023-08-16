@@ -11,10 +11,10 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   ModifyNoteLocalRepositoryImpl({required this.notesDao});
 
   @override
-  Future<bool> addNote(NotesCompanion note) async {
+  Future<int> addNote(NotesCompanion note) async {
     final noteId = await notesDao.addNote(note);
 
-    return noteId != -1;
+    return noteId;
   }
 
   @override
@@ -41,5 +41,20 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
     int noteId,
   ) {
     return notesDao.updateSyncingDeviceForNote(syncedDevicesJson, noteId);
+  }
+
+  @override
+  Future<Note?> getNoteById(int id) async {
+    final result = await notesDao.getNoteById(id);
+    if (result == null) {
+      return null;
+    }
+    return notesMapper.dbNoteToNote(result);
+  }
+
+  @override
+  Future<bool> addGlobalIdToNote(int globalId, int noteId) async {
+    final result = await notesDao.addGlobalIdToNote(globalId, noteId);
+    return result != -1;
   }
 }

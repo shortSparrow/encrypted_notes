@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/extensions/Either.dart';
-import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../failures/failures.dart';

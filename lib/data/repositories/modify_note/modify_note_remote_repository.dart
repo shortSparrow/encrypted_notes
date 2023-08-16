@@ -35,14 +35,17 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   }
 
   @override
-  Future<List<AddNotesResponse>> addNotes(List<NoteDataForServer> data) async {
-    // // TODO: implement addNotes
-    // throw UnimplementedError();
-    await Future.delayed(Duration(seconds: 1));
-    return [
-      AddNotesResponse(deviceId: "device_id_1", isSuccess: true),
-      AddNotesResponse(deviceId: "device_id_2", isSuccess: true),
-      AddNotesResponse(deviceId: "device_id_3", isSuccess: false),
-    ];
+  Future<AddNotesResponse> addNotes(List<NoteDataForServer> data) async {
+    // TODO implement
+    final globalId = DateTime.timestamp().millisecond;
+    await Future.delayed(const Duration(seconds: 1));
+    return AddNotesResponse(
+      globalId: globalId,
+      addNotesDeviceInfoResponse: [
+        AddNotesDeviceInfoResponse(deviceId: "device_id_1", isSuccess: true),
+        AddNotesDeviceInfoResponse(deviceId: "device_id_2", isSuccess: true),
+        AddNotesDeviceInfoResponse(deviceId: "device_id_3", isSuccess: false),
+      ],
+    );
   }
 }

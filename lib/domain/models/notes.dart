@@ -60,34 +60,34 @@ class NoteDataForServer extends Equatable {
   final String message;
   final String createdAt;
   final String updatedAt;
-  final int id;
+  final int? globalId;
   final String sendToDevice;
 
   const NoteDataForServer({
     required this.message,
     required this.createdAt,
     required this.updatedAt,
-    required this.id,
     required this.sendToDevice,
+    this.globalId,
   });
 
   NoteDataForServer copyWith({
     String? message,
     String? createdAt,
     String? updatedAt,
-    int? id,
-    String? globalId,
+    int? globalId,
     String? sendToDevice,
   }) {
     return NoteDataForServer(
       message: message ?? this.message,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      id: id ?? this.id,
       sendToDevice: sendToDevice ?? this.sendToDevice,
+      globalId: globalId ?? this.globalId,
     );
   }
 
   @override
-  List<Object?> get props => [message, createdAt, updatedAt, id, sendToDevice];
+  List<Object?> get props =>
+      [message, createdAt, updatedAt, sendToDevice, globalId];
 }

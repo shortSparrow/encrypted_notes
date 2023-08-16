@@ -5,10 +5,12 @@ import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/core/widgets/Button.dart';
 import 'package:encrypted_notes/presentation/core/widgets/note_view.dart';
-import 'package:encrypted_notes/presentation/screens/home/bloc/note_bloc.dart';
+import 'package:encrypted_notes/presentation/navigation/screens.dart';
+import 'package:encrypted_notes/presentation/screens/home/bloc/home_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<NoteBloc>()..add(const LoadNotes()),
+      create: (context) => sl<HomeBloc>()..add(const LoadNotes()),
       child: HomeView(),
     );
   }
@@ -30,12 +32,12 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late NoteBloc bloc;
+  late HomeBloc bloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    bloc = BlocProvider.of<NoteBloc>(context);
+    bloc = BlocProvider.of<HomeBloc>(context);
   }
 
   @override
@@ -44,52 +46,21 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
-  getNotes() async {
-    // modifyNoteRepository.getNotes().listen((event) {
-    //   print("list");
-    //   print(event);
-    // });
-  }
-
-  Future<void> addNewNote(BuildContext context) async {
-    context.read<NoteBloc>().add(NavigateToAddNote());
-    // modifyNoteRepository.addNote(
-    //   NotesCompanion(
-    //     message: drift.Value("hi"),
-    //     createdAt: drift.Value("created_at: 1"),
-    //     updatedAt: drift.Value("created_at: 2"),
-    //   ),
-    // );
-  }
-
-  Future editNote() async {
-    // final isSuccess = modifyNoteRepository.editNote(
-    //   NotesCompanion(
-    //       message: drift.Value("hi"),
-    //       updatedAt: drift.Value("updatedAt: 4"),
-    //       id: drift.Value(1)),
-    // );
-    // print("edit note: ${isSuccess}");
-  }
-
-  Future deleteNote() async {
-    // final isSuccess = modifyNoteRepository.deleteNote(3);
-    // print("delete note: ${isSuccess}");
-  }
-
   @override
   Widget build(BuildContext context) {
-    // final state = context.watch<NoteBloc>().state;
-    // print("state: ${state}");
 
     return Scaffold(
       appBar: null,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // context.read<NoteBloc>().add(NavigateToAddNote());
+          context.push(AppScreens.modifyNote.path);
+        },
+        child: const Icon(Icons.add),
+      ),
       body: Column(
         children: [
           const Center(child: Text("HOME")),
-          Button(text: "add", onPressed: () => addNewNote(context)),
-          Button(text: "edit", onPressed: editNote),
-          Button(text: "delete", onPressed: deleteNote),
           Button(
               text: "database",
               onPressed: () {
@@ -97,7 +68,7 @@ class _HomeViewState extends State<HomeView> {
                     builder: (context) =>
                         DriftDbViewer(AppDatabase.getInstance())));
               }),
-          BlocBuilder<NoteBloc, NoteState>(
+          BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state.loadingLocalStatus == RequestStatus.loading) {
                 return CircularProgressIndicator();

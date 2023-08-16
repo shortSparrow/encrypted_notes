@@ -11,4 +11,5 @@ class AppScreens {
     path: '/register_web_bio',
   );
   static final home = AppPage(name: 'home', route: '/', path: '/');
+  static final modifyNote = AppPage(name: 'modify_note', route: 'modify_note', path: '/modify_note');
 }

@@ -10,10 +10,28 @@ class NotesMapper {
         createdAt: noteDb.createdAt,
         updatedAt: noteDb.updatedAt,
         id: noteDb.id,
-        syncedDevices:
-            (jsonDecode(noteDb.syncedDevicesJson) as Iterable)
-                .map((e) => SyncedDevice.fromJson(e))
-                .toList());
+        syncedDevices: (jsonDecode(noteDb.syncedDevicesJson) as Iterable)
+            .map((e) => SyncedDevice.fromJson(e))
+            .toList());
+  }
+
+  List<NoteDataForServer> noteCompanionToNoteDataForServer(
+      NotesCompanion noteCompanion) {
+    final syncedDeviceList =
+        (jsonDecode(noteCompanion.syncedDevicesJson.value) as Iterable)
+            .map((e) => SyncedDevice.fromJson(e))
+            .toList();
+
+    return syncedDeviceList
+        .map(
+          (syncedDevice) => NoteDataForServer(
+            message: noteCompanion.message.value,
+            createdAt: noteCompanion.createdAt.value,
+            updatedAt: noteCompanion.updatedAt.value,
+            sendToDevice: syncedDevice.deviceId,
+          ),
+        )
+        .toList();
   }
 
   // NotesCompanion noteToDbNote(Note note) {

@@ -1,17 +1,25 @@
-import 'dart:ffi';
-
 import 'package:encrypted_notes/domain/models/notes.dart';
 
-class AddNotesResponse {
+class AddNotesDeviceInfoResponse {
   final String deviceId;
   final bool isSuccess;
 
-  AddNotesResponse({required this.deviceId, this.isSuccess = false});
+  AddNotesDeviceInfoResponse({required this.deviceId, this.isSuccess = false});
+}
+
+class AddNotesResponse {
+  final int globalId;
+  final List<AddNotesDeviceInfoResponse> addNotesDeviceInfoResponse;
+
+  AddNotesResponse({
+    required this.globalId,
+    required this.addNotesDeviceInfoResponse,
+  });
 }
 
 abstract class ModifyNoteRemoteRepository {
   Future<bool> addNote(Note note);
-  Future<List<AddNotesResponse>> addNotes(List<NoteDataForServer> data);
+  Future<AddNotesResponse> addNotes(List<NoteDataForServer> data);
   Future<bool> editNote(Note note);
   Future<bool> deleteNote(int noteId);
   Stream<List<Note>> getNotes();

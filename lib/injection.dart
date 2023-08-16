@@ -7,7 +7,7 @@ import 'package:encrypted_notes/domain/repositories/shared_preferences_repositor
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
-import 'package:encrypted_notes/presentation/screens/home/bloc/note_bloc.dart';
+import 'package:encrypted_notes/presentation/screens/home/bloc/home_bloc.dart';
 import 'package:encrypted_notes/presentation/screens/sign_up/bloc/sign_up_bloc.dart';
 import 'package:encrypted_notes/utils/generate_device_id/generate_device_id.dart';
 import 'package:get_it/get_it.dart';
@@ -20,6 +20,7 @@ import 'domain/repositories/modify_note_local_repository.dart';
 import 'domain/repositories/sign_in_up_repository.dart';
 import 'domain/usecases/biometrics/biometric_auth_usease.dart';
 import 'domain/usecases/notes/load_notes_use_case.dart';
+import 'presentation/screens/modify_note/bloc/modify_note_bloc.dart';
 import 'presentation/screens/register_web_bio/cubit/register_web_bio_cubit.dart';
 import 'presentation/screens/sign_in/bloc/sign_in_bloc.dart';
 
@@ -46,8 +47,12 @@ Future<void> init() async {
     () => SignUpBloc(signInUpUseCase: sl()),
   );
 
-  sl.registerFactory<NoteBloc>(
-    () => NoteBloc(loadNoteUseCase: sl(), addNoteUseCase: sl()),
+  sl.registerFactory<HomeBloc>(
+    () => HomeBloc(loadNoteUseCase: sl()),
+  );
+
+  sl.registerFactory<ModifyNoteBloc>(
+    () => ModifyNoteBloc(addNoteUseCase: sl()),
   );
 
   // **************** DATA LAYER
@@ -93,6 +98,7 @@ Future<void> init() async {
     () => AddNoteUseCase(
       modifyNoteLocalRepository: sl(),
       modifyNoteRemoteRepository: sl(),
+      notesMapper: sl(),
     ),
   );
 
