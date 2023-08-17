@@ -15,7 +15,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppScreens.home.path,
       name: AppScreens.home.name,
-      builder: (context, state) =>  HomeScreen(),
+      builder: (context, state) => HomeScreen(),
     ),
     GoRoute(
       path: AppScreens.sign_up.path,
@@ -37,10 +37,15 @@ final GoRouter router = GoRouter(
       name: AppScreens.register_web_bio.name,
       builder: (context, state) => const RegisterWebBiosWrapperProvider(),
     ),
-      GoRoute(
+    GoRoute(
       path: AppScreens.modifyNote.path,
       name: AppScreens.modifyNote.name,
-      builder: (context, state) => const ModifyNoteScreen(),
+      builder: (context, state) { // TODO add typed params
+        return ModifyNoteScreen(
+          mode: (state.extra as Map?)?['mode'] ?? ModifyNoteMode.add,
+          noteId: (state.extra as Map?)?['noteId'],
+        );
+      },
     ),
   ],
   redirect: (context, state) {

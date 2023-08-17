@@ -28,11 +28,13 @@ class AddNoteUseCase {
   CombinedLocalRemoteResponse<Future<Either<Failure, int>>,
       Future<Either<Failure, bool>>> addNote({
     required String message,
+    String title = "unkown",
     required List<String> deviceIdList,
   }) {
     // TODO improve this shit
     final local = _addNoteLocally(
       message: message,
+      title: title,
       deviceIdList: deviceIdList,
     );
     return CombinedLocalRemoteResponse(
@@ -46,6 +48,7 @@ class AddNoteUseCase {
 
   Future<Either<Failure, int>> _addNoteLocally({
     required String message,
+    required String title,
     required List<String> deviceIdList,
   }) async {
     try {
@@ -55,6 +58,7 @@ class AddNoteUseCase {
       final result = await _modifyNoteLocalRepository.addNote(
         NotesCompanion(
           message: Value(message),
+          title: Value(title),
           syncedDevicesJson: Value(jsonEncode(syncedDevices)),
         ),
       );
@@ -105,6 +109,7 @@ class AddNoteUseCase {
         // id: note.id,
         message: note.message,
         sendToDevice: note.syncedDevices[0].deviceId,
+        title: note.title,
       ),
       NoteDataForServer(
         createdAt: note.createdAt,
@@ -112,6 +117,7 @@ class AddNoteUseCase {
         // id: note.id,
         message: note.message,
         sendToDevice: note.syncedDevices[1].deviceId,
+        title: note.title,
       ),
       NoteDataForServer(
         createdAt: note.createdAt,
@@ -119,6 +125,7 @@ class AddNoteUseCase {
         // id: note.id,
         message: note.message,
         sendToDevice: note.syncedDevices[2].deviceId,
+        title: note.title,
       ),
     ];
   }

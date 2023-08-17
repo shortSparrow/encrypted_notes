@@ -5,6 +5,7 @@ import 'package:encrypted_notes/data/repositories/sign_in_up_repository/sign_in_
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
 import 'package:encrypted_notes/presentation/screens/home/bloc/home_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:encrypted_notes/utils/generate_device_id/generate_device_id.dart
 import 'package:get_it/get_it.dart';
 
 import 'data/database/dao/notes_dao.dart';
+import 'data/mapper/notes_mapper.dart';
 import 'data/repositories/bio_web_auth/bio_web_auth_repository_impl.dart';
 import 'data/repositories/modify_note/modify_note_remote_repository.dart';
 import 'domain/repositories/bio_auth_repository.dart';
@@ -52,7 +54,7 @@ Future<void> init() async {
   );
 
   sl.registerFactory<ModifyNoteBloc>(
-    () => ModifyNoteBloc(addNoteUseCase: sl()),
+    () => ModifyNoteBloc(addNoteUseCase: sl(), loadNoteUseCase: sl(), editNoteUseCase: sl()),
   );
 
   // **************** DATA LAYER
@@ -101,7 +103,16 @@ Future<void> init() async {
       notesMapper: sl(),
     ),
   );
+ 
+  sl.registerFactory<EditNoteUseCase>(
+    () => EditNoteUseCase(
+      modifyNoteLocalRepository: sl(),
+      modifyNoteRemoteRepository: sl(),
+      notesMapper: sl(),
+    ),
+  );
 
   // **************** UTILS
   sl.registerSingleton(GenerateDeviceId());
+  sl.registerSingleton(NotesMapper());
 }

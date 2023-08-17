@@ -17,6 +17,7 @@ class SyncedDevice {
 }
 
 class Note extends Equatable {
+  final String title;
   final String message;
   final String createdAt;
   final String updatedAt;
@@ -25,6 +26,7 @@ class Note extends Equatable {
   final List<SyncedDevice> syncedDevices;
 
   const Note({
+    required this.title,
     required this.message,
     required this.createdAt,
     required this.updatedAt,
@@ -40,6 +42,7 @@ class Note extends Equatable {
     int? id,
     String? globalId,
     List<SyncedDevice>? syncedDevices,
+    String? title,
   }) {
     return Note(
       message: message ?? this.message,
@@ -48,12 +51,13 @@ class Note extends Equatable {
       id: id ?? this.id,
       globalId: globalId ?? this.globalId,
       syncedDevices: syncedDevices ?? this.syncedDevices,
+      title: title ?? this.title,
     );
   }
 
   @override
   List<Object?> get props =>
-      [message, createdAt, updatedAt, id, globalId, syncedDevices];
+      [message, createdAt, updatedAt, id, globalId, syncedDevices, title];
 }
 
 class NoteDataForServer extends Equatable {
@@ -62,8 +66,10 @@ class NoteDataForServer extends Equatable {
   final String updatedAt;
   final int? globalId;
   final String sendToDevice;
+  final String title;
 
   const NoteDataForServer({
+    required this.title,
     required this.message,
     required this.createdAt,
     required this.updatedAt,
@@ -72,6 +78,7 @@ class NoteDataForServer extends Equatable {
   });
 
   NoteDataForServer copyWith({
+    String? title,
     String? message,
     String? createdAt,
     String? updatedAt,
@@ -79,6 +86,7 @@ class NoteDataForServer extends Equatable {
     String? sendToDevice,
   }) {
     return NoteDataForServer(
+      title: title ?? this.title,
       message: message ?? this.message,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -89,5 +97,5 @@ class NoteDataForServer extends Equatable {
 
   @override
   List<Object?> get props =>
-      [message, createdAt, updatedAt, sendToDevice, globalId];
+      [message, createdAt, updatedAt, sendToDevice, globalId, title];
 }

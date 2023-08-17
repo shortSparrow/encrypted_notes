@@ -7,6 +7,7 @@ class NotesMapper {
   Note dbNoteToNote(NoteDb noteDb) {
     return Note(
         message: noteDb.message,
+        title: noteDb.title,
         createdAt: noteDb.createdAt,
         updatedAt: noteDb.updatedAt,
         id: noteDb.id,
@@ -26,6 +27,7 @@ class NotesMapper {
         .map(
           (syncedDevice) => NoteDataForServer(
             message: noteCompanion.message.value,
+            title: noteCompanion.title.value,
             createdAt: noteCompanion.createdAt.value,
             updatedAt: noteCompanion.updatedAt.value,
             sendToDevice: syncedDevice.deviceId,

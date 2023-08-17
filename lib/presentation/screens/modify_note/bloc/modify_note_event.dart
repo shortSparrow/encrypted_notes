@@ -7,8 +7,22 @@ sealed class ModifyNoteEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AddNewNote extends ModifyNoteEvent{
+class SaveNote extends ModifyNoteEvent {
   final String message;
+  final String title;
 
-  const AddNewNote({required this.message});
+  const SaveNote({required this.message, required this.title});
+}
+
+class LoadNote extends ModifyNoteEvent {
+  final int noteId;
+
+  const LoadNote({required this.noteId});
+}
+
+class SetParams extends ModifyNoteEvent {
+  final int? noteId;
+  final ModifyNoteMode mode;
+
+  const SetParams({required this.noteId, required this.mode});
 }

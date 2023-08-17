@@ -48,12 +48,10 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: null,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // context.read<NoteBloc>().add(NavigateToAddNote());
           context.push(AppScreens.modifyNote.path);
         },
         child: const Icon(Icons.add),
@@ -83,6 +81,7 @@ class _HomeViewState extends State<HomeView> {
                         NoteView(
                           message: state.filteredNotes[index].message,
                           updatedAt: state.filteredNotes[index].updatedAt,
+                          messageId: state.filteredNotes[index].id,
                         ),
                         CHIL(state.filteredNotes[index].syncedDevices)
                       ],
