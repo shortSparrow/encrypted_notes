@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:encrypted_notes/data/database/database.dart';
-import 'package:encrypted_notes/domain/models/notes.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
 
 class NotesMapper {
   Note dbNoteToNote(NoteDb noteDb) {

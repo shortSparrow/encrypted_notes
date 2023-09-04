@@ -1,4 +1,4 @@
-import 'package:encrypted_notes/domain/models/app_page.dart';
+import 'package:encrypted_notes/domain/models/app_page/app_page.dart';
 
 class AppScreens {
   static final auth = AppPage(name: 'auth', route: 'auth', path: '/auth');

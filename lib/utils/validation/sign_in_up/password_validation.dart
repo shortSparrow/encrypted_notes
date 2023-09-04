@@ -1,4 +1,4 @@
-import 'package:encrypted_notes/domain/models/validation_rules.dart';
+import 'package:encrypted_notes/domain/models/validation_rules/validation_rules.dart';
 
 final passwordValidationRules = [
   const ValidationRules(

@@ -1,4 +1,4 @@
-import 'package:encrypted_notes/domain/models/notes.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
 
 class AddNotesDeviceInfoResponse {
   final String deviceId;

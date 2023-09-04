@@ -1,6 +1,6 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:encrypted_notes/data/database/database.dart';
-import 'package:encrypted_notes/domain/models/notes.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/core/widgets/Button.dart';

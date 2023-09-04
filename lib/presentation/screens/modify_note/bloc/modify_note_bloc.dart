@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:encrypted_notes/domain/models/notes.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';

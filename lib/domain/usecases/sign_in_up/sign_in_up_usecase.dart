@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:encrypted_notes/domain/models/user.dart';
+import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/sign_in_up_repository.dart';

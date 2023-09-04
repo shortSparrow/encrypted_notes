@@ -1,7 +1,7 @@
 import 'package:encrypted_notes/data/database/dao/notes_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
-import 'package:encrypted_notes/domain/models/notes.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 
 class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {

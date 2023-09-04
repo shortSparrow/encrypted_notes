@@ -1,4 +1,4 @@
-import 'package:encrypted_notes/domain/models/user.dart';
+import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/sign_in_up_repository.dart';
 
 // TODO implement requiest with Dio

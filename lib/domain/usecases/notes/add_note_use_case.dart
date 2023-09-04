@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
-import 'package:encrypted_notes/extensions/Either.dart';
 
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
-import 'package:encrypted_notes/domain/models/comnied_local_remote_response.dart';
-import 'package:encrypted_notes/domain/models/notes.dart';
+import 'package:encrypted_notes/domain/models/combined_local_remote_response/combined_local_remote_response.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 
@@ -28,10 +27,9 @@ class AddNoteUseCase {
   CombinedLocalRemoteResponse<Future<Either<Failure, int>>,
       Future<Either<Failure, bool>>> addNote({
     required String message,
-    String title = "unkown",
+    String title = "unknown",
     required List<String> deviceIdList,
   }) {
-    // TODO improve this shit
     final local = _addNoteLocally(
       message: message,
       title: title,
@@ -39,10 +37,22 @@ class AddNoteUseCase {
     );
     return CombinedLocalRemoteResponse(
       local: local,
-      remote: _addNoteRemote(
-        local: local,
-        deviceIdList: deviceIdList,
-      ),
+      remote: local.then((value) async {
+        return value.fold(
+          (l) {
+            return left(GeneralFailure(message: "no local message"));
+          },
+          (r) async {
+            final note = await _modifyNoteLocalRepository.getNoteById(r);
+            final isNoteExist = note != null;
+            if (!isNoteExist) {
+              return left(
+                  GeneralFailure(message: "can't load local message by id"));
+            }
+            return _addNoteRemote(deviceIdList: deviceIdList, note: note);
+          },
+        );
+      }),
     );
   }
 
@@ -70,23 +80,10 @@ class AddNoteUseCase {
   }
 
   Future<Either<Failure, bool>> _addNoteRemote({
-    required Future<Either<Failure, int>> local,
+    required Note note,
     required List<String> deviceIdList,
   }) async {
     try {
-      await Future.delayed(const Duration(seconds: 3));
-
-      final noteId = await local;
-      if (noteId.isLeft()) {
-        return left(GeneralFailure(message: "no local message"));
-      }
-      final note =
-          await _modifyNoteLocalRepository.getNoteById(noteId.asRight());
-      final isNoteExist = note != null;
-      if (!isNoteExist) {
-        return left(GeneralFailure(message: "can't load local message by id"));
-      }
-
       final result =
           await _modifyNoteRemoteRepository.addNotes(_getEncryptedNotes(note));
 
@@ -106,7 +103,6 @@ class AddNoteUseCase {
       NoteDataForServer(
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        // id: note.id,
         message: note.message,
         sendToDevice: note.syncedDevices[0].deviceId,
         title: note.title,
@@ -114,7 +110,6 @@ class AddNoteUseCase {
       NoteDataForServer(
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        // id: note.id,
         message: note.message,
         sendToDevice: note.syncedDevices[1].deviceId,
         title: note.title,
@@ -122,7 +117,6 @@ class AddNoteUseCase {
       NoteDataForServer(
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        // id: note.id,
         message: note.message,
         sendToDevice: note.syncedDevices[2].deviceId,
         title: note.title,
