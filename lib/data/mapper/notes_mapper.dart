@@ -26,11 +26,15 @@ class NotesMapper {
     return syncedDeviceList
         .map(
           (syncedDevice) => NoteDataForServer(
-            message: noteCompanion.message.value,
-            title: noteCompanion.title.value,
-            createdAt: noteCompanion.createdAt.value,
-            updatedAt: noteCompanion.updatedAt.value,
-            sendToDevice: syncedDevice.deviceId,
+            data: NoteDataForServerData(
+              title: noteCompanion.title.value,
+              message: noteCompanion.message.value,
+            ),
+            metaData: NoteDataForServerMetaData(
+              createdAt: noteCompanion.createdAt.value,
+              updatedAt: noteCompanion.updatedAt.value,
+              sendToDevice: syncedDevice.deviceId,
+            ),
           ),
         )
         .toList();

@@ -21,6 +21,8 @@ import 'domain/repositories/bio_auth_repository.dart';
 import 'domain/repositories/modify_note_local_repository.dart';
 import 'domain/repositories/sign_in_up_repository.dart';
 import 'domain/usecases/biometrics/biometric_auth_usease.dart';
+import 'domain/usecases/encryption/generateE2EKeyPairUseCase.dart';
+import 'domain/usecases/notes/encypt_note_use_case.dart';
 import 'domain/usecases/notes/load_notes_use_case.dart';
 import 'presentation/screens/modify_note/bloc/modify_note_bloc.dart';
 import 'presentation/screens/register_web_bio/cubit/register_web_bio_cubit.dart';
@@ -54,7 +56,8 @@ Future<void> init() async {
   );
 
   sl.registerFactory<ModifyNoteBloc>(
-    () => ModifyNoteBloc(addNoteUseCase: sl(), loadNoteUseCase: sl(), editNoteUseCase: sl()),
+    () => ModifyNoteBloc(
+        addNoteUseCase: sl(), loadNoteUseCase: sl(), editNoteUseCase: sl()),
   );
 
   // **************** DATA LAYER
@@ -101,14 +104,21 @@ Future<void> init() async {
       modifyNoteLocalRepository: sl(),
       modifyNoteRemoteRepository: sl(),
       notesMapper: sl(),
+      encryptNoteUseCase: sl()
     ),
   );
- 
+
   sl.registerFactory<EditNoteUseCase>(
     () => EditNoteUseCase(
       modifyNoteLocalRepository: sl(),
       modifyNoteRemoteRepository: sl(),
       notesMapper: sl(),
+    ),
+  );
+
+  sl.registerFactory<EncryptNoteUseCase>(
+    () => EncryptNoteUseCase(
+      generateE2EKeyPairUseCase: GenerateE2EKeyPairUseCase(),
     ),
   );
 

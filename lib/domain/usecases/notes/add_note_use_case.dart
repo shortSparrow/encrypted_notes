@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cryptography/cryptography.dart';
+import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 
 import 'package:dartz/dartz.dart';
@@ -10,18 +12,22 @@ import 'package:encrypted_notes/domain/models/combined_local_remote_response/com
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
+import 'package:encrypted_notes/domain/usecases/notes/encypt_note_use_case.dart';
 
 class AddNoteUseCase {
   AddNoteUseCase({
     required ModifyNoteLocalRepository modifyNoteLocalRepository,
     required ModifyNoteRemoteRepository modifyNoteRemoteRepository,
+    required EncryptNoteUseCase encryptNoteUseCase,
     required NotesMapper notesMapper,
   })  : _modifyNoteLocalRepository = modifyNoteLocalRepository,
         _modifyNoteRemoteRepository = modifyNoteRemoteRepository,
+        _encryptNoteUseCase = encryptNoteUseCase,
         _notesMapper = notesMapper;
 
   final ModifyNoteLocalRepository _modifyNoteLocalRepository;
   final ModifyNoteRemoteRepository _modifyNoteRemoteRepository;
+  final EncryptNoteUseCase _encryptNoteUseCase;
   final NotesMapper _notesMapper;
 
   CombinedLocalRemoteResponse<Future<Either<Failure, int>>,
@@ -84,6 +90,15 @@ class AddNoteUseCase {
     required List<String> deviceIdList,
   }) async {
     try {
+      final algorithm = X25519();
+      final _keyPair = await algorithm.newKeyPair();
+      final recipientPublicKey = await _keyPair.extractPublicKey();
+// TODO JUST for demo
+      await _encryptNoteUseCase.encryptForServer(
+        NoteDataForServerData(title: note.title, message: note.message),
+        recipientPublicKey,
+      );
+
       final result =
           await _modifyNoteRemoteRepository.addNotes(_getEncryptedNotes(note));
 
@@ -99,29 +114,16 @@ class AddNoteUseCase {
   }
 
   List<NoteDataForServer> _getEncryptedNotes(Note note) {
-    return [
-      NoteDataForServer(
-        createdAt: note.createdAt,
-        updatedAt: note.updatedAt,
-        message: note.message,
-        sendToDevice: note.syncedDevices[0].deviceId,
-        title: note.title,
-      ),
-      NoteDataForServer(
-        createdAt: note.createdAt,
-        updatedAt: note.updatedAt,
-        message: note.message,
-        sendToDevice: note.syncedDevices[1].deviceId,
-        title: note.title,
-      ),
-      NoteDataForServer(
-        createdAt: note.createdAt,
-        updatedAt: note.updatedAt,
-        message: note.message,
-        sendToDevice: note.syncedDevices[2].deviceId,
-        title: note.title,
-      ),
-    ];
+    return note.syncedDevices.map((_syncedDevice) {
+      return NoteDataForServer(
+        metaData: NoteDataForServerMetaData(
+          createdAt: note.createdAt,
+          updatedAt: note.updatedAt,
+          sendToDevice: _syncedDevice.deviceId,
+        ),
+        data: NoteDataForServerData(title: note.title, message: note.message),
+      );
+    }).toList();
   }
 
   Future _synchronizeRemoteResponse(

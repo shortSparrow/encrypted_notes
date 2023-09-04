@@ -173,12 +173,14 @@ abstract class _SyncedDevice implements SyncedDevice {
 /// @nodoc
 mixin _$Note {
   String get title => throw _privateConstructorUsedError;
-  String get message => throw _privateConstructorUsedError;
+  String get message =>
+      throw _privateConstructorUsedError; // Note stored into encryption DB, and when we get it message still encrypted by E2E (only when isDecrypted = true message are ready for reading)
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   int get id => throw _privateConstructorUsedError;
   String? get globalId => throw _privateConstructorUsedError;
   List<SyncedDevice> get syncedDevices => throw _privateConstructorUsedError;
+  bool get isDecrypted => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $NoteCopyWith<Note> get copyWith => throw _privateConstructorUsedError;
@@ -196,7 +198,8 @@ abstract class $NoteCopyWith<$Res> {
       String updatedAt,
       int id,
       String? globalId,
-      List<SyncedDevice> syncedDevices});
+      List<SyncedDevice> syncedDevices,
+      bool isDecrypted});
 }
 
 /// @nodoc
@@ -219,6 +222,7 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
     Object? id = null,
     Object? globalId = freezed,
     Object? syncedDevices = null,
+    Object? isDecrypted = null,
   }) {
     return _then(_value.copyWith(
       title: null == title
@@ -249,6 +253,10 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
           ? _value.syncedDevices
           : syncedDevices // ignore: cast_nullable_to_non_nullable
               as List<SyncedDevice>,
+      isDecrypted: null == isDecrypted
+          ? _value.isDecrypted
+          : isDecrypted // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -266,7 +274,8 @@ abstract class _$$_NoteCopyWith<$Res> implements $NoteCopyWith<$Res> {
       String updatedAt,
       int id,
       String? globalId,
-      List<SyncedDevice> syncedDevices});
+      List<SyncedDevice> syncedDevices,
+      bool isDecrypted});
 }
 
 /// @nodoc
@@ -285,6 +294,7 @@ class __$$_NoteCopyWithImpl<$Res> extends _$NoteCopyWithImpl<$Res, _$_Note>
     Object? id = null,
     Object? globalId = freezed,
     Object? syncedDevices = null,
+    Object? isDecrypted = null,
   }) {
     return _then(_$_Note(
       title: null == title
@@ -315,6 +325,10 @@ class __$$_NoteCopyWithImpl<$Res> extends _$NoteCopyWithImpl<$Res, _$_Note>
           ? _value._syncedDevices
           : syncedDevices // ignore: cast_nullable_to_non_nullable
               as List<SyncedDevice>,
+      isDecrypted: null == isDecrypted
+          ? _value.isDecrypted
+          : isDecrypted // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -329,13 +343,15 @@ class _$_Note implements _Note {
       required this.updatedAt,
       required this.id,
       this.globalId,
-      required final List<SyncedDevice> syncedDevices})
+      required final List<SyncedDevice> syncedDevices,
+      this.isDecrypted = false})
       : _syncedDevices = syncedDevices;
 
   @override
   final String title;
   @override
   final String message;
+// Note stored into encryption DB, and when we get it message still encrypted by E2E (only when isDecrypted = true message are ready for reading)
   @override
   final String createdAt;
   @override
@@ -353,8 +369,12 @@ class _$_Note implements _Note {
   }
 
   @override
+  @JsonKey()
+  final bool isDecrypted;
+
+  @override
   String toString() {
-    return 'Note(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, globalId: $globalId, syncedDevices: $syncedDevices)';
+    return 'Note(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, globalId: $globalId, syncedDevices: $syncedDevices, isDecrypted: $isDecrypted)';
   }
 
   @override
@@ -372,7 +392,9 @@ class _$_Note implements _Note {
             (identical(other.globalId, globalId) ||
                 other.globalId == globalId) &&
             const DeepCollectionEquality()
-                .equals(other._syncedDevices, _syncedDevices));
+                .equals(other._syncedDevices, _syncedDevices) &&
+            (identical(other.isDecrypted, isDecrypted) ||
+                other.isDecrypted == isDecrypted));
   }
 
   @override
@@ -384,7 +406,8 @@ class _$_Note implements _Note {
       updatedAt,
       id,
       globalId,
-      const DeepCollectionEquality().hash(_syncedDevices));
+      const DeepCollectionEquality().hash(_syncedDevices),
+      isDecrypted);
 
   @JsonKey(ignore: true)
   @override
@@ -401,13 +424,14 @@ abstract class _Note implements Note {
       required final String updatedAt,
       required final int id,
       final String? globalId,
-      required final List<SyncedDevice> syncedDevices}) = _$_Note;
+      required final List<SyncedDevice> syncedDevices,
+      final bool isDecrypted}) = _$_Note;
 
   @override
   String get title;
   @override
   String get message;
-  @override
+  @override // Note stored into encryption DB, and when we get it message still encrypted by E2E (only when isDecrypted = true message are ready for reading)
   String get createdAt;
   @override
   String get updatedAt;
@@ -418,18 +442,16 @@ abstract class _Note implements Note {
   @override
   List<SyncedDevice> get syncedDevices;
   @override
+  bool get isDecrypted;
+  @override
   @JsonKey(ignore: true)
   _$$_NoteCopyWith<_$_Note> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$NoteDataForServer {
-  String get title => throw _privateConstructorUsedError;
-  String get message => throw _privateConstructorUsedError;
-  String get createdAt => throw _privateConstructorUsedError;
-  String get updatedAt => throw _privateConstructorUsedError;
-  String get sendToDevice => throw _privateConstructorUsedError;
-  int? get globalId => throw _privateConstructorUsedError;
+  NoteDataForServerMetaData get metaData => throw _privateConstructorUsedError;
+  NoteDataForServerData get data => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $NoteDataForServerCopyWith<NoteDataForServer> get copyWith =>
@@ -442,13 +464,10 @@ abstract class $NoteDataForServerCopyWith<$Res> {
           NoteDataForServer value, $Res Function(NoteDataForServer) then) =
       _$NoteDataForServerCopyWithImpl<$Res, NoteDataForServer>;
   @useResult
-  $Res call(
-      {String title,
-      String message,
-      String createdAt,
-      String updatedAt,
-      String sendToDevice,
-      int? globalId});
+  $Res call({NoteDataForServerMetaData metaData, NoteDataForServerData data});
+
+  $NoteDataForServerMetaDataCopyWith<$Res> get metaData;
+  $NoteDataForServerDataCopyWith<$Res> get data;
 }
 
 /// @nodoc
@@ -464,22 +483,174 @@ class _$NoteDataForServerCopyWithImpl<$Res, $Val extends NoteDataForServer>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
-    Object? message = null,
+    Object? metaData = null,
+    Object? data = null,
+  }) {
+    return _then(_value.copyWith(
+      metaData: null == metaData
+          ? _value.metaData
+          : metaData // ignore: cast_nullable_to_non_nullable
+              as NoteDataForServerMetaData,
+      data: null == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as NoteDataForServerData,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $NoteDataForServerMetaDataCopyWith<$Res> get metaData {
+    return $NoteDataForServerMetaDataCopyWith<$Res>(_value.metaData, (value) {
+      return _then(_value.copyWith(metaData: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $NoteDataForServerDataCopyWith<$Res> get data {
+    return $NoteDataForServerDataCopyWith<$Res>(_value.data, (value) {
+      return _then(_value.copyWith(data: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$_NoteDataForServerCopyWith<$Res>
+    implements $NoteDataForServerCopyWith<$Res> {
+  factory _$$_NoteDataForServerCopyWith(_$_NoteDataForServer value,
+          $Res Function(_$_NoteDataForServer) then) =
+      __$$_NoteDataForServerCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({NoteDataForServerMetaData metaData, NoteDataForServerData data});
+
+  @override
+  $NoteDataForServerMetaDataCopyWith<$Res> get metaData;
+  @override
+  $NoteDataForServerDataCopyWith<$Res> get data;
+}
+
+/// @nodoc
+class __$$_NoteDataForServerCopyWithImpl<$Res>
+    extends _$NoteDataForServerCopyWithImpl<$Res, _$_NoteDataForServer>
+    implements _$$_NoteDataForServerCopyWith<$Res> {
+  __$$_NoteDataForServerCopyWithImpl(
+      _$_NoteDataForServer _value, $Res Function(_$_NoteDataForServer) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? metaData = null,
+    Object? data = null,
+  }) {
+    return _then(_$_NoteDataForServer(
+      metaData: null == metaData
+          ? _value.metaData
+          : metaData // ignore: cast_nullable_to_non_nullable
+              as NoteDataForServerMetaData,
+      data: null == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as NoteDataForServerData,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_NoteDataForServer implements _NoteDataForServer {
+  const _$_NoteDataForServer({required this.metaData, required this.data});
+
+  @override
+  final NoteDataForServerMetaData metaData;
+  @override
+  final NoteDataForServerData data;
+
+  @override
+  String toString() {
+    return 'NoteDataForServer(metaData: $metaData, data: $data)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_NoteDataForServer &&
+            (identical(other.metaData, metaData) ||
+                other.metaData == metaData) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, metaData, data);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_NoteDataForServerCopyWith<_$_NoteDataForServer> get copyWith =>
+      __$$_NoteDataForServerCopyWithImpl<_$_NoteDataForServer>(
+          this, _$identity);
+}
+
+abstract class _NoteDataForServer implements NoteDataForServer {
+  const factory _NoteDataForServer(
+      {required final NoteDataForServerMetaData metaData,
+      required final NoteDataForServerData data}) = _$_NoteDataForServer;
+
+  @override
+  NoteDataForServerMetaData get metaData;
+  @override
+  NoteDataForServerData get data;
+  @override
+  @JsonKey(ignore: true)
+  _$$_NoteDataForServerCopyWith<_$_NoteDataForServer> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$NoteDataForServerMetaData {
+  String get createdAt => throw _privateConstructorUsedError;
+  String get updatedAt => throw _privateConstructorUsedError;
+  String get sendToDevice => throw _privateConstructorUsedError;
+  int? get globalId => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $NoteDataForServerMetaDataCopyWith<NoteDataForServerMetaData> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $NoteDataForServerMetaDataCopyWith<$Res> {
+  factory $NoteDataForServerMetaDataCopyWith(NoteDataForServerMetaData value,
+          $Res Function(NoteDataForServerMetaData) then) =
+      _$NoteDataForServerMetaDataCopyWithImpl<$Res, NoteDataForServerMetaData>;
+  @useResult
+  $Res call(
+      {String createdAt, String updatedAt, String sendToDevice, int? globalId});
+}
+
+/// @nodoc
+class _$NoteDataForServerMetaDataCopyWithImpl<$Res,
+        $Val extends NoteDataForServerMetaData>
+    implements $NoteDataForServerMetaDataCopyWith<$Res> {
+  _$NoteDataForServerMetaDataCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? sendToDevice = null,
     Object? globalId = freezed,
   }) {
     return _then(_value.copyWith(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -501,49 +672,37 @@ class _$NoteDataForServerCopyWithImpl<$Res, $Val extends NoteDataForServer>
 }
 
 /// @nodoc
-abstract class _$$_NoteDataForServerCopyWith<$Res>
-    implements $NoteDataForServerCopyWith<$Res> {
-  factory _$$_NoteDataForServerCopyWith(_$_NoteDataForServer value,
-          $Res Function(_$_NoteDataForServer) then) =
-      __$$_NoteDataForServerCopyWithImpl<$Res>;
+abstract class _$$_NoteDataForServerMetaDataCopyWith<$Res>
+    implements $NoteDataForServerMetaDataCopyWith<$Res> {
+  factory _$$_NoteDataForServerMetaDataCopyWith(
+          _$_NoteDataForServerMetaData value,
+          $Res Function(_$_NoteDataForServerMetaData) then) =
+      __$$_NoteDataForServerMetaDataCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {String title,
-      String message,
-      String createdAt,
-      String updatedAt,
-      String sendToDevice,
-      int? globalId});
+      {String createdAt, String updatedAt, String sendToDevice, int? globalId});
 }
 
 /// @nodoc
-class __$$_NoteDataForServerCopyWithImpl<$Res>
-    extends _$NoteDataForServerCopyWithImpl<$Res, _$_NoteDataForServer>
-    implements _$$_NoteDataForServerCopyWith<$Res> {
-  __$$_NoteDataForServerCopyWithImpl(
-      _$_NoteDataForServer _value, $Res Function(_$_NoteDataForServer) _then)
+class __$$_NoteDataForServerMetaDataCopyWithImpl<$Res>
+    extends _$NoteDataForServerMetaDataCopyWithImpl<$Res,
+        _$_NoteDataForServerMetaData>
+    implements _$$_NoteDataForServerMetaDataCopyWith<$Res> {
+  __$$_NoteDataForServerMetaDataCopyWithImpl(
+      _$_NoteDataForServerMetaData _value,
+      $Res Function(_$_NoteDataForServerMetaData) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
-    Object? message = null,
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? sendToDevice = null,
     Object? globalId = freezed,
   }) {
-    return _then(_$_NoteDataForServer(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_$_NoteDataForServerMetaData(
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -566,19 +725,13 @@ class __$$_NoteDataForServerCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_NoteDataForServer implements _NoteDataForServer {
-  const _$_NoteDataForServer(
-      {required this.title,
-      required this.message,
-      required this.createdAt,
+class _$_NoteDataForServerMetaData implements _NoteDataForServerMetaData {
+  const _$_NoteDataForServerMetaData(
+      {required this.createdAt,
       required this.updatedAt,
       required this.sendToDevice,
       this.globalId});
 
-  @override
-  final String title;
-  @override
-  final String message;
   @override
   final String createdAt;
   @override
@@ -590,16 +743,14 @@ class _$_NoteDataForServer implements _NoteDataForServer {
 
   @override
   String toString() {
-    return 'NoteDataForServer(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, sendToDevice: $sendToDevice, globalId: $globalId)';
+    return 'NoteDataForServerMetaData(createdAt: $createdAt, updatedAt: $updatedAt, sendToDevice: $sendToDevice, globalId: $globalId)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteDataForServer &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.message, message) || other.message == message) &&
+            other is _$_NoteDataForServerMetaData &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -611,30 +762,24 @@ class _$_NoteDataForServer implements _NoteDataForServer {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, title, message, createdAt,
-      updatedAt, sendToDevice, globalId);
+  int get hashCode =>
+      Object.hash(runtimeType, createdAt, updatedAt, sendToDevice, globalId);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteDataForServerCopyWith<_$_NoteDataForServer> get copyWith =>
-      __$$_NoteDataForServerCopyWithImpl<_$_NoteDataForServer>(
-          this, _$identity);
+  _$$_NoteDataForServerMetaDataCopyWith<_$_NoteDataForServerMetaData>
+      get copyWith => __$$_NoteDataForServerMetaDataCopyWithImpl<
+          _$_NoteDataForServerMetaData>(this, _$identity);
 }
 
-abstract class _NoteDataForServer implements NoteDataForServer {
-  const factory _NoteDataForServer(
-      {required final String title,
-      required final String message,
-      required final String createdAt,
+abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
+  const factory _NoteDataForServerMetaData(
+      {required final String createdAt,
       required final String updatedAt,
       required final String sendToDevice,
-      final int? globalId}) = _$_NoteDataForServer;
+      final int? globalId}) = _$_NoteDataForServerMetaData;
 
-  @override
-  String get title;
-  @override
-  String get message;
   @override
   String get createdAt;
   @override
@@ -645,6 +790,143 @@ abstract class _NoteDataForServer implements NoteDataForServer {
   int? get globalId;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteDataForServerCopyWith<_$_NoteDataForServer> get copyWith =>
+  _$$_NoteDataForServerMetaDataCopyWith<_$_NoteDataForServerMetaData>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$NoteDataForServerData {
+  String get title => throw _privateConstructorUsedError;
+  String get message => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $NoteDataForServerDataCopyWith<NoteDataForServerData> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $NoteDataForServerDataCopyWith<$Res> {
+  factory $NoteDataForServerDataCopyWith(NoteDataForServerData value,
+          $Res Function(NoteDataForServerData) then) =
+      _$NoteDataForServerDataCopyWithImpl<$Res, NoteDataForServerData>;
+  @useResult
+  $Res call({String title, String message});
+}
+
+/// @nodoc
+class _$NoteDataForServerDataCopyWithImpl<$Res,
+        $Val extends NoteDataForServerData>
+    implements $NoteDataForServerDataCopyWith<$Res> {
+  _$NoteDataForServerDataCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? message = null,
+  }) {
+    return _then(_value.copyWith(
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_NoteDataForServerDataCopyWith<$Res>
+    implements $NoteDataForServerDataCopyWith<$Res> {
+  factory _$$_NoteDataForServerDataCopyWith(_$_NoteDataForServerData value,
+          $Res Function(_$_NoteDataForServerData) then) =
+      __$$_NoteDataForServerDataCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String title, String message});
+}
+
+/// @nodoc
+class __$$_NoteDataForServerDataCopyWithImpl<$Res>
+    extends _$NoteDataForServerDataCopyWithImpl<$Res, _$_NoteDataForServerData>
+    implements _$$_NoteDataForServerDataCopyWith<$Res> {
+  __$$_NoteDataForServerDataCopyWithImpl(_$_NoteDataForServerData _value,
+      $Res Function(_$_NoteDataForServerData) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? message = null,
+  }) {
+    return _then(_$_NoteDataForServerData(
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_NoteDataForServerData implements _NoteDataForServerData {
+  const _$_NoteDataForServerData({required this.title, required this.message});
+
+  @override
+  final String title;
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'NoteDataForServerData(title: $title, message: $message)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_NoteDataForServerData &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, title, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_NoteDataForServerDataCopyWith<_$_NoteDataForServerData> get copyWith =>
+      __$$_NoteDataForServerDataCopyWithImpl<_$_NoteDataForServerData>(
+          this, _$identity);
+}
+
+abstract class _NoteDataForServerData implements NoteDataForServerData {
+  const factory _NoteDataForServerData(
+      {required final String title,
+      required final String message}) = _$_NoteDataForServerData;
+
+  @override
+  String get title;
+  @override
+  String get message;
+  @override
+  @JsonKey(ignore: true)
+  _$$_NoteDataForServerDataCopyWith<_$_NoteDataForServerData> get copyWith =>
       throw _privateConstructorUsedError;
 }

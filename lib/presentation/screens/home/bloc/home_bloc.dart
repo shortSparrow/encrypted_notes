@@ -44,7 +44,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     notesStream = response.notesStream.listen((notes) {
-      print("note: ${notes}");
+      // print("note: ${notes}");
       this.emit(
         state.copyWith(
           loadingLocalStatus: RequestStatus.success,
