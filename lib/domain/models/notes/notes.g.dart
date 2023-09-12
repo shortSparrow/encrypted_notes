@@ -6,14 +6,17 @@ part of 'notes.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_SyncedDevice _$$_SyncedDeviceFromJson(Map<String, dynamic> json) =>
-    _$_SyncedDevice(
-      deviceId: json['deviceId'] as String,
-      isSynced: json['isSynced'] as bool,
+_$_EncryptedMessage _$$_EncryptedMessageFromJson(Map<String, dynamic> json) =>
+    _$_EncryptedMessage(
+      cipherText:
+          (json['cipherText'] as List<dynamic>).map((e) => e as int).toList(),
+      nonce: (json['nonce'] as List<dynamic>).map((e) => e as int).toList(),
+      mac: (json['mac'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
-Map<String, dynamic> _$$_SyncedDeviceToJson(_$_SyncedDevice instance) =>
+Map<String, dynamic> _$$_EncryptedMessageToJson(_$_EncryptedMessage instance) =>
     <String, dynamic>{
-      'deviceId': instance.deviceId,
-      'isSynced': instance.isSynced,
+      'cipherText': instance.cipherText,
+      'nonce': instance.nonce,
+      'mac': instance.mac,
     };

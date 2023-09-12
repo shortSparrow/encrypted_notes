@@ -6,6 +6,7 @@ import 'package:encrypted_notes/domain/repositories/modify_note_remote_repositor
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
 import 'package:encrypted_notes/presentation/screens/home/bloc/home_bloc.dart';
@@ -21,7 +22,7 @@ import 'domain/repositories/bio_auth_repository.dart';
 import 'domain/repositories/modify_note_local_repository.dart';
 import 'domain/repositories/sign_in_up_repository.dart';
 import 'domain/usecases/biometrics/biometric_auth_usease.dart';
-import 'domain/usecases/encryption/generateE2EKeyPairUseCase.dart';
+import 'domain/usecases/encryption/key_pair_for_notes_use_case.dart';
 import 'domain/usecases/notes/encypt_note_use_case.dart';
 import 'domain/usecases/notes/load_notes_use_case.dart';
 import 'presentation/screens/modify_note/bloc/modify_note_bloc.dart';
@@ -96,16 +97,18 @@ Future<void> init() async {
     () => LoadNoteUseCase(
       modifyNoteRepository: sl(),
       modifyNoteRemoteRepository: sl(),
+      notesMapper: sl(),
+      encryptNoteUseCase: sl(),
     ),
   );
 
   sl.registerFactory<AddNoteUseCase>(
     () => AddNoteUseCase(
-      modifyNoteLocalRepository: sl(),
-      modifyNoteRemoteRepository: sl(),
-      notesMapper: sl(),
-      encryptNoteUseCase: sl()
-    ),
+        modifyNoteLocalRepository: sl(),
+        modifyNoteRemoteRepository: sl(),
+        notesMapper: sl(),
+        encryptNoteUseCase: sl(),
+        getSyncedDeviceListUseCase: sl()),
   );
 
   sl.registerFactory<EditNoteUseCase>(
@@ -118,8 +121,15 @@ Future<void> init() async {
 
   sl.registerFactory<EncryptNoteUseCase>(
     () => EncryptNoteUseCase(
-      generateE2EKeyPairUseCase: GenerateE2EKeyPairUseCase(),
+      generateE2EKeyPairUseCase: GetE2EKeyPairForNotesUseCase(),
     ),
+  );
+  sl.registerFactory<GetE2EKeyPairForNotesUseCase>(
+    () => GetE2EKeyPairForNotesUseCase(),
+  );
+
+  sl.registerFactory<GetSyncedDeviceListUseCase>(
+    () => GetSyncedDeviceListUseCase(),
   );
 
   // **************** UTILS

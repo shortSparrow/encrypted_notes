@@ -20,7 +20,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
   final LoadNoteUseCase _loadNoteUseCase;
 
-  late StreamSubscription<List<Note>> notesStream;
+  late StreamSubscription<List<EncryptedNote>> notesStream;
 
   dispose() {
     notesStream.cancel(); // stop listen and emit states if widget disposed
@@ -32,26 +32,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     LoadNotes event,
     Emitter<HomeState> emit,
   ) async {
-    print("load notes");
-    emit(state.copyWith(
-      loadingLocalStatus: RequestStatus.loading,
-    ));
+    try {
+      print("load notes");
+      emit(state.copyWith(
+        loadingLocalStatus: RequestStatus.loading,
+      ));
 
-    final response = _loadNoteUseCase.getNotes();
-    response.loadingNotesFromServerStatus.listen((status) {
-      this.emit(state.copyWith(loadingFromServerStatus: status));
-      print("loading fromserver status: ${status}");
-    });
+      final response = _loadNoteUseCase.getNotes();
+      response.loadingNotesFromServerStatus.listen((status) {
+        this.emit(state.copyWith(loadingFromServerStatus: status));
+        print("loading fromserver status: ${status}");
+      });
 
-    notesStream = response.notesStream.listen((notes) {
-      // print("note: ${notes}");
-      this.emit(
-        state.copyWith(
-          loadingLocalStatus: RequestStatus.success,
-          loadNotes: notes,
-          filteredNotes: notes,
-        ),
-      );
-    });
+      notesStream = response.notesStream.listen((notes) {
+        // print("note: ${notes}");
+        this.emit(
+          state.copyWith(
+            loadingLocalStatus: RequestStatus.success,
+            loadNotes: notes,
+            filteredNotes: notes,
+          ),
+        );
+      });
+    } catch (e) {
+      print("failed _onLoadNotes");
+    }
   }
 }

@@ -1,9 +1,8 @@
-import 'package:encrypted_notes/data/database/dao/notes_dao.dart';
-import 'package:encrypted_notes/data/database/database.dart';
+import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
-import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
+import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 
 class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   final NotesMapper notesMapper = NotesMapper();
@@ -42,9 +41,21 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
     return AddNotesResponse(
       globalId: globalId,
       addNotesDeviceInfoResponse: [
-        AddNotesDeviceInfoResponse(deviceId: "device_id_1", isSuccess: true),
-        AddNotesDeviceInfoResponse(deviceId: "device_id_2", isSuccess: true),
-        AddNotesDeviceInfoResponse(deviceId: "device_id_3", isSuccess: false),
+        AddNotesDeviceInfoResponse(
+          deviceId: "device_id_1",
+          isSuccess: true,
+          devicePublicKey: SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
+        ),
+        AddNotesDeviceInfoResponse(
+          deviceId: "device_id_2",
+          isSuccess: true,
+          devicePublicKey: SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
+        ),
+        AddNotesDeviceInfoResponse(
+          deviceId: "device_id_3",
+          isSuccess: false,
+          devicePublicKey: SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
+        ),
       ],
     );
   }

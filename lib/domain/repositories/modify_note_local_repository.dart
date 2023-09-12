@@ -5,8 +5,8 @@ abstract class ModifyNoteLocalRepository {
   Future<int> addNote(NotesCompanion note);
   Future<bool> editNote(NotesCompanion note);
   Future<bool> deleteNote(int noteId);
-  Stream<List<Note>> getNotes();
-  Future<Note?> getNoteById(int id);
+  Stream<List<EncryptedNote>> getNotes();
+  Future<EncryptedNote?> getNoteById(int id);
 
   Future updateSyncingDeviceForNote(
     String syncedDevicesJson,

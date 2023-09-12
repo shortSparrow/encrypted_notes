@@ -79,7 +79,7 @@ class _HomeViewState extends State<HomeView> {
                     return Column(
                       children: [
                         NoteView(
-                          message: state.filteredNotes[index].message,
+                          message: state.filteredNotes[index].title,
                           updatedAt: state.filteredNotes[index].updatedAt,
                           messageId: state.filteredNotes[index].id,
                         ),
