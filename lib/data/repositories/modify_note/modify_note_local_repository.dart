@@ -30,9 +30,9 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   }
 
   @override
-  Stream<List<Note>> getNotes() {
+  Stream<List<EncryptedNote>> getNotes() {
     return notesDao.getNotes().watch().map((event) =>
-        event.map((noteDb) => notesMapper.dbNoteToNote(noteDb)).toList());
+        event.map((noteDb) => notesMapper.dbNoteToEncryptedNote(noteDb)).toList());
   }
 
   @override
@@ -44,12 +44,12 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   }
 
   @override
-  Future<Note?> getNoteById(int id) async {
+  Future<EncryptedNote?> getNoteById(int id) async {
     final result = await notesDao.getNoteById(id);
     if (result == null) {
       return null;
     }
-    return notesMapper.dbNoteToNote(result);
+    return notesMapper.dbNoteToEncryptedNote(result);
   }
 
   @override

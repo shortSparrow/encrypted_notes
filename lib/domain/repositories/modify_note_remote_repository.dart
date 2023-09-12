@@ -1,10 +1,16 @@
+import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 
 class AddNotesDeviceInfoResponse {
   final String deviceId;
   final bool isSuccess;
+  final SimplePublicKey devicePublicKey;
 
-  AddNotesDeviceInfoResponse({required this.deviceId, this.isSuccess = false});
+  AddNotesDeviceInfoResponse({
+    required this.deviceId,
+    this.isSuccess = false,
+    required this.devicePublicKey,
+  });
 }
 
 class AddNotesResponse {

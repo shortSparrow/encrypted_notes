@@ -1,47 +1,151 @@
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:encrypted_notes/constants/storage_keys.dart';
+import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../encryption/generateE2EKeyPairUseCase.dart';
+import '../encryption/key_pair_for_notes_use_case.dart';
 
 class EncryptNoteUseCase {
   EncryptNoteUseCase({
-    required GenerateE2EKeyPairUseCase generateE2EKeyPairUseCase,
+    required GetE2EKeyPairForNotesUseCase generateE2EKeyPairUseCase,
   }) : _generateE2EKeyPairUseCase = generateE2EKeyPairUseCase;
 
-  final GenerateE2EKeyPairUseCase _generateE2EKeyPairUseCase;
+  final GetE2EKeyPairForNotesUseCase _generateE2EKeyPairUseCase;
 
-  Future<void> encryptForServer(
-    NoteDataForServerData data,
+  // AES-CTR with 128 bit keys and HMAC-SHA256 authentication.
+  final algorithm = AesCbc.with256bits(
+    macAlgorithm: Hmac.sha256(),
+  );
+
+  AndroidOptions _getAndroidOptions() {
+    return const AndroidOptions(
+      encryptedSharedPreferences: true,
+    );
+  }
+
+  Future<SecretKey> getLocalSymmetricSecretKey() async {
+    final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
+    final secretKey = await storage.read(key: localSecretKey);
+    if (secretKey == null || secretKey.isEmpty) {
+      throw GeneralFailure(message: "no secret key");
+    }
+    final key = jsonDecode(secretKey);
+
+    List<int> keyBytes = List<int>.from(key.whereType<dynamic>());
+
+    return SecretKey(keyBytes);
+  }
+
+  Future<void> setLocalSymmetricSecretKey(List<int> key) async {
+    final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
+    await storage.write(key: localSecretKey, value: jsonEncode(key));
+  }
+
+  Future<NoteDataForServerEncryptedData> encryptForServer(
+    String title,
+    String message,
     SimplePublicKey recipientPublicKey,
   ) async {
-    final message = utf8.encode(data.message);
+    final titleBytes = utf8.encode(title);
+    final messageBytes = utf8.encode(message);
 
-    // AES-CTR with 128 bit keys and HMAC-SHA256 authentication.
-    final algorithm = AesCbc.with256bits(
-      macAlgorithm: Hmac.sha256(),
-    );
     final encryptionKey =
         await _generateE2EKeyPairUseCase.getEncryptionKey(recipientPublicKey);
 
-    final nonce = algorithm.newNonce();
-
     // Encrypt
-    final secretBox = await algorithm.encrypt(
-      message,
+    final titleSecretBox = await algorithm.encrypt(
+      titleBytes,
       secretKey: encryptionKey,
     );
 
-    print('Nonce: ${secretBox.nonce}');
-    print('Ciphertext: ${secretBox.cipherText}');
-    print('MAC: ${secretBox.mac.bytes}');
-
-    // Decrypt
-    final clearText = await algorithm.decryptString(
-      secretBox,
+    final messageSecretBox = await algorithm.encrypt(
+      messageBytes,
       secretKey: encryptionKey,
     );
-    print('Cleartext: $clearText');
+
+    final titleCipher = EncryptedMessage(
+      cipherText: titleSecretBox.cipherText,
+      mac: titleSecretBox.mac.bytes,
+      nonce: titleSecretBox.nonce,
+    );
+
+    final messageCipher = EncryptedMessage(
+      cipherText: messageSecretBox.cipherText,
+      mac: messageSecretBox.mac.bytes,
+      nonce: messageSecretBox.nonce,
+    );
+
+    return NoteDataForServerEncryptedData(
+      title: titleCipher,
+      message: messageCipher,
+    );
+  }
+
+  Future<EncryptedMessage> encryptForLocal(
+    String message,
+    SecretKey symmetricEncryptionKey,
+  ) async {
+    final messageBytes = utf8.encode(message);
+
+    final messageSecretBox = await algorithm.encrypt(
+      messageBytes,
+      secretKey: symmetricEncryptionKey,
+    );
+
+    final messageCipher = EncryptedMessage(
+      cipherText: messageSecretBox.cipherText,
+      mac: messageSecretBox.mac.bytes,
+      nonce: messageSecretBox.nonce,
+    );
+    return messageCipher;
+  }
+
+  Future<String> decryptLocal(
+    EncryptedMessage message,
+    SecretKey symmetricEncryptionKey,
+  ) async {
+    final messageSecretBox = await algorithm.decryptString(
+      SecretBox(
+        message.cipherText,
+        nonce: message.nonce,
+        mac: Mac(message.mac),
+      ),
+      secretKey: symmetricEncryptionKey,
+    );
+
+    return messageSecretBox;
+  }
+
+// TODO figure out how to test (need saved sender and recepirnt keys)
+  Future<void> decryptFromServer(
+    SimplePublicKey senderPublicKey,
+    EncryptedMessage title,
+    EncryptedMessage message,
+  ) async {
+    final decryptionKey =
+        await _generateE2EKeyPairUseCase.getDecryptionKey(senderPublicKey);
+
+    final clearTitleText = await algorithm.decryptString(
+      SecretBox(
+        title.cipherText,
+        nonce: title.nonce,
+        mac: Mac(title.mac),
+      ),
+      secretKey: decryptionKey,
+    );
+    final clearMessageText = await algorithm.decryptString(
+      SecretBox(
+        message.cipherText,
+        nonce: message.nonce,
+        mac: Mac(message.mac),
+      ),
+      secretKey: decryptionKey,
+    );
+
+    print("clearText title: ${clearTitleText}");
+    print("clearText message: ${clearMessageText}");
   }
 }

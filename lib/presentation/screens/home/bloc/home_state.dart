@@ -4,8 +4,8 @@ class HomeState extends Equatable {
   final RequestStatus loadingLocalStatus;
   final RequestStatus loadingFromServerStatus;
 
-  final List<Note> loadNotes;
-  final List<Note> filteredNotes;
+  final List<EncryptedNote> loadNotes;
+  final List<EncryptedNote> filteredNotes;
 
   const HomeState({
     this.loadingLocalStatus = RequestStatus.idle,
@@ -17,8 +17,8 @@ class HomeState extends Equatable {
   HomeState copyWith({
     RequestStatus? loadingLocalStatus,
     RequestStatus? loadingFromServerStatus,
-    List<Note>? loadNotes,
-    List<Note>? filteredNotes,
+    List<EncryptedNote>? loadNotes,
+    List<EncryptedNote>? filteredNotes,
   }) {
     return HomeState(
       loadingLocalStatus: loadingLocalStatus ?? this.loadingLocalStatus,

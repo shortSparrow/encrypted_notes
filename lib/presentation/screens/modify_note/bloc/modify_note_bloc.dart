@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
@@ -70,14 +68,13 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
   }
 
   Future _editNote(String message) async {
-    // final response = _editNoteUseCase.
+    // TODO implement
   }
 
-  Future _addNote({required String  message, required String title}) async {
-    final response = _addNoteUseCase.addNote(
+  Future _addNote({required String message, required String title}) async {
+    final response = await _addNoteUseCase.addNote(
       message: message,
-      title: title,
-      deviceIdList: ["device_id_1", "device_id_2", "device_id_3"],
+      title: title.isEmpty ? "unknown" : title,
     );
 
     response.local.then((value) {

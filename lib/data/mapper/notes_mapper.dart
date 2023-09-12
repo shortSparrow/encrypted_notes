@@ -5,46 +5,61 @@ import 'package:encrypted_notes/domain/models/notes/notes.dart';
 
 class NotesMapper {
   Note dbNoteToNote(NoteDb noteDb) {
+    // TODO find better way
+    List<SyncedDevice> syncedDevices = [];
+
+    final List<dynamic> jsonList = jsonDecode(noteDb.syncedDevicesJson);
+
+    for (var e in jsonList) {
+      syncedDevices.add(SyncedDevice.fromJson(e));
+    }
+
     return Note(
-        message: noteDb.message,
-        title: noteDb.title,
-        createdAt: noteDb.createdAt,
-        updatedAt: noteDb.updatedAt,
-        id: noteDb.id,
-        syncedDevices: (jsonDecode(noteDb.syncedDevicesJson) as Iterable)
-            .map((e) => SyncedDevice.fromJson(e))
-            .toList());
+      message: noteDb.message,
+      title: noteDb.title,
+      createdAt: noteDb.createdAt,
+      updatedAt: noteDb.updatedAt,
+      id: noteDb.id,
+      syncedDevices: syncedDevices,
+    );
   }
 
-  List<NoteDataForServer> noteCompanionToNoteDataForServer(
-      NotesCompanion noteCompanion) {
-    final syncedDeviceList =
-        (jsonDecode(noteCompanion.syncedDevicesJson.value) as Iterable)
-            .map((e) => SyncedDevice.fromJson(e))
-            .toList();
+  EncryptedNote dbNoteToEncryptedNote(NoteDb noteDb) {
+    List<SyncedDevice> syncedDevices = [];
 
-    return syncedDeviceList
-        .map(
-          (syncedDevice) => NoteDataForServer(
-            data: NoteDataForServerData(
-              title: noteCompanion.title.value,
-              message: noteCompanion.message.value,
-            ),
-            metaData: NoteDataForServerMetaData(
-              createdAt: noteCompanion.createdAt.value,
-              updatedAt: noteCompanion.updatedAt.value,
-              sendToDevice: syncedDevice.deviceId,
-            ),
-          ),
-        )
-        .toList();
+    final List<dynamic> jsonList = jsonDecode(noteDb.syncedDevicesJson);
+
+    for (var e in jsonList) {
+      syncedDevices.add(SyncedDevice.fromJson(e));
+    }
+
+    final message = EncryptedMessage.fromJson(jsonDecode(noteDb.message));
+
+    return EncryptedNote(
+      message: message,
+      title: noteDb.title,
+      createdAt: noteDb.createdAt,
+      updatedAt: noteDb.updatedAt,
+      id: noteDb.id,
+      syncedDevices: syncedDevices,
+    );
   }
 
-  // NotesCompanion noteToDbNote(Note note) {
-  //   return NotesCompanion(
-  //     message: Value(note.message),
-  //     createdAt: Value(note.createdAt),
-  //     updatedAt: Value(note.updatedAt),
-  //   );
-  // }
+  Note encryptedNoteToNote(
+      EncryptedNote encryptedNote, String decryptedMessage) {
+    return Note(
+      title: encryptedNote.title,
+      message: decryptedMessage,
+      createdAt: encryptedNote.createdAt,
+      updatedAt: encryptedNote.updatedAt,
+      id: encryptedNote.id,
+      globalId: encryptedNote.globalId,
+      syncedDevices: encryptedNote.syncedDevices,
+    );
+  }
+
+  NoteDataForServerData noteDataForServerEncryptedDataToNoteDataForServerData(
+      NoteDataForServerEncryptedData data) {
+    return NoteDataForServerData(message: data.message, title: data.title);
+  }
 }
