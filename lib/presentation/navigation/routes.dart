@@ -1,5 +1,3 @@
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
-import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
 import 'package:encrypted_notes/presentation/screens/auth/auth_screen.dart';
 import 'package:encrypted_notes/presentation/screens/home/home_screen.dart';

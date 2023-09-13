@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/core/models/edit_text.dart';
@@ -6,6 +5,7 @@ import 'package:encrypted_notes/presentation/core/models/text_filed_validator.da
 import 'package:encrypted_notes/utils/validation/sign_in_up/password_validation.dart';
 import 'package:encrypted_notes/utils/validation/sign_in_up/phone_validation.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';

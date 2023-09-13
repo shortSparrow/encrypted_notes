@@ -61,6 +61,7 @@ class SyncedDevice {
   }
 }
 
+// TODO rename to decryptedNote
 @freezed
 class Note with _$Note {
   const factory Note({
@@ -70,7 +71,7 @@ class Note with _$Note {
     required String createdAt,
     required String updatedAt,
     required int id,
-    String? globalId,
+    required int? globalId,
     required List<SyncedDevice> syncedDevices,
   }) = _Note;
 }
@@ -84,9 +85,17 @@ class EncryptedNote with _$EncryptedNote {
     required String createdAt,
     required String updatedAt,
     required int id,
-    String? globalId,
+    required int? globalId,
     required List<SyncedDevice> syncedDevices,
   }) = _EncryptedNote;
+}
+
+@freezed
+class NoteForServer with _$NoteForServer {
+  const factory NoteForServer({
+    required int? globalId,
+    required List<NoteDataForServer> data,
+  }) = _NoteForServer;
 }
 
 @freezed
@@ -102,8 +111,8 @@ class NoteDataForServerMetaData with _$NoteDataForServerMetaData {
   const factory NoteDataForServerMetaData({
     required String createdAt,
     required String updatedAt,
-    required String sendToDevice,
-    int? globalId,
+    required String sendToDeviceId,
+    required int? globalId,
   }) = _NoteDataForServerMetaData;
 }
 
