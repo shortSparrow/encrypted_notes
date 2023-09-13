@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:cryptography/cryptography.dart';
 import 'package:dartz/dartz.dart';
-import 'package:encrypted_notes/constants/storage_keys.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';

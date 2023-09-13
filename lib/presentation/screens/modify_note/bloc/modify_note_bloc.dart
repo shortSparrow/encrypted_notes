@@ -63,12 +63,39 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     if (state.mode == ModifyNoteMode.add) {
       _addNote(message: event.message, title: event.title);
     } else if (state.mode == ModifyNoteMode.edit) {
-      _editNote(event.message);
+      _editNote(event.message, event.title);
     }
   }
 
-  Future _editNote(String message) async {
-    // TODO implement
+  Future _editNote(String message, String title) async {
+    final response = await _editNoteUseCase.editNote(
+      note: state.editableNote!.copyWith(
+        message: message,
+        title: title,
+      ),
+    );
+
+    response.local.then((value) {
+      value.fold(
+        (l) {
+          print("Error edit note local: ${l}");
+        },
+        (r) {
+          print("Success edit note local: ${r}");
+        },
+      );
+    });
+
+    response.remote.then((value) {
+      value.fold(
+        (l) {
+          print("Error edit note remote: ${l}");
+        },
+        (r) {
+          print("Success edit note remote: ${r}");
+        },
+      );
+    });
   }
 
   Future _addNote({required String message, required String title}) async {

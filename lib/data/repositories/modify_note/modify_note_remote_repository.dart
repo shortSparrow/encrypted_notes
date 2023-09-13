@@ -34,29 +34,65 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   }
 
   @override
-  Future<AddNotesResponse> addNotes(List<NoteDataForServer> data) async {
+  Future<List<AddNotesResponse>> addNotes(List<NoteForServer> data) async {
     // TODO implement
     final globalId = DateTime.timestamp().millisecond;
     await Future.delayed(const Duration(seconds: 1));
-    return AddNotesResponse(
-      globalId: globalId,
-      addNotesDeviceInfoResponse: [
-        AddNotesDeviceInfoResponse(
-          deviceId: "device_id_1",
-          isSuccess: true,
-          devicePublicKey: SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
-        ),
-        AddNotesDeviceInfoResponse(
-          deviceId: "device_id_2",
-          isSuccess: true,
-          devicePublicKey: SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
-        ),
-        AddNotesDeviceInfoResponse(
-          deviceId: "device_id_3",
-          isSuccess: false,
-          devicePublicKey: SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
-        ),
-      ],
-    );
+    return [
+      AddNotesResponse(
+        globalId: globalId,
+        addNotesDeviceInfoResponse: [
+          NotesDeviceInfoResponse(
+            deviceId: "device_id_1",
+            isSuccess: true,
+            devicePublicKey:
+                SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
+          ),
+          NotesDeviceInfoResponse(
+            deviceId: "device_id_2",
+            isSuccess: true,
+            devicePublicKey:
+                SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
+          ),
+          NotesDeviceInfoResponse(
+            deviceId: "device_id_3",
+            isSuccess: false,
+            devicePublicKey:
+                SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
+          ),
+        ],
+      )
+    ];
+  }
+
+  @override
+  Future<List<EditNotesResponse>> editNotes(List<NoteForServer> data) async {
+    // TODO implement
+    await Future.delayed(const Duration(seconds: 1));
+    return [
+      EditNotesResponse(
+        globalId: data[0].globalId as int,
+        addNotesDeviceInfoResponse: [
+          NotesDeviceInfoResponse(
+            deviceId: "device_id_1",
+            isSuccess: true,
+            devicePublicKey:
+                SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
+          ),
+          NotesDeviceInfoResponse(
+            deviceId: "device_id_2",
+            isSuccess: true,
+            devicePublicKey:
+                SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
+          ),
+          NotesDeviceInfoResponse(
+            deviceId: "device_id_3",
+            isSuccess: false,
+            devicePublicKey:
+                SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
+          ),
+        ],
+      )
+    ];
   }
 }

@@ -116,6 +116,8 @@ Future<void> init() async {
       modifyNoteLocalRepository: sl(),
       modifyNoteRemoteRepository: sl(),
       notesMapper: sl(),
+      getSyncedDeviceListUseCase: sl(),
+      encryptNoteUseCase: sl(),
     ),
   );
 

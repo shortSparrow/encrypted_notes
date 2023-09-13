@@ -84,6 +84,7 @@ class EncryptNoteUseCase {
     );
   }
 
+// TODO create another usecase wich will be only encrypt message, but this sould return EncryptedNote
   Future<EncryptedMessage> encryptForLocal(
     String message,
     SecretKey symmetricEncryptionKey,

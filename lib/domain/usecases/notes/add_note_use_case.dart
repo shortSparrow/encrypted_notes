@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:cryptography/cryptography.dart';
-import 'package:encrypted_notes/constants/storage_keys.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 
 import 'package:dartz/dartz.dart';
@@ -14,6 +12,11 @@ import 'package:encrypted_notes/domain/repositories/modify_note_local_repository
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/encypt_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
+
+typedef LocalAddResponse = Future<Either<Failure, int>>;
+typedef RemoteAddResponse = Future<Either<Failure, bool>>;
+typedef AddNoteResponse
+    = Future<CombinedLocalRemoteResponse<LocalAddResponse, RemoteAddResponse>>;
 
 class AddNoteUseCase {
   AddNoteUseCase({
@@ -34,57 +37,31 @@ class AddNoteUseCase {
   final GetSyncedDeviceListUseCase _getSyncedDeviceListUseCase;
   final NotesMapper _notesMapper;
 
-  Future<
-      CombinedLocalRemoteResponse<Future<Either<Failure, int>>,
-          Future<Either<Failure, bool>>>> addNote({
+  final List<SyncedDevice> syncedDeviceList = [];
+
+  _getSyncedDeviceList() async {
+    final result = await _getSyncedDeviceListUseCase.getSyncedDeviceList();
+    syncedDeviceList.addAll(result);
+  }
+
+  AddNoteResponse addNote({
     required String message,
     required String title,
   }) async {
-    final syncedDeviceList =
-        await _getSyncedDeviceListUseCase.getSyncedDeviceList();
-
+    await _getSyncedDeviceList();
     final local = _addNoteLocally(
       message: message,
       title: title,
-      syncedDeviceList: syncedDeviceList,
     );
     return CombinedLocalRemoteResponse(
       local: local,
-      remote: local.then((value) async {
-        return value.fold(
-          (l) {
-            return left(GeneralFailure(message: "no local message"));
-          },
-          (r) async {
-            final note = await _modifyNoteLocalRepository.getNoteById(r);
-
-            final isNoteExist = note != null;
-            if (!isNoteExist) {
-              return left(
-                  GeneralFailure(message: "can't load local message by id"));
-            }
-
-            final localSecretKey =
-                await _encryptNoteUseCase.getLocalSymmetricSecretKey();
-
-            final decryptedMessage = await _encryptNoteUseCase.decryptLocal(
-              note.message,
-              localSecretKey,
-            );
-
-            return _addNoteRemote(
-              note: _notesMapper.encryptedNoteToNote(note, decryptedMessage),
-            );
-          },
-        );
-      }),
+      remote: local.then((value) => _prepareAndAddNoteRemote(value)),
     );
   }
 
-  Future<Either<Failure, int>> _addNoteLocally({
+  LocalAddResponse _addNoteLocally({
     required String message,
     required String title,
-    required List<SyncedDevice> syncedDeviceList,
   }) async {
     try {
       final syncedDevices = syncedDeviceList
@@ -113,27 +90,60 @@ class AddNoteUseCase {
     }
   }
 
-  Future<Either<Failure, bool>> _addNoteRemote({
-    required Note note,
-  }) async {
-    try {
-      final encryptedData = await _getEncryptedNotes(note);
-      final result = await _modifyNoteRemoteRepository.addNotes(encryptedData);
+  RemoteAddResponse _prepareAndAddNoteRemote(Either<Failure, int> value) async {
+    return value.fold(
+      (l) {
+        return left(GeneralFailure(message: "no local message"));
+      },
+      (r) async {
+        final note = await _modifyNoteLocalRepository.getNoteById(r);
 
-      await _synchronizeRemoteResponse(
-        result.addNotesDeviceInfoResponse,
-        note.id,
-        result.globalId,
-      );
+        final isNoteExist = note != null;
+        if (!isNoteExist) {
+          return left(
+              GeneralFailure(message: "can't load local message by id"));
+        }
+
+        final localSecretKey =
+            await _encryptNoteUseCase.getLocalSymmetricSecretKey();
+
+        final decryptedMessage = await _encryptNoteUseCase.decryptLocal(
+          note.message,
+          localSecretKey,
+        );
+
+        return _addNoteRemote(
+          note: _notesMapper.encryptedNoteToNote(note, decryptedMessage),
+        );
+      },
+    );
+  }
+
+  RemoteAddResponse _addNoteRemote({required Note note}) async {
+    try {
+      final encryptedData = await _encryptNoteForEachRecipient(note: note);
+      final result = await _modifyNoteRemoteRepository
+          .addNotes([NoteForServer(data: encryptedData, globalId: null)]);
+
+      for (var responseNote in result) {
+        await _synchronizeRemoteResponse(
+          responseNote.addNotesDeviceInfoResponse,
+          note.id,
+          responseNote.globalId,
+        );
+      }
+
       return right(true);
     } catch (e) {
       return left(GeneralFailure(message: "remote error"));
     }
   }
 
-  Future<List<NoteDataForServer>> _getEncryptedNotes(Note note) async {
+  Future<List<NoteDataForServer>> _encryptNoteForEachRecipient({
+    required Note note,
+  }) async {
     final futureEncryptedDeviceList =
-        note.syncedDevices.map((_syncedDevice) async {
+        syncedDeviceList.map((_syncedDevice) async {
       final encryptedData = await _encryptNoteUseCase.encryptForServer(
         note.title,
         note.message,
@@ -144,7 +154,8 @@ class AddNoteUseCase {
         metaData: NoteDataForServerMetaData(
           createdAt: note.createdAt,
           updatedAt: note.updatedAt,
-          sendToDevice: _syncedDevice.deviceId,
+          sendToDeviceId: _syncedDevice.deviceId,
+          globalId: null,
         ),
         data:
             _notesMapper.noteDataForServerEncryptedDataToNoteDataForServerData(
@@ -158,7 +169,7 @@ class AddNoteUseCase {
   }
 
   Future _synchronizeRemoteResponse(
-    List<AddNotesDeviceInfoResponse> response,
+    List<NotesDeviceInfoResponse> response,
     int noteId,
     int globalId,
   ) async {

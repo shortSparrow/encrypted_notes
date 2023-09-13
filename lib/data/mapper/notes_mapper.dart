@@ -21,6 +21,7 @@ class NotesMapper {
       updatedAt: noteDb.updatedAt,
       id: noteDb.id,
       syncedDevices: syncedDevices,
+      globalId: noteDb.globalId,
     );
   }
 
@@ -36,13 +37,13 @@ class NotesMapper {
     final message = EncryptedMessage.fromJson(jsonDecode(noteDb.message));
 
     return EncryptedNote(
-      message: message,
-      title: noteDb.title,
-      createdAt: noteDb.createdAt,
-      updatedAt: noteDb.updatedAt,
-      id: noteDb.id,
-      syncedDevices: syncedDevices,
-    );
+        message: message,
+        title: noteDb.title,
+        createdAt: noteDb.createdAt,
+        updatedAt: noteDb.updatedAt,
+        id: noteDb.id,
+        syncedDevices: syncedDevices,
+        globalId: noteDb.globalId);
   }
 
   Note encryptedNoteToNote(
