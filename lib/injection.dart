@@ -1,9 +1,10 @@
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/repositories/modify_note/modify_note_local_repository.dart';
-import 'package:encrypted_notes/data/repositories/shared_preferences_repository/shared_preferences_repository_impl.dart';
+import 'package:encrypted_notes/data/repositories/shared_preferences/shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/sign_in_up_repository/sign_in_up_repository_impl.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
@@ -22,8 +23,7 @@ import 'domain/repositories/bio_auth_repository.dart';
 import 'domain/repositories/modify_note_local_repository.dart';
 import 'domain/repositories/sign_in_up_repository.dart';
 import 'domain/usecases/biometrics/biometric_auth_usease.dart';
-import 'domain/usecases/encryption/key_pair_for_notes_use_case.dart';
-import 'domain/usecases/notes/encypt_note_use_case.dart';
+import 'domain/usecases/encryption/message_encryption_use_case.dart';
 import 'domain/usecases/notes/load_notes_use_case.dart';
 import 'presentation/screens/modify_note/bloc/modify_note_bloc.dart';
 import 'presentation/screens/register_web_bio/cubit/register_web_bio_cubit.dart';
@@ -78,6 +78,10 @@ Future<void> init() async {
   sl.registerSingleton<ModifyNoteRemoteRepository>(
       ModifyNoteRemoteRepositoryImpl());
 
+  sl.registerFactory<SecretSharedPreferencesRepository>(
+    () => SecretSharedPreferencesRepositoryImpl(),
+  );
+
   // ** usecase
   sl.registerFactory<BiometricAuthUseCase>(
     () => BiometricAuthUseCase(
@@ -92,23 +96,36 @@ Future<void> init() async {
         generateDeviceId: sl(),
         sharedPreferencesRepository: sl()),
   );
+  // TODO remove
+  sl.registerFactory<TestEncryptionUseCase>(
+    () => TestEncryptionUseCase(
+      getSyncedDeviceListUseCase: sl(),
+      notesMapper: sl(),
+      getE2EKeyPairForNotesUseCase: sl(),
+      secretSharedPreferencesRepository: sl(),
+      messageEncryptionUseCase: sl(),
+    ),
+  );
 
   sl.registerFactory<LoadNoteUseCase>(
     () => LoadNoteUseCase(
       modifyNoteRepository: sl(),
       modifyNoteRemoteRepository: sl(),
       notesMapper: sl(),
-      encryptNoteUseCase: sl(),
+      secretSharedPreferencesRepository: sl(),
+      messageEncryptionUseCase: sl(),
     ),
   );
 
   sl.registerFactory<AddNoteUseCase>(
     () => AddNoteUseCase(
-        modifyNoteLocalRepository: sl(),
-        modifyNoteRemoteRepository: sl(),
-        notesMapper: sl(),
-        encryptNoteUseCase: sl(),
-        getSyncedDeviceListUseCase: sl()),
+      modifyNoteLocalRepository: sl(),
+      modifyNoteRemoteRepository: sl(),
+      notesMapper: sl(),
+      getSyncedDeviceListUseCase: sl(),
+      messageEncryptionUseCase: sl(),
+      secretSharedPreferencesRepository: sl(),
+    ),
   );
 
   sl.registerFactory<EditNoteUseCase>(
@@ -117,17 +134,13 @@ Future<void> init() async {
       modifyNoteRemoteRepository: sl(),
       notesMapper: sl(),
       getSyncedDeviceListUseCase: sl(),
-      encryptNoteUseCase: sl(),
+      secretSharedPreferencesRepository: sl(),
+      messageEncryptionUseCase: sl(),
     ),
   );
 
-  sl.registerFactory<EncryptNoteUseCase>(
-    () => EncryptNoteUseCase(
-      generateE2EKeyPairUseCase: GetE2EKeyPairForNotesUseCase(),
-    ),
-  );
-  sl.registerFactory<GetE2EKeyPairForNotesUseCase>(
-    () => GetE2EKeyPairForNotesUseCase(),
+  sl.registerFactory<MessageEncryptionUseCase>(
+    () => MessageEncryptionUseCase(secretSharedPreferencesRepository: sl()),
   );
 
   sl.registerFactory<GetSyncedDeviceListUseCase>(

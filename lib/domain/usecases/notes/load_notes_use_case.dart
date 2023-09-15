@@ -7,7 +7,8 @@ import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
-import 'package:encrypted_notes/domain/usecases/notes/encypt_note_use_case.dart';
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 
 class GetNotesResponse {
   final Stream<List<EncryptedNote>> notesStream;
@@ -24,16 +25,20 @@ class LoadNoteUseCase {
     required ModifyNoteLocalRepository modifyNoteRepository,
     required ModifyNoteRemoteRepository modifyNoteRemoteRepository,
     required NotesMapper notesMapper,
-    required EncryptNoteUseCase encryptNoteUseCase,
+    required SecretSharedPreferencesRepository
+        secretSharedPreferencesRepository,
+    required MessageEncryptionUseCase messageEncryptionUseCase,
   })  : _modifyNoteLocalRepository = modifyNoteRepository,
         _modifyNoteRemoteRepository = modifyNoteRemoteRepository,
         _notesMapper = notesMapper,
-        _encryptNoteUseCase = encryptNoteUseCase;
+        _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
+        _messageEncryptionUseCase = messageEncryptionUseCase;
 
   final ModifyNoteLocalRepository _modifyNoteLocalRepository;
   final ModifyNoteRemoteRepository _modifyNoteRemoteRepository;
   final NotesMapper _notesMapper;
-  final EncryptNoteUseCase _encryptNoteUseCase;
+  final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
+  final MessageEncryptionUseCase _messageEncryptionUseCase;
 
   GetNotesResponse getNotes() {
     return GetNotesResponse(
@@ -62,9 +67,12 @@ class LoadNoteUseCase {
       }
 
       final localSecretKey =
-          await _encryptNoteUseCase.getLocalSymmetricSecretKey();
-      final String decryptedMessage = await _encryptNoteUseCase.decryptLocal(
-          loadedNote.message, localSecretKey);
+          await _secretSharedPreferencesRepository.getLocalSymmetricKey();
+      final String decryptedMessage =
+          await _messageEncryptionUseCase.decryptMessageForLocal(
+        loadedNote.message,
+        localSecretKey,
+      );
 
       return right(
           _notesMapper.encryptedNoteToNote(loadedNote, decryptedMessage));

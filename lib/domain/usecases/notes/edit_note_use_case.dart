@@ -7,7 +7,8 @@ import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
-import 'package:encrypted_notes/domain/usecases/notes/encypt_note_use_case.dart';
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 
 import '../../failures/failures.dart';
@@ -23,19 +24,23 @@ class EditNoteUseCase {
     required ModifyNoteLocalRepository modifyNoteLocalRepository,
     required ModifyNoteRemoteRepository modifyNoteRemoteRepository,
     required GetSyncedDeviceListUseCase getSyncedDeviceListUseCase,
-    required EncryptNoteUseCase encryptNoteUseCase,
+    required SecretSharedPreferencesRepository
+        secretSharedPreferencesRepository,
+    required MessageEncryptionUseCase messageEncryptionUseCase,
     required NotesMapper notesMapper,
   })  : _modifyNoteLocalRepository = modifyNoteLocalRepository,
         _modifyNoteRemoteRepository = modifyNoteRemoteRepository,
         _getSyncedDeviceListUseCase = getSyncedDeviceListUseCase,
-        _encryptNoteUseCase = encryptNoteUseCase,
+        _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
+        _messageEncryptionUseCase = messageEncryptionUseCase,
         _notesMapper = notesMapper;
 
   final ModifyNoteLocalRepository _modifyNoteLocalRepository;
   final ModifyNoteRemoteRepository _modifyNoteRemoteRepository;
   final GetSyncedDeviceListUseCase _getSyncedDeviceListUseCase;
-  final EncryptNoteUseCase _encryptNoteUseCase;
   final NotesMapper _notesMapper;
+  final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
+  final MessageEncryptionUseCase _messageEncryptionUseCase;
 
   final List<SyncedDevice> syncedDeviceList = [];
 
@@ -61,13 +66,12 @@ class EditNoteUseCase {
           .toList();
 
       final localSecretKey =
-          await _encryptNoteUseCase.getLocalSymmetricSecretKey();
+          await _secretSharedPreferencesRepository.getLocalSymmetricKey();
 
-      final encryptedMessage = await _encryptNoteUseCase.encryptForLocal(
+      final encryptedMessage = await _messageEncryptionUseCase.encryptMessageForLocal(
         note.message,
         localSecretKey,
       );
-
 
       final result = await _modifyNoteLocalRepository.editNote(
         NotesCompanion(
@@ -113,10 +117,18 @@ class EditNoteUseCase {
   }) async {
     final futureEncryptedDeviceList =
         syncedDeviceList.map((_syncedDevice) async {
-      final encryptedData = await _encryptNoteUseCase.encryptForServer(
+      final titleCipher = await _messageEncryptionUseCase.encryptMessageE2E(
         note.title,
+        _syncedDevice.devicePublicKey,
+      );
+      final messageCipher = await _messageEncryptionUseCase.encryptMessageE2E(
         note.message,
         _syncedDevice.devicePublicKey,
+      );
+
+      final encryptedData = NoteDataForServerEncryptedData(
+        title: titleCipher,
+        message: messageCipher,
       );
 
       return NoteDataForServer(
