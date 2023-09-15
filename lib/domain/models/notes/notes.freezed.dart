@@ -1199,11 +1199,17 @@ abstract class _NoteDataForServerData implements NoteDataForServerData {
       throw _privateConstructorUsedError;
 }
 
+NoteDataForServerEncryptedData _$NoteDataForServerEncryptedDataFromJson(
+    Map<String, dynamic> json) {
+  return _NoteDataForServerEncryptedData.fromJson(json);
+}
+
 /// @nodoc
 mixin _$NoteDataForServerEncryptedData {
   EncryptedMessage get title => throw _privateConstructorUsedError;
   EncryptedMessage get message => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $NoteDataForServerEncryptedDataCopyWith<NoteDataForServerEncryptedData>
       get copyWith => throw _privateConstructorUsedError;
@@ -1316,11 +1322,15 @@ class __$$_NoteDataForServerEncryptedDataCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_NoteDataForServerEncryptedData
     implements _NoteDataForServerEncryptedData {
   const _$_NoteDataForServerEncryptedData(
       {required this.title, required this.message});
+
+  factory _$_NoteDataForServerEncryptedData.fromJson(
+          Map<String, dynamic> json) =>
+      _$$_NoteDataForServerEncryptedDataFromJson(json);
 
   @override
   final EncryptedMessage title;
@@ -1341,6 +1351,7 @@ class _$_NoteDataForServerEncryptedData
             (identical(other.message, message) || other.message == message));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, title, message);
 
@@ -1350,6 +1361,13 @@ class _$_NoteDataForServerEncryptedData
   _$$_NoteDataForServerEncryptedDataCopyWith<_$_NoteDataForServerEncryptedData>
       get copyWith => __$$_NoteDataForServerEncryptedDataCopyWithImpl<
           _$_NoteDataForServerEncryptedData>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_NoteDataForServerEncryptedDataToJson(
+      this,
+    );
+  }
 }
 
 abstract class _NoteDataForServerEncryptedData
@@ -1358,6 +1376,9 @@ abstract class _NoteDataForServerEncryptedData
           {required final EncryptedMessage title,
           required final EncryptedMessage message}) =
       _$_NoteDataForServerEncryptedData;
+
+  factory _NoteDataForServerEncryptedData.fromJson(Map<String, dynamic> json) =
+      _$_NoteDataForServerEncryptedData.fromJson;
 
   @override
   EncryptedMessage get title;

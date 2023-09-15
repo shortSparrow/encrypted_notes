@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'notes.freezed.dart';
 part 'notes.g.dart';
 
-
 // TODO find way to use freezed with own fromJson/toJson
 // @freezed
 class SyncedDevice {
@@ -131,6 +130,9 @@ class NoteDataForServerEncryptedData with _$NoteDataForServerEncryptedData {
     required EncryptedMessage title,
     required EncryptedMessage message,
   }) = _NoteDataForServerEncryptedData;
+
+  factory NoteDataForServerEncryptedData.fromJson(Map<String, dynamic> json) =>
+      _$NoteDataForServerEncryptedDataFromJson(json);
 }
 
 @freezed
