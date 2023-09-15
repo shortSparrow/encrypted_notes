@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/extensions/Either.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -8,29 +8,31 @@ import '../../failures/failures.dart';
 import '../../repositories/bio_auth_repository.dart';
 
 class BiometricAuthUseCase {
-  final BioAuthRepository bioAuthRepository;
-  final SharedPreferencesRepository sharedPreferencesRepository;
+  final BioAuthRepository _bioAuthRepository;
+  final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
 
   BiometricAuthUseCase({
-    required this.bioAuthRepository,
-    required this.sharedPreferencesRepository,
-  });
+    required BioAuthRepository bioAuthRepository,
+    required SecretSharedPreferencesRepository
+        secretSharedPreferencesRepository, required Object sharedPreferencesRepository,
+  })  : _bioAuthRepository = bioAuthRepository,
+        _secretSharedPreferencesRepository = secretSharedPreferencesRepository;
 
   List<dynamic>? userRawId;
-
 
   Future<Either<Failure, bool>> registerBioForWeb(
     String userName,
   ) async {
     if (kIsWeb) {
-      final userRawIdArray = await bioAuthRepository.registerWebBio(
+      final userRawIdArray = await _bioAuthRepository.registerWebBio(
         "randomStringFromServer",
         [1, 2, 3, 4],
         userName,
       );
 
       if (userRawIdArray.isRight()) {
-        sharedPreferencesRepository.setBioWebId(userRawIdArray.asRight());
+        await _secretSharedPreferencesRepository
+            .setWebBioId(userRawIdArray.asRight());
 
         return right(true);
       }
@@ -42,11 +44,11 @@ class BiometricAuthUseCase {
 
   Future<Either<Failure, bool>> loginBioForWeb() async {
     if (kIsWeb) {
-      final userRawId = sharedPreferencesRepository.getUserState().bioWebId;
+      final userRawId = await _secretSharedPreferencesRepository.getWebBioId();
       if (userRawId == null) {
         return left(NoSavedUserId());
       }
-      final loginResult = await bioAuthRepository.loginWebBio(
+      final loginResult = await _bioAuthRepository.loginWebBio(
         "randomStringFromServer",
         userRawId,
       );
@@ -70,7 +72,7 @@ class BiometricAuthUseCase {
 
     try {
       if (kIsWeb) {
-        isDeviceSupported = await bioAuthRepository.isWebBiometricSupported();
+        isDeviceSupported = await _bioAuthRepository.isWebBiometricSupported();
       }
 
       // if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {} // TODO

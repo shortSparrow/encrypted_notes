@@ -1,3 +1,5 @@
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
 import 'package:encrypted_notes/presentation/screens/auth/auth_screen.dart';
 import 'package:encrypted_notes/presentation/screens/home/home_screen.dart';
@@ -47,13 +49,13 @@ final GoRouter router = GoRouter(
     ),
   ],
   redirect: (context, state) {
-    // final isLogged = sl<SharedPreferencesRepository>().getUserState().isLogged;
-    // if(!isLogged) {
-    //   if (state.matchedLocation == AppScreens.sign_in.path) {
-    //   return AppScreens.sign_in.path;
-    // }
+    final isLogged = sl<SharedPreferencesRepository>().getUserState().isLogged;
+    if(!isLogged) {
+      if (state.matchedLocation == AppScreens.sign_in.path) {
+      return AppScreens.sign_in.path;
+    }
 
-    // return AppScreens.sign_up.path;
-    // }
+    return AppScreens.sign_up.path;
+    }
   },
 );

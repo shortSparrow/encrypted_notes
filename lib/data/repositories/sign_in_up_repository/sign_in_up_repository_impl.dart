@@ -10,7 +10,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     String password,
   ) async {
     await Future.delayed(const Duration(seconds: 2));
-    return User();
+    return User(phone: phone, token: phone, bioWedId: null, id: '1'); // FIXME  or maybe nor null if user set it before (check the flow)
   }
 
   @override
@@ -20,6 +20,6 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     String password,
   ) async {
     await Future.delayed(const Duration(seconds: 2));
-    return User();
+    return User(phone: phone, token: password, bioWedId: null, id: '1');
   }
 }
