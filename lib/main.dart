@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:encrypted_notes/data/shared_preferences/user_state/user_state.dart';
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/constants/storage_keys.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,8 @@ const secureStorage = FlutterSecureStorage(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox(userStateBox);
+  await Hive.openBox(HiveBoxes.userStateBox);
+  await Hive.openBox(HiveBoxes.userBox);
   await di.init();
   await dotenv.load(fileName: ".env");
 

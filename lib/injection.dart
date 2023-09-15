@@ -1,8 +1,10 @@
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/repositories/modify_note/modify_note_local_repository.dart';
+import 'package:encrypted_notes/data/repositories/shared_preferences/secret_shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/shared_preferences/shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/sign_in_up_repository/sign_in_up_repository_impl.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
@@ -79,7 +81,7 @@ Future<void> init() async {
       ModifyNoteRemoteRepositoryImpl());
 
   sl.registerFactory<SecretSharedPreferencesRepository>(
-    () => SecretSharedPreferencesRepositoryImpl(),
+    () => SecretSharedPreferencesRepositoryImpl(userLocalRepository: sl()),
   );
 
   // ** usecase
@@ -87,14 +89,18 @@ Future<void> init() async {
     () => BiometricAuthUseCase(
       bioAuthRepository: sl(),
       sharedPreferencesRepository: sl(),
+      secretSharedPreferencesRepository: sl(),
     ),
   );
 
   sl.registerFactory<SignInUpUseCase>(
     () => SignInUpUseCase(
-        signInUpRepository: sl(),
-        generateDeviceId: sl(),
-        sharedPreferencesRepository: sl()),
+      signInUpRepository: sl(),
+      generateDeviceId: sl(),
+      sharedPreferencesRepository: sl(),
+      messageEncryptionUseCase: sl(),
+      secretSharedPreferencesRepository: sl(), userLocalRepository: sl(),
+    ),
   );
   // TODO remove
   sl.registerFactory<TestEncryptionUseCase>(

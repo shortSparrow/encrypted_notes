@@ -1,15 +1,7 @@
-import 'package:cryptography/cryptography.dart';
-import 'package:encrypted_notes/data/shared_preferences/user_state/user_state.dart';
+import 'package:encrypted_notes/data/models/user_state/user_state.dart';
 
 abstract class SharedPreferencesRepository {
   UserStateDb getUserState();
-  setIsLogged(bool isLogged);
-  setBioWebId(List<int> id);
+  Future setIsLogged(bool isLogged);
 }
 
-abstract class SecretSharedPreferencesRepository {
-  Future<SimpleKeyPair> getE2EKeyPair();
-  Future<void> setE2EKeyPair(SimpleKeyPair keyPair);
-  Future<SecretKey> getLocalSymmetricKey();
-  Future<void> setLocalSymmetricKey(List<int> key);
-}

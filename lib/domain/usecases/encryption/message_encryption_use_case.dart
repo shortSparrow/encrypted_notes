@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/generate_keys.dart';
 
 class MessageEncryptionUseCase extends GenerateKeys {

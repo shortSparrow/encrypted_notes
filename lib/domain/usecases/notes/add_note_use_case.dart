@@ -10,7 +10,7 @@ import 'package:encrypted_notes/domain/models/combined_local_remote_response/com
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 

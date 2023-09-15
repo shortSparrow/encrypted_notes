@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/generate_keys.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
