@@ -1,7 +1,12 @@
 import 'dart:convert';
 
 import 'package:encrypted_notes/constants/storage_keys.dart';
+import 'package:encrypted_notes/domain/models/notes/notes.dart';
+import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
+import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +31,50 @@ void main() async {
   await di.init();
   await dotenv.load(fileName: ".env");
 
-  final List<int> localTempSecretKey =
-      jsonDecode(dotenv.env['localTempSecretKey'] ?? "").cast<int>();
-  final SecretSharedPreferencesRepository secretSharedPreferencesRepository =
-      sl();
-  secretSharedPreferencesRepository.setLocalSymmetricKey(localTempSecretKey);
+// TODO test login
+
+  // try {
+  //   final SecretSharedPreferencesRepository secretSharedPreferencesRepository =
+  //       sl();
+  //   final UserLocalRepository userLocalRepository = sl();
+  //   final MessageEncryptionUseCase messageEncryptionUseCase = sl();
+
+  //   final user = userLocalRepository.getUser();
+  //   print("user: ${user}");
+
+  //   final getKeyPair = await secretSharedPreferencesRepository.getE2EKeyPair();
+  //   print("getKeyPair: ${getKeyPair}");
+
+  //   final localSymmetricKey =
+  //       await secretSharedPreferencesRepository.getLocalSymmetricKey();
+  //   print("localSymmetricKey: ${localSymmetricKey}");
+  // } catch (e) {
+  //   print("e: ${e}");
+  // }
+
+  // try {
+  //   final SecretSharedPreferencesRepository secretSharedPreferencesRepository =
+  //       sl();
+  //   final UserLocalRepository userLocalRepository = sl();
+  //   final MessageEncryptionUseCase messageEncryptionUseCase = sl();
+  //   await userLocalRepository.setUser(
+  //       const User(id: '1', phone: '11111111', token: 'xyz', bioWedId: null));
+
+  //   final keypair = await messageEncryptionUseCase.generateNewE2EKeyPair();
+  //   final local = await messageEncryptionUseCase.generateNewLocalSymmetricKey();
+
+  //   await secretSharedPreferencesRepository.setE2EKeyPair(keypair);
+  //   await secretSharedPreferencesRepository.setLocalSymmetricKey(local);
+
+  //   final getKeyPair = await secretSharedPreferencesRepository.getE2EKeyPair();
+  //   print("getKeyPair: ${getKeyPair}");
+
+  //   final localSymmetricKey =
+  //       await secretSharedPreferencesRepository.getLocalSymmetricKey();
+  //   print("localSymmetricKey: ${localSymmetricKey}");
+  // } catch (e) {
+  //   print("e: ${e}");
+  // }
 
   runApp(const MyApp());
 }

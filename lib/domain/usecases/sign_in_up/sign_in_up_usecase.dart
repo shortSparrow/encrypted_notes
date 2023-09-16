@@ -34,16 +34,21 @@ class SignInUpUseCase {
     try {
       final deviceId = await generateDeviceId.getDeviceId();
       final user = await signInUpRepository.signUp(deviceId, phone, password);
+      await _userLocalRepository.setUser(user);
+
       final newKeyPair =
           await _messageEncryptionUseCase.generateNewE2EKeyPair();
       await _secretSharedPreferencesRepository.setE2EKeyPair(newKeyPair);
-      await _userLocalRepository.setUser(user);
+      final localKey =
+          await _messageEncryptionUseCase.generateNewLocalSymmetricKey();
+      await _secretSharedPreferencesRepository.setLocalSymmetricKey(localKey);
+
       await _sharedPreferencesRepository.setIsLogged(true);
 
       return right(user);
     } catch (e) {
       // TODO handle error
-      return left(GeneralFailure(message: 'add error handling'));
+      return left(GeneralFailure(message: 'signUp error handling'));
     }
   }
 
@@ -51,14 +56,13 @@ class SignInUpUseCase {
     try {
       final deviceId = await generateDeviceId.getDeviceId();
       final user = await signInUpRepository.singIn(deviceId, phone, password);
-
       await _userLocalRepository.setUser(user);
       await _sharedPreferencesRepository.setIsLogged(true);
 
       return right(user);
     } catch (e) {
       // TODO handle error
-      return left(GeneralFailure(message: 'add error handling'));
+      return left(GeneralFailure(message: 'login error handling'));
     }
   }
 }

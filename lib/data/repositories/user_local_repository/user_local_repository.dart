@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:encrypted_notes/constants/storage_keys.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
@@ -13,12 +15,12 @@ class UserLocalRepositoryImpl extends UserLocalRepository {
 
   @override
   User getUser() {
-    return User.fromJson(userState.get(UserKeys.user));
+    return User.fromJson(jsonDecode(userState.get(UserKeys.user)));
   }
 
   @override
   setUser(User user) async {
-    await userState.put(UserKeys.user, user);
+    await userState.put(UserKeys.user, jsonEncode(user));
   }
 
   @override

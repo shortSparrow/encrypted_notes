@@ -9,6 +9,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     String phone,
     String password,
   ) async {
+    // if response has 404 error or anyting els thtow this error
     await Future.delayed(const Duration(seconds: 2));
     return User(phone: phone, token: phone, bioWedId: null, id: '1'); // FIXME  or maybe nor null if user set it before (check the flow)
   }
@@ -19,6 +20,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     String phone,
     String password,
   ) async {
+    // if response has 404 error or anyting els thtow this error
     await Future.delayed(const Duration(seconds: 2));
     return User(phone: phone, token: password, bioWedId: null, id: '1');
   }

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
-import 'package:encrypted_notes/constants/storage_keys.dart';
 import 'package:encrypted_notes/data/models/secret_shared_preferences_data/secret_shared_preferences_data.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
+import 'package:encrypted_notes/domain/usecases/encryption/generate_keys.dart';
 import 'package:encrypted_notes/main.dart';
 import 'package:jwk/jwk.dart';
 
@@ -17,26 +17,25 @@ class SecretSharedPreferencesRepositoryImpl
       {required UserLocalRepository userLocalRepository})
       : _userLocalRepository = userLocalRepository;
 
-  // Future<SecretSharedPreferencesData> getStorageForCurrentUser() async {
-  //   final String? userData =
-  //       await secureStorage.read(key: _userLocalRepository.getUser().id);
+  Future<SecretSharedPreferencesData> _getStorageForCurrentUser() async {
+    final String? userData =
+        await secureStorage.read(key: _userLocalRepository.getUser().id);
+    final data = jsonDecode(userData ?? '{}');
+    return SecretSharedPreferencesData.fromJson(data);
+  }
 
-  //   final data =
-  //       SecretSharedPreferencesData.fromJson(jsonDecode(userData ?? ""));
-  //       return data;
-  // }
+  Future writeToStorage(SecretSharedPreferencesData data) async {
+    final String key = _userLocalRepository.getUser().id;
 
-  Future readFromStorage() async {}
+    await secureStorage.write(key: key, value: jsonEncode(data));
+  }
 
-  // TODO we must save data in special user Field, and when he login again this data must be restored
   @override
   Future<SimpleKeyPair> getE2EKeyPair() async {
-    final String? keyPair =
-        await secureStorage.read(key: SecureStorageKeys.deviceKeyPairForNotes);
+    final storage = await _getStorageForCurrentUser();
 
-    if (keyPair != null) {
-      final gson = jsonDecode(keyPair);
-      final parsedKeyPair = Jwk.fromJson(gson);
+    if (storage.deviceKeyPairForNotes != null) {
+      final parsedKeyPair = Jwk.fromJson(storage.deviceKeyPairForNotes!);
       return parsedKeyPair.toKeyPair() as SimpleKeyPair;
     }
 
@@ -45,46 +44,46 @@ class SecretSharedPreferencesRepositoryImpl
 
   @override
   Future<void> setE2EKeyPair(SimpleKeyPair keyPair) async {
+    final storage = await _getStorageForCurrentUser();
     final jwk = await Jwk.fromKeyPair(keyPair);
-
     final json = jwk.toJson();
-    await secureStorage.write(
-      key: SecureStorageKeys.deviceKeyPairForNotes,
-      value: jsonEncode(json),
-    );
+
+    await writeToStorage(storage.copyWith(deviceKeyPairForNotes: json));
   }
 
   @override
   Future<SecretKey> getLocalSymmetricKey() async {
-    final secretKey =
-        await secureStorage.read(key: SecureStorageKeys.localSecretKey);
-    if (secretKey == null || secretKey.isEmpty) {
+    final storage = await _getStorageForCurrentUser();
+    if (storage.localSymmetricKey == null) {
       throw GeneralFailure(message: "no secret key");
     }
-    final key = jsonDecode(secretKey);
+    final key = Jwk.fromJson(storage.localSymmetricKey!);
 
-    List<int> keyBytes = List<int>.from(key.whereType<dynamic>());
-
-    return SecretKey(keyBytes);
+    return key.toSecretKey();
   }
 
   @override
-  Future<void> setLocalSymmetricKey(List<int> key) async {
-    await secureStorage.write(
-        key: SecureStorageKeys.localSecretKey, value: jsonEncode(key));
+  Future<void> setLocalSymmetricKey(SecretKey key) async {
+    final storage = await _getStorageForCurrentUser();
+    final jwk =
+        await Jwk.fromSecretKey(key, cipher: GenerateKeys().algorithmAES);
+    final json = jwk.toJson();
+
+    await writeToStorage(storage.copyWith(localSymmetricKey: json));
   }
 
   @override
   Future<List<int>> getWebBioId() async {
-    final webBioId = await secureStorage.read(key: SecureStorageKeys.webBioId);
-    final webBioIdJson = jsonDecode(webBioId ?? '[]');
+    final storage = await _getStorageForCurrentUser();
+    final webBioIdJson = jsonDecode(storage.webBioId ?? '[]');
     List<int> webBioIdBytes = List<int>.from(webBioIdJson.whereType<dynamic>());
     return webBioIdBytes;
   }
 
   @override
   Future<void> setWebBioId(List<int> webBioId) async {
+    final storage = await _getStorageForCurrentUser();
     final json = jsonEncode(webBioId);
-    await secureStorage.write(key: SecureStorageKeys.webBioId, value: json);
+    await writeToStorage(storage.copyWith(webBioId: json));
   }
 }

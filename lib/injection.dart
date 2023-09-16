@@ -3,9 +3,11 @@ import 'package:encrypted_notes/data/repositories/modify_note/modify_note_local_
 import 'package:encrypted_notes/data/repositories/shared_preferences/secret_shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/shared_preferences/shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/sign_in_up_repository/sign_in_up_repository_impl.dart';
+import 'package:encrypted_notes/data/repositories/user_local_repository/user_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
@@ -80,6 +82,8 @@ Future<void> init() async {
   sl.registerSingleton<ModifyNoteRemoteRepository>(
       ModifyNoteRemoteRepositoryImpl());
 
+  sl.registerSingleton<UserLocalRepository>(UserLocalRepositoryImpl());
+
   sl.registerFactory<SecretSharedPreferencesRepository>(
     () => SecretSharedPreferencesRepositoryImpl(userLocalRepository: sl()),
   );
@@ -99,7 +103,8 @@ Future<void> init() async {
       generateDeviceId: sl(),
       sharedPreferencesRepository: sl(),
       messageEncryptionUseCase: sl(),
-      secretSharedPreferencesRepository: sl(), userLocalRepository: sl(),
+      secretSharedPreferencesRepository: sl(),
+      userLocalRepository: sl(),
     ),
   );
   // TODO remove
