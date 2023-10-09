@@ -2,6 +2,7 @@ import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 import 'package:encrypted_notes/domain/usecases/notes/load_notes_use_case.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/modify_note_screen.dart';
 import 'package:equatable/equatable.dart';
@@ -102,6 +103,7 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     final response = await _addNoteUseCase.addNote(
       message: message,
       title: title.isEmpty ? "unknown" : title,
+      syncedDevices: getTestSyncedDeviceList()
     );
 
     response.local.then((value) {

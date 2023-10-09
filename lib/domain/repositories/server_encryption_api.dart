@@ -1,7 +1,7 @@
-import 'package:encrypted_notes/domain/models/notes/notes.dart';
+import 'package:encrypted_notes/domain/models/remote_device/remote_device.dart';
 
 abstract class ServerEncryptionApi  {
   Future sendThisSyncedDevice();
-  Future<List<SyncedDevice>> getAllMyDevices();
-  Future<List<SyncedDevice>> getAllSharedToMeDevices();
+  Future<List<RemoteDevice>> getAllMyDevices();
+  Future<List<RemoteDevice>> getAllSharedToMeDevices();
 }

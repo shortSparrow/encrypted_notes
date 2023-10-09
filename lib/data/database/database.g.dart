@@ -362,13 +362,287 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
   }
 }
 
+class $RemoteDevicesTable extends RemoteDevices
+    with TableInfo<$RemoteDevicesTable, RemoteDeviceDb> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemoteDevicesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _deviceNameMeta =
+      const VerificationMeta('deviceName');
+  @override
+  late final GeneratedColumn<String> deviceName = GeneratedColumn<String>(
+      'device_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _systemVersionMeta =
+      const VerificationMeta('systemVersion');
+  @override
+  late final GeneratedColumn<String> systemVersion = GeneratedColumn<String>(
+      'system_version', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _devicePublicKeyMeta =
+      const VerificationMeta('devicePublicKey');
+  @override
+  late final GeneratedColumn<String> devicePublicKey = GeneratedColumn<String>(
+      'device_public_key', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, deviceName, systemVersion, devicePublicKey];
+  @override
+  String get aliasedName => _alias ?? 'remote_devices';
+  @override
+  String get actualTableName => 'remote_devices';
+  @override
+  VerificationContext validateIntegrity(Insertable<RemoteDeviceDb> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('device_name')) {
+      context.handle(
+          _deviceNameMeta,
+          deviceName.isAcceptableOrUnknown(
+              data['device_name']!, _deviceNameMeta));
+    } else if (isInserting) {
+      context.missing(_deviceNameMeta);
+    }
+    if (data.containsKey('system_version')) {
+      context.handle(
+          _systemVersionMeta,
+          systemVersion.isAcceptableOrUnknown(
+              data['system_version']!, _systemVersionMeta));
+    }
+    if (data.containsKey('device_public_key')) {
+      context.handle(
+          _devicePublicKeyMeta,
+          devicePublicKey.isAcceptableOrUnknown(
+              data['device_public_key']!, _devicePublicKeyMeta));
+    } else if (isInserting) {
+      context.missing(_devicePublicKeyMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RemoteDeviceDb map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RemoteDeviceDb(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      deviceName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}device_name'])!,
+      systemVersion: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}system_version']),
+      devicePublicKey: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}device_public_key'])!,
+    );
+  }
+
+  @override
+  $RemoteDevicesTable createAlias(String alias) {
+    return $RemoteDevicesTable(attachedDatabase, alias);
+  }
+}
+
+class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
+  final String id;
+  final String deviceName;
+  final String? systemVersion;
+  final String devicePublicKey;
+  const RemoteDeviceDb(
+      {required this.id,
+      required this.deviceName,
+      this.systemVersion,
+      required this.devicePublicKey});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['device_name'] = Variable<String>(deviceName);
+    if (!nullToAbsent || systemVersion != null) {
+      map['system_version'] = Variable<String>(systemVersion);
+    }
+    map['device_public_key'] = Variable<String>(devicePublicKey);
+    return map;
+  }
+
+  RemoteDevicesCompanion toCompanion(bool nullToAbsent) {
+    return RemoteDevicesCompanion(
+      id: Value(id),
+      deviceName: Value(deviceName),
+      systemVersion: systemVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(systemVersion),
+      devicePublicKey: Value(devicePublicKey),
+    );
+  }
+
+  factory RemoteDeviceDb.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RemoteDeviceDb(
+      id: serializer.fromJson<String>(json['id']),
+      deviceName: serializer.fromJson<String>(json['deviceName']),
+      systemVersion: serializer.fromJson<String?>(json['systemVersion']),
+      devicePublicKey: serializer.fromJson<String>(json['devicePublicKey']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'deviceName': serializer.toJson<String>(deviceName),
+      'systemVersion': serializer.toJson<String?>(systemVersion),
+      'devicePublicKey': serializer.toJson<String>(devicePublicKey),
+    };
+  }
+
+  RemoteDeviceDb copyWith(
+          {String? id,
+          String? deviceName,
+          Value<String?> systemVersion = const Value.absent(),
+          String? devicePublicKey}) =>
+      RemoteDeviceDb(
+        id: id ?? this.id,
+        deviceName: deviceName ?? this.deviceName,
+        systemVersion:
+            systemVersion.present ? systemVersion.value : this.systemVersion,
+        devicePublicKey: devicePublicKey ?? this.devicePublicKey,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('RemoteDeviceDb(')
+          ..write('id: $id, ')
+          ..write('deviceName: $deviceName, ')
+          ..write('systemVersion: $systemVersion, ')
+          ..write('devicePublicKey: $devicePublicKey')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, deviceName, systemVersion, devicePublicKey);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RemoteDeviceDb &&
+          other.id == this.id &&
+          other.deviceName == this.deviceName &&
+          other.systemVersion == this.systemVersion &&
+          other.devicePublicKey == this.devicePublicKey);
+}
+
+class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
+  final Value<String> id;
+  final Value<String> deviceName;
+  final Value<String?> systemVersion;
+  final Value<String> devicePublicKey;
+  final Value<int> rowid;
+  const RemoteDevicesCompanion({
+    this.id = const Value.absent(),
+    this.deviceName = const Value.absent(),
+    this.systemVersion = const Value.absent(),
+    this.devicePublicKey = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RemoteDevicesCompanion.insert({
+    required String id,
+    required String deviceName,
+    this.systemVersion = const Value.absent(),
+    required String devicePublicKey,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        deviceName = Value(deviceName),
+        devicePublicKey = Value(devicePublicKey);
+  static Insertable<RemoteDeviceDb> custom({
+    Expression<String>? id,
+    Expression<String>? deviceName,
+    Expression<String>? systemVersion,
+    Expression<String>? devicePublicKey,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceName != null) 'device_name': deviceName,
+      if (systemVersion != null) 'system_version': systemVersion,
+      if (devicePublicKey != null) 'device_public_key': devicePublicKey,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RemoteDevicesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? deviceName,
+      Value<String?>? systemVersion,
+      Value<String>? devicePublicKey,
+      Value<int>? rowid}) {
+    return RemoteDevicesCompanion(
+      id: id ?? this.id,
+      deviceName: deviceName ?? this.deviceName,
+      systemVersion: systemVersion ?? this.systemVersion,
+      devicePublicKey: devicePublicKey ?? this.devicePublicKey,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (deviceName.present) {
+      map['device_name'] = Variable<String>(deviceName.value);
+    }
+    if (systemVersion.present) {
+      map['system_version'] = Variable<String>(systemVersion.value);
+    }
+    if (devicePublicKey.present) {
+      map['device_public_key'] = Variable<String>(devicePublicKey.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemoteDevicesCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceName: $deviceName, ')
+          ..write('systemVersion: $systemVersion, ')
+          ..write('devicePublicKey: $devicePublicKey, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $NotesTable notes = $NotesTable(this);
+  late final $RemoteDevicesTable remoteDevices = $RemoteDevicesTable(this);
   late final NotesDao notesDao = NotesDao(this as AppDatabase);
+  late final RemoteDevicesDao remoteDevicesDao =
+      RemoteDevicesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [notes];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [notes, remoteDevices];
 }

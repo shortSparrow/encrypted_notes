@@ -12,19 +12,18 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
   }
 
   Future<NoteDb?> getNoteById(int noteId) {
-    return (select(notes)..where((tbl) => tbl.id.equals(noteId))).getSingleOrNull();
+    return (select(notes)..where((tbl) => tbl.id.equals(noteId)))
+        .getSingleOrNull();
   }
 
   Future<int> addNote(NotesCompanion note) {
     return into(notes).insert(note);
   }
 
-
   Future<int> addGlobalIdToNote(int globalId, int noteId) {
-   return (update(notes)..where((tbl) => tbl.id.equals(noteId)))
+    return (update(notes)..where((tbl) => tbl.id.equals(noteId)))
         .write(NotesCompanion(globalId: Value(globalId)));
   }
-
 
   Future<bool> editNote(NotesCompanion note) {
     return update(notes).replace(note);
@@ -34,8 +33,9 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
     return (delete(notes)..where((tbl) => tbl.id.equals(noteId))).go();
   }
 
+// FIXME current problem, if server return me different device id, I just ovveride my loca id and lost info about synchronizing
   Future<int> updateSyncingDeviceForNote(String syncedDevicesJson, int noteId) {
-    // TODO right now I just override whole raw with values from server. Maybe would be better get current syncedDevicesJson, update them using new values from server and then update database
+    // TODO right now I just override whole raw with values from server. Maybe would be better to get current syncedDevicesJson, update them using new values from server and then update database
     return (update(notes)..where((tbl) => tbl.id.equals(noteId)))
         .write(NotesCompanion(syncedDevicesJson: Value(syncedDevicesJson)));
   }

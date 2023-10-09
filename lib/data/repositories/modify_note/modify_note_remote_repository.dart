@@ -43,19 +43,19 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
         globalId: globalId,
         addNotesDeviceInfoResponse: [
           NotesDeviceInfoResponse(
-            deviceId: "device_id_1",
+            deviceId: "device_1",
             isSuccess: true,
             devicePublicKey:
                 SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
           ),
           NotesDeviceInfoResponse(
-            deviceId: "device_id_2",
+            deviceId: "device_2",
             isSuccess: true,
             devicePublicKey:
                 SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
           ),
           NotesDeviceInfoResponse(
-            deviceId: "device_id_3",
+            deviceId: "device_3",
             isSuccess: false,
             devicePublicKey:
                 SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
@@ -74,19 +74,19 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
         globalId: data[0].globalId as int,
         addNotesDeviceInfoResponse: [
           NotesDeviceInfoResponse(
-            deviceId: "device_id_1",
+            deviceId: "device_1",
             isSuccess: true,
             devicePublicKey:
                 SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
           ),
           NotesDeviceInfoResponse(
-            deviceId: "device_id_2",
+            deviceId: "device_2",
             isSuccess: true,
             devicePublicKey:
                 SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
           ),
           NotesDeviceInfoResponse(
-            deviceId: "device_id_3",
+            deviceId: "device_3",
             isSuccess: false,
             devicePublicKey:
                 SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),

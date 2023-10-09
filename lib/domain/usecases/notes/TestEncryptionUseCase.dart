@@ -65,8 +65,7 @@ class TestEncryptionUseCase {
 
     return [
       SyncedDevice(
-        deviceId: "device_id_1",
-        devicePublicKey: alicePublic,
+        deviceId: "device_1",
         isSynced: false,
       )
     ];
@@ -78,8 +77,7 @@ class TestEncryptionUseCase {
 
     return [
       SyncedDevice(
-        deviceId: "device_id_2",
-        devicePublicKey: bobPublic,
+        deviceId: "device_2",
         isSynced: false,
       )
     ];

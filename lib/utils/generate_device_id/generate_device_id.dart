@@ -5,7 +5,7 @@ import 'dart:io' show Platform;
 // TODO probable when start generate key pairs add hasing here (return not sting with ingo, but hash instead)
 // TODO add tests
 class GenerateDeviceId {
-  DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+  final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   String? _deviceId;
 
   Future<String> getDeviceId() async {

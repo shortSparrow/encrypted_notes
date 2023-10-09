@@ -1,63 +1,17 @@
-import 'package:cryptography/cryptography.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'notes.freezed.dart';
 part 'notes.g.dart';
 
-// TODO find way to use freezed with own fromJson/toJson
-// @freezed
-class SyncedDevice {
-  // const factory SyncedDevice({
-  //   required String deviceId,
-  //   required SimplePublicKey devicePublicKey,
-  //   required bool isSynced,
-  // }) = _SyncedDevice;
+@freezed
+class SyncedDevice with _$SyncedDevice {
+  const factory SyncedDevice({
+    required String deviceId,
+    required bool isSynced,
+  }) = _SyncedDevice;
 
-  // factory SyncedDevice.fromJson(Map<String, dynamic> json) =>
-  //     _$SyncedDeviceFromJson(json);
-
-  final String deviceId;
-  final SimplePublicKey devicePublicKey;
-  final bool isSynced;
-
-  SyncedDevice({
-    required this.deviceId,
-    required this.devicePublicKey,
-    required this.isSynced,
-  });
-
-  SyncedDevice copyWith({
-    String? deviceId,
-    SimplePublicKey? devicePublicKey,
-    bool? isSynced,
-  }) {
-    return SyncedDevice(
-      deviceId: deviceId ?? this.deviceId,
-      devicePublicKey: devicePublicKey ?? this.devicePublicKey,
-      isSynced: isSynced ?? this.isSynced,
-    );
-  }
-
-  factory SyncedDevice.fromJson(Map<String, dynamic> json) {
-    final devicePublicKey = json['devicePublicKey'].cast<int>();
-
-    return SyncedDevice(
-      deviceId: json['deviceId'],
-      isSynced: json['isSynced'],
-      devicePublicKey: SimplePublicKey(
-        devicePublicKey,
-        type: KeyPairType.x25519,
-      ),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "deviceId": deviceId,
-      'isSynced': isSynced,
-      'devicePublicKey': devicePublicKey.bytes,
-    };
-  }
+  factory SyncedDevice.fromJson(Map<String, dynamic> json) =>
+      _$SyncedDeviceFromJson(json);
 }
 
 // TODO rename to decryptedNote

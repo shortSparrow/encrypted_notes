@@ -1,12 +1,18 @@
 import 'dart:convert';
 
+import 'package:cryptography/cryptography.dart';
+import 'package:drift/drift.dart';
 import 'package:encrypted_notes/constants/storage_keys.dart';
+import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
+import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
+import 'package:encrypted_notes/extensions/ColorExtension.dart';
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +78,39 @@ void main() async {
   //   final localSymmetricKey =
   //       await secretSharedPreferencesRepository.getLocalSymmetricKey();
   //   print("localSymmetricKey: ${localSymmetricKey}");
+  // } catch (e) {
+  //   print("e: ${e}");
+  // }
+
+  // try {
+  //   final RemoteDeviceRepositoryLocal remoteDeviceRepositoryLocal = sl();
+
+  //   await remoteDeviceRepositoryLocal.addRemoteDevice(
+  //     RemoteDevicesCompanion(
+  //       id: Value("device_1"),
+  //       deviceName: Value("local test device 1"),
+  //       systemVersion: Value("1"),
+  //       devicePublicKey: Value(devicePublicKey_1.toJsonString()),
+  //     ),
+  //   );
+
+  //   await remoteDeviceRepositoryLocal.addRemoteDevice(
+  //     RemoteDevicesCompanion(
+  //       id: Value("device_2"),
+  //       deviceName: Value("local test device 2"),
+  //       systemVersion: Value("1"),
+  //       devicePublicKey: Value(devicePublicKey_2.toJsonString()),
+  //     ),
+  //   );
+
+  //   await remoteDeviceRepositoryLocal.addRemoteDevice(
+  //     RemoteDevicesCompanion(
+  //       id: Value("device_3"),
+  //       deviceName: Value("local test device 3"),
+  //       systemVersion: Value("1"),
+  //       devicePublicKey: Value(devicePublicKey_3.toJsonString()),
+  //     ),
+  //   );
   // } catch (e) {
   //   print("e: ${e}");
   // }

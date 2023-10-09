@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:encrypted_notes/data/database/dao/remote_device_dao.dart';
+import 'package:encrypted_notes/data/database/tables/remote_device.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -22,7 +24,7 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [Notes], daos: [NotesDao])
+@DriftDatabase(tables: [Notes, RemoteDevices], daos: [NotesDao, RemoteDevicesDao])
 class AppDatabase extends _$AppDatabase {
   // we tell the database where to store the data with this constructor
   AppDatabase() : super(_openConnection());

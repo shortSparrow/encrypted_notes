@@ -14,6 +14,162 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+SyncedDevice _$SyncedDeviceFromJson(Map<String, dynamic> json) {
+  return _SyncedDevice.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SyncedDevice {
+  String get deviceId => throw _privateConstructorUsedError;
+  bool get isSynced => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $SyncedDeviceCopyWith<SyncedDevice> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SyncedDeviceCopyWith<$Res> {
+  factory $SyncedDeviceCopyWith(
+          SyncedDevice value, $Res Function(SyncedDevice) then) =
+      _$SyncedDeviceCopyWithImpl<$Res, SyncedDevice>;
+  @useResult
+  $Res call({String deviceId, bool isSynced});
+}
+
+/// @nodoc
+class _$SyncedDeviceCopyWithImpl<$Res, $Val extends SyncedDevice>
+    implements $SyncedDeviceCopyWith<$Res> {
+  _$SyncedDeviceCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? deviceId = null,
+    Object? isSynced = null,
+  }) {
+    return _then(_value.copyWith(
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
+      isSynced: null == isSynced
+          ? _value.isSynced
+          : isSynced // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_SyncedDeviceCopyWith<$Res>
+    implements $SyncedDeviceCopyWith<$Res> {
+  factory _$$_SyncedDeviceCopyWith(
+          _$_SyncedDevice value, $Res Function(_$_SyncedDevice) then) =
+      __$$_SyncedDeviceCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String deviceId, bool isSynced});
+}
+
+/// @nodoc
+class __$$_SyncedDeviceCopyWithImpl<$Res>
+    extends _$SyncedDeviceCopyWithImpl<$Res, _$_SyncedDevice>
+    implements _$$_SyncedDeviceCopyWith<$Res> {
+  __$$_SyncedDeviceCopyWithImpl(
+      _$_SyncedDevice _value, $Res Function(_$_SyncedDevice) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? deviceId = null,
+    Object? isSynced = null,
+  }) {
+    return _then(_$_SyncedDevice(
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String,
+      isSynced: null == isSynced
+          ? _value.isSynced
+          : isSynced // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_SyncedDevice implements _SyncedDevice {
+  const _$_SyncedDevice({required this.deviceId, required this.isSynced});
+
+  factory _$_SyncedDevice.fromJson(Map<String, dynamic> json) =>
+      _$$_SyncedDeviceFromJson(json);
+
+  @override
+  final String deviceId;
+  @override
+  final bool isSynced;
+
+  @override
+  String toString() {
+    return 'SyncedDevice(deviceId: $deviceId, isSynced: $isSynced)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_SyncedDevice &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId) &&
+            (identical(other.isSynced, isSynced) ||
+                other.isSynced == isSynced));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, deviceId, isSynced);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_SyncedDeviceCopyWith<_$_SyncedDevice> get copyWith =>
+      __$$_SyncedDeviceCopyWithImpl<_$_SyncedDevice>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_SyncedDeviceToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SyncedDevice implements SyncedDevice {
+  const factory _SyncedDevice(
+      {required final String deviceId,
+      required final bool isSynced}) = _$_SyncedDevice;
+
+  factory _SyncedDevice.fromJson(Map<String, dynamic> json) =
+      _$_SyncedDevice.fromJson;
+
+  @override
+  String get deviceId;
+  @override
+  bool get isSynced;
+  @override
+  @JsonKey(ignore: true)
+  _$$_SyncedDeviceCopyWith<_$_SyncedDevice> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 /// @nodoc
 mixin _$Note {
   String get title =>

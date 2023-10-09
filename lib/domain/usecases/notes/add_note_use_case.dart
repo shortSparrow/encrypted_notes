@@ -11,8 +11,8 @@ import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
-import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 
 typedef LocalAddResponse = Future<Either<Failure, int>>;
 typedef RemoteAddResponse = Future<Either<Failure, bool>>;
@@ -20,40 +20,36 @@ typedef AddNoteResponse
     = Future<CombinedLocalRemoteResponse<LocalAddResponse, RemoteAddResponse>>;
 
 class AddNoteUseCase {
-  AddNoteUseCase({
-    required ModifyNoteLocalRepository modifyNoteLocalRepository,
-    required ModifyNoteRemoteRepository modifyNoteRemoteRepository,
-    required GetSyncedDeviceListUseCase getSyncedDeviceListUseCase,
-    required MessageEncryptionUseCase messageEncryptionUseCase,
-    required SecretSharedPreferencesRepository
-        secretSharedPreferencesRepository,
-    required NotesMapper notesMapper,
-  })  : _modifyNoteLocalRepository = modifyNoteLocalRepository,
+  AddNoteUseCase(
+      {required ModifyNoteLocalRepository modifyNoteLocalRepository,
+      required ModifyNoteRemoteRepository modifyNoteRemoteRepository,
+      required MessageEncryptionUseCase messageEncryptionUseCase,
+      required SecretSharedPreferencesRepository
+          secretSharedPreferencesRepository,
+      required NotesMapper notesMapper,
+      required RemoteDeviceRepositoryLocal remoteDeviceRepositoryLocal})
+      : _modifyNoteLocalRepository = modifyNoteLocalRepository,
         _modifyNoteRemoteRepository = modifyNoteRemoteRepository,
-        _getSyncedDeviceListUseCase = getSyncedDeviceListUseCase,
         _messageEncryptionUseCase = messageEncryptionUseCase,
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
-        _notesMapper = notesMapper;
+        _notesMapper = notesMapper,
+        _remoteDeviceRepositoryLocal = remoteDeviceRepositoryLocal;
 
   final ModifyNoteLocalRepository _modifyNoteLocalRepository;
   final ModifyNoteRemoteRepository _modifyNoteRemoteRepository;
-  final GetSyncedDeviceListUseCase _getSyncedDeviceListUseCase;
   final NotesMapper _notesMapper;
   final MessageEncryptionUseCase _messageEncryptionUseCase;
   final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
+  final RemoteDeviceRepositoryLocal _remoteDeviceRepositoryLocal;
 
   final List<SyncedDevice> syncedDeviceList = [];
-
-  _getSyncedDeviceList() async {
-    final result = await _getSyncedDeviceListUseCase.getSyncedDeviceList();
-    syncedDeviceList.addAll(result);
-  }
 
   AddNoteResponse addNote({
     required String message,
     required String title,
+    required List<SyncedDevice> syncedDevices,
   }) async {
-    await _getSyncedDeviceList();
+    syncedDeviceList.addAll(syncedDevices);
     final local = _addNoteLocally(
       message: message,
       title: title,
@@ -69,8 +65,9 @@ class AddNoteUseCase {
     required String title,
   }) async {
     try {
-      final syncedDevices = syncedDeviceList
-          .map((syncedDevice) => syncedDevice.copyWith(isSynced: false))
+      final newSyncedDevices = syncedDeviceList
+          .map(
+              (syncedDevice) => syncedDevice.copyWith(isSynced: false).toJson())
           .toList();
 
       final localSecretKey =
@@ -82,11 +79,14 @@ class AddNoteUseCase {
         localSecretKey,
       );
 
+      final gson = encryptedMessage.toJson();
+      final jsonString = jsonEncode(gson);
+      final jsonSyncedDevices = jsonEncode(newSyncedDevices);
       final result = await _modifyNoteLocalRepository.addNote(
         NotesCompanion(
-          message: Value(jsonEncode(encryptedMessage.toJson())),
+          message: Value(jsonString),
           title: Value(title),
-          syncedDevicesJson: Value(jsonEncode(syncedDevices)),
+          syncedDevicesJson: Value(jsonSyncedDevices),
         ),
       );
 
@@ -149,12 +149,15 @@ class AddNoteUseCase {
   Future<List<NoteDataForServer>> _encryptNoteForEachRecipient({
     required Note note,
   }) async {
-    final futureEncryptedDeviceList =
-        syncedDeviceList.map((_syncedDevice) async {
+    final remoteDevices =
+        await _remoteDeviceRepositoryLocal.getListRemoteDeviceById(
+            syncedDeviceList.map((e) => e.deviceId).toList());
+
+    final futureEncryptedDeviceList = remoteDevices.map((remoteDevice) async {
       final titleCipher = await _messageEncryptionUseCase.encryptMessageE2E(
-          note.title, _syncedDevice.devicePublicKey);
+          note.title, remoteDevice.devicePublicKey);
       final messageCipher = await _messageEncryptionUseCase.encryptMessageE2E(
-          note.message, _syncedDevice.devicePublicKey);
+          note.message, remoteDevice.devicePublicKey);
 
       final encryptedData = NoteDataForServerEncryptedData(
         title: titleCipher,
@@ -165,7 +168,7 @@ class AddNoteUseCase {
         metaData: NoteDataForServerMetaData(
           createdAt: note.createdAt,
           updatedAt: note.updatedAt,
-          sendToDeviceId: _syncedDevice.deviceId,
+          sendToDeviceId: remoteDevice.id,
           globalId: null,
         ),
         data:
@@ -188,7 +191,6 @@ class AddNoteUseCase {
         .map((item) => SyncedDevice(
               deviceId: item.deviceId,
               isSynced: item.isSuccess,
-              devicePublicKey: item.devicePublicKey,
             ))
         .toList();
 
