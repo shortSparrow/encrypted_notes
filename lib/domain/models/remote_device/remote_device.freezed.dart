@@ -80,11 +80,11 @@ class _$RemoteDeviceCopyWithImpl<$Res, $Val extends RemoteDevice>
 }
 
 /// @nodoc
-abstract class _$$_RemoteDeviceCopyWith<$Res>
+abstract class _$$RemoteDeviceImplCopyWith<$Res>
     implements $RemoteDeviceCopyWith<$Res> {
-  factory _$$_RemoteDeviceCopyWith(
-          _$_RemoteDevice value, $Res Function(_$_RemoteDevice) then) =
-      __$$_RemoteDeviceCopyWithImpl<$Res>;
+  factory _$$RemoteDeviceImplCopyWith(
+          _$RemoteDeviceImpl value, $Res Function(_$RemoteDeviceImpl) then) =
+      __$$RemoteDeviceImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -95,11 +95,11 @@ abstract class _$$_RemoteDeviceCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_RemoteDeviceCopyWithImpl<$Res>
-    extends _$RemoteDeviceCopyWithImpl<$Res, _$_RemoteDevice>
-    implements _$$_RemoteDeviceCopyWith<$Res> {
-  __$$_RemoteDeviceCopyWithImpl(
-      _$_RemoteDevice _value, $Res Function(_$_RemoteDevice) _then)
+class __$$RemoteDeviceImplCopyWithImpl<$Res>
+    extends _$RemoteDeviceCopyWithImpl<$Res, _$RemoteDeviceImpl>
+    implements _$$RemoteDeviceImplCopyWith<$Res> {
+  __$$RemoteDeviceImplCopyWithImpl(
+      _$RemoteDeviceImpl _value, $Res Function(_$RemoteDeviceImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -110,7 +110,7 @@ class __$$_RemoteDeviceCopyWithImpl<$Res>
     Object? deviceName = null,
     Object? systemVersion = freezed,
   }) {
-    return _then(_$_RemoteDevice(
+    return _then(_$RemoteDeviceImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -133,8 +133,8 @@ class __$$_RemoteDeviceCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_RemoteDevice implements _RemoteDevice {
-  const _$_RemoteDevice(
+class _$RemoteDeviceImpl implements _RemoteDevice {
+  const _$RemoteDeviceImpl(
       {required this.id,
       required this.devicePublicKey,
       required this.deviceName,
@@ -156,10 +156,10 @@ class _$_RemoteDevice implements _RemoteDevice {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_RemoteDevice &&
+            other is _$RemoteDeviceImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.devicePublicKey, devicePublicKey) ||
                 other.devicePublicKey == devicePublicKey) &&
@@ -176,8 +176,8 @@ class _$_RemoteDevice implements _RemoteDevice {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_RemoteDeviceCopyWith<_$_RemoteDevice> get copyWith =>
-      __$$_RemoteDeviceCopyWithImpl<_$_RemoteDevice>(this, _$identity);
+  _$$RemoteDeviceImplCopyWith<_$RemoteDeviceImpl> get copyWith =>
+      __$$RemoteDeviceImplCopyWithImpl<_$RemoteDeviceImpl>(this, _$identity);
 }
 
 abstract class _RemoteDevice implements RemoteDevice {
@@ -185,7 +185,7 @@ abstract class _RemoteDevice implements RemoteDevice {
       {required final String id,
       required final SimplePublicKey devicePublicKey,
       required final String deviceName,
-      required final String? systemVersion}) = _$_RemoteDevice;
+      required final String? systemVersion}) = _$RemoteDeviceImpl;
 
   @override
   String get id;
@@ -197,6 +197,6 @@ abstract class _RemoteDevice implements RemoteDevice {
   String? get systemVersion;
   @override
   @JsonKey(ignore: true)
-  _$$_RemoteDeviceCopyWith<_$_RemoteDevice> get copyWith =>
+  _$$RemoteDeviceImplCopyWith<_$RemoteDeviceImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -63,22 +63,22 @@ class _$BiometricEntityCopyWithImpl<$Res, $Val extends BiometricEntity>
 }
 
 /// @nodoc
-abstract class _$$_BiometricEntityCopyWith<$Res>
+abstract class _$$BiometricEntityImplCopyWith<$Res>
     implements $BiometricEntityCopyWith<$Res> {
-  factory _$$_BiometricEntityCopyWith(
-          _$_BiometricEntity value, $Res Function(_$_BiometricEntity) then) =
-      __$$_BiometricEntityCopyWithImpl<$Res>;
+  factory _$$BiometricEntityImplCopyWith(_$BiometricEntityImpl value,
+          $Res Function(_$BiometricEntityImpl) then) =
+      __$$BiometricEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool isFaceIdSupported, bool isTouchIdSupported});
 }
 
 /// @nodoc
-class __$$_BiometricEntityCopyWithImpl<$Res>
-    extends _$BiometricEntityCopyWithImpl<$Res, _$_BiometricEntity>
-    implements _$$_BiometricEntityCopyWith<$Res> {
-  __$$_BiometricEntityCopyWithImpl(
-      _$_BiometricEntity _value, $Res Function(_$_BiometricEntity) _then)
+class __$$BiometricEntityImplCopyWithImpl<$Res>
+    extends _$BiometricEntityCopyWithImpl<$Res, _$BiometricEntityImpl>
+    implements _$$BiometricEntityImplCopyWith<$Res> {
+  __$$BiometricEntityImplCopyWithImpl(
+      _$BiometricEntityImpl _value, $Res Function(_$BiometricEntityImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -87,7 +87,7 @@ class __$$_BiometricEntityCopyWithImpl<$Res>
     Object? isFaceIdSupported = null,
     Object? isTouchIdSupported = null,
   }) {
-    return _then(_$_BiometricEntity(
+    return _then(_$BiometricEntityImpl(
       isFaceIdSupported: null == isFaceIdSupported
           ? _value.isFaceIdSupported
           : isFaceIdSupported // ignore: cast_nullable_to_non_nullable
@@ -102,8 +102,8 @@ class __$$_BiometricEntityCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_BiometricEntity implements _BiometricEntity {
-  const _$_BiometricEntity(
+class _$BiometricEntityImpl implements _BiometricEntity {
+  const _$BiometricEntityImpl(
       {required this.isFaceIdSupported, required this.isTouchIdSupported});
 
   @override
@@ -117,10 +117,10 @@ class _$_BiometricEntity implements _BiometricEntity {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BiometricEntity &&
+            other is _$BiometricEntityImpl &&
             (identical(other.isFaceIdSupported, isFaceIdSupported) ||
                 other.isFaceIdSupported == isFaceIdSupported) &&
             (identical(other.isTouchIdSupported, isTouchIdSupported) ||
@@ -134,14 +134,15 @@ class _$_BiometricEntity implements _BiometricEntity {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BiometricEntityCopyWith<_$_BiometricEntity> get copyWith =>
-      __$$_BiometricEntityCopyWithImpl<_$_BiometricEntity>(this, _$identity);
+  _$$BiometricEntityImplCopyWith<_$BiometricEntityImpl> get copyWith =>
+      __$$BiometricEntityImplCopyWithImpl<_$BiometricEntityImpl>(
+          this, _$identity);
 }
 
 abstract class _BiometricEntity implements BiometricEntity {
   const factory _BiometricEntity(
       {required final bool isFaceIdSupported,
-      required final bool isTouchIdSupported}) = _$_BiometricEntity;
+      required final bool isTouchIdSupported}) = _$BiometricEntityImpl;
 
   @override
   bool get isFaceIdSupported;
@@ -149,6 +150,6 @@ abstract class _BiometricEntity implements BiometricEntity {
   bool get isTouchIdSupported;
   @override
   @JsonKey(ignore: true)
-  _$$_BiometricEntityCopyWith<_$_BiometricEntity> get copyWith =>
+  _$$BiometricEntityImplCopyWith<_$BiometricEntityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

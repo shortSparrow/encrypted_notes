@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/extensions/Either.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -14,7 +15,8 @@ class BiometricAuthUseCase {
   BiometricAuthUseCase({
     required BioAuthRepository bioAuthRepository,
     required SecretSharedPreferencesRepository
-        secretSharedPreferencesRepository, required Object sharedPreferencesRepository,
+        secretSharedPreferencesRepository,
+    required SharedPreferencesRepository sharedPreferencesRepository,
   })  : _bioAuthRepository = bioAuthRepository,
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository;
 

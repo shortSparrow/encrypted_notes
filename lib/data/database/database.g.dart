@@ -62,9 +62,10 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
   List<GeneratedColumn> get $columns =>
       [id, globalId, message, title, createdAt, updatedAt, syncedDevicesJson];
   @override
-  String get aliasedName => _alias ?? 'notes';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'notes';
+  String get actualTableName => $name;
+  static const String $name = 'notes';
   @override
   VerificationContext validateIntegrity(Insertable<NoteDb> instance,
       {bool isInserting = false}) {
@@ -395,9 +396,10 @@ class $RemoteDevicesTable extends RemoteDevices
   List<GeneratedColumn> get $columns =>
       [id, deviceName, systemVersion, devicePublicKey];
   @override
-  String get aliasedName => _alias ?? 'remote_devices';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  String get actualTableName => 'remote_devices';
+  String get actualTableName => $name;
+  static const String $name = 'remote_devices';
   @override
   VerificationContext validateIntegrity(Insertable<RemoteDeviceDb> instance,
       {bool isInserting = false}) {

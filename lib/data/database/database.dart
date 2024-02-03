@@ -1,33 +1,19 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:encrypted_notes/data/database/dao/remote_device_dao.dart';
 import 'package:encrypted_notes/data/database/tables/remote_device.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 import 'package:encrypted_notes/data/database/tables/notes.dart';
 
 import 'dao/notes_dao.dart';
-
+import './open_connection/open_connection_impl.dart'
+    if (dart.library.js) './open_connection/open_connection_web_impl.dart';
 part 'database.g.dart';
 
-LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
-  return LazyDatabase(() async {
-    // put the database file, called db.sqlite here, into the documents folder
-    // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return NativeDatabase.createInBackground(file);
-  });
-}
-
-@DriftDatabase(tables: [Notes, RemoteDevices], daos: [NotesDao, RemoteDevicesDao])
+@DriftDatabase(
+    tables: [Notes, RemoteDevices], daos: [NotesDao, RemoteDevicesDao])
 class AppDatabase extends _$AppDatabase {
   // we tell the database where to store the data with this constructor
-  AppDatabase() : super(_openConnection());
+  AppDatabase() : super(OpenConnectionImpl().openConnection());
 
   static AppDatabase? _instance;
 

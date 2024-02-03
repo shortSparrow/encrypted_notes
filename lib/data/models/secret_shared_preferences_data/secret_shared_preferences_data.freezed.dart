@@ -83,12 +83,12 @@ class _$SecretSharedPreferencesDataCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_SecretSharedPreferencesDataCopyWith<$Res>
+abstract class _$$SecretSharedPreferencesDataImplCopyWith<$Res>
     implements $SecretSharedPreferencesDataCopyWith<$Res> {
-  factory _$$_SecretSharedPreferencesDataCopyWith(
-          _$_SecretSharedPreferencesData value,
-          $Res Function(_$_SecretSharedPreferencesData) then) =
-      __$$_SecretSharedPreferencesDataCopyWithImpl<$Res>;
+  factory _$$SecretSharedPreferencesDataImplCopyWith(
+          _$SecretSharedPreferencesDataImpl value,
+          $Res Function(_$SecretSharedPreferencesDataImpl) then) =
+      __$$SecretSharedPreferencesDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -98,13 +98,13 @@ abstract class _$$_SecretSharedPreferencesDataCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_SecretSharedPreferencesDataCopyWithImpl<$Res>
+class __$$SecretSharedPreferencesDataImplCopyWithImpl<$Res>
     extends _$SecretSharedPreferencesDataCopyWithImpl<$Res,
-        _$_SecretSharedPreferencesData>
-    implements _$$_SecretSharedPreferencesDataCopyWith<$Res> {
-  __$$_SecretSharedPreferencesDataCopyWithImpl(
-      _$_SecretSharedPreferencesData _value,
-      $Res Function(_$_SecretSharedPreferencesData) _then)
+        _$SecretSharedPreferencesDataImpl>
+    implements _$$SecretSharedPreferencesDataImplCopyWith<$Res> {
+  __$$SecretSharedPreferencesDataImplCopyWithImpl(
+      _$SecretSharedPreferencesDataImpl _value,
+      $Res Function(_$SecretSharedPreferencesDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -114,7 +114,7 @@ class __$$_SecretSharedPreferencesDataCopyWithImpl<$Res>
     Object? localSymmetricKey = freezed,
     Object? webBioId = freezed,
   }) {
-    return _then(_$_SecretSharedPreferencesData(
+    return _then(_$SecretSharedPreferencesDataImpl(
       deviceKeyPairForNotes: freezed == deviceKeyPairForNotes
           ? _value._deviceKeyPairForNotes
           : deviceKeyPairForNotes // ignore: cast_nullable_to_non_nullable
@@ -133,16 +133,18 @@ class __$$_SecretSharedPreferencesDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SecretSharedPreferencesData implements _SecretSharedPreferencesData {
-  _$_SecretSharedPreferencesData(
+class _$SecretSharedPreferencesDataImpl
+    implements _SecretSharedPreferencesData {
+  _$SecretSharedPreferencesDataImpl(
       {required final Map<String, Object?>? deviceKeyPairForNotes,
       required final Map<String, Object?>? localSymmetricKey,
       required this.webBioId})
       : _deviceKeyPairForNotes = deviceKeyPairForNotes,
         _localSymmetricKey = localSymmetricKey;
 
-  factory _$_SecretSharedPreferencesData.fromJson(Map<String, dynamic> json) =>
-      _$$_SecretSharedPreferencesDataFromJson(json);
+  factory _$SecretSharedPreferencesDataImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SecretSharedPreferencesDataImplFromJson(json);
 
   final Map<String, Object?>? _deviceKeyPairForNotes;
   @override
@@ -175,10 +177,10 @@ class _$_SecretSharedPreferencesData implements _SecretSharedPreferencesData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SecretSharedPreferencesData &&
+            other is _$SecretSharedPreferencesDataImpl &&
             const DeepCollectionEquality()
                 .equals(other._deviceKeyPairForNotes, _deviceKeyPairForNotes) &&
             const DeepCollectionEquality()
@@ -198,13 +200,13 @@ class _$_SecretSharedPreferencesData implements _SecretSharedPreferencesData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SecretSharedPreferencesDataCopyWith<_$_SecretSharedPreferencesData>
-      get copyWith => __$$_SecretSharedPreferencesDataCopyWithImpl<
-          _$_SecretSharedPreferencesData>(this, _$identity);
+  _$$SecretSharedPreferencesDataImplCopyWith<_$SecretSharedPreferencesDataImpl>
+      get copyWith => __$$SecretSharedPreferencesDataImplCopyWithImpl<
+          _$SecretSharedPreferencesDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_SecretSharedPreferencesDataToJson(
+    return _$$SecretSharedPreferencesDataImplToJson(
       this,
     );
   }
@@ -215,10 +217,10 @@ abstract class _SecretSharedPreferencesData
   factory _SecretSharedPreferencesData(
       {required final Map<String, Object?>? deviceKeyPairForNotes,
       required final Map<String, Object?>? localSymmetricKey,
-      required final String? webBioId}) = _$_SecretSharedPreferencesData;
+      required final String? webBioId}) = _$SecretSharedPreferencesDataImpl;
 
   factory _SecretSharedPreferencesData.fromJson(Map<String, dynamic> json) =
-      _$_SecretSharedPreferencesData.fromJson;
+      _$SecretSharedPreferencesDataImpl.fromJson;
 
   @override
   Map<String, Object?>? get deviceKeyPairForNotes;
@@ -228,6 +230,6 @@ abstract class _SecretSharedPreferencesData
   String? get webBioId;
   @override
   @JsonKey(ignore: true)
-  _$$_SecretSharedPreferencesDataCopyWith<_$_SecretSharedPreferencesData>
+  _$$SecretSharedPreferencesDataImplCopyWith<_$SecretSharedPreferencesDataImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

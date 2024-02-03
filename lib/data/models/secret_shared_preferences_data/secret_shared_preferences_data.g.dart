@@ -6,17 +6,17 @@ part of 'secret_shared_preferences_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_SecretSharedPreferencesData _$$_SecretSharedPreferencesDataFromJson(
+_$SecretSharedPreferencesDataImpl _$$SecretSharedPreferencesDataImplFromJson(
         Map<String, dynamic> json) =>
-    _$_SecretSharedPreferencesData(
+    _$SecretSharedPreferencesDataImpl(
       deviceKeyPairForNotes:
           json['deviceKeyPairForNotes'] as Map<String, dynamic>?,
       localSymmetricKey: json['localSymmetricKey'] as Map<String, dynamic>?,
       webBioId: json['webBioId'] as String?,
     );
 
-Map<String, dynamic> _$$_SecretSharedPreferencesDataToJson(
-        _$_SecretSharedPreferencesData instance) =>
+Map<String, dynamic> _$$SecretSharedPreferencesDataImplToJson(
+        _$SecretSharedPreferencesDataImpl instance) =>
     <String, dynamic>{
       'deviceKeyPairForNotes': instance.deviceKeyPairForNotes,
       'localSymmetricKey': instance.localSymmetricKey,

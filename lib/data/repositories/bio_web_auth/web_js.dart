@@ -7,19 +7,19 @@ import 'js_interface.dart';
 external bool _isAvailable();
 
 @JS('window.webauth.isLocalAuthenticator')
-external dynamic _isLocalAuthenticator();
+external JSAny _isLocalAuthenticator();
 
 @JS('window.webauth.register')
-external dynamic _registerBio(
+external JSAny _registerBio(
   String randomStringFromServer,
-  List<int> userIdArray,
+  JSArray userIdArray,
   String userName,
 );
 
 @JS('window.webauth.login')
-external dynamic _loginBio(
+external JSAny _loginBio(
   String randomStringFromServer,
-  dynamic rawId,
+  JSAny rawId,
 );
 
 // var state = js.JsObject.fromBrowserObject(js.context['webauth']);
@@ -49,7 +49,11 @@ class Js implements BioAuthJsInterface {
     String userName,
   ) async {
     dynamic publicKeyCredential = await promiseToFuture(
-      _registerBio(randomStringFromServer, userIdArray, userName),
+      _registerBio(
+        randomStringFromServer,
+        jsify(userIdArray),
+        userName,
+      ),
     );
 
     final rawId = List<int>.from(publicKeyCredential);

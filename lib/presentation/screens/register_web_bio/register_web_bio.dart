@@ -51,8 +51,7 @@ class _RegisterWebBiosState extends State<RegisterWebBios> {
             builder: (context, state) {
               switch (state.runtimeType) {
                 case RegisterWebBioAvailable:
-                  return Expanded(
-                    child: Column(
+                  return  Column( // with expanded was error (warning)
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -79,7 +78,6 @@ class _RegisterWebBiosState extends State<RegisterWebBios> {
                           },
                         )
                       ],
-                    ),
                   );
                 case RegisterWebBioInitial:
                   return const Center(child: CircularProgressIndicator());

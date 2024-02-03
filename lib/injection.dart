@@ -66,7 +66,10 @@ Future<void> init() async {
 
   sl.registerFactory<ModifyNoteBloc>(
     () => ModifyNoteBloc(
-        addNoteUseCase: sl(), loadNoteUseCase: sl(), editNoteUseCase: sl()),
+      addNoteUseCase: sl(),
+      loadNoteUseCase: sl(),
+      editNoteUseCase: sl(),
+    ),
   );
 
   // **************** DATA LAYER
@@ -103,8 +106,8 @@ Future<void> init() async {
   sl.registerFactory<BiometricAuthUseCase>(
     () => BiometricAuthUseCase(
       bioAuthRepository: sl(),
-      sharedPreferencesRepository: sl(),
       secretSharedPreferencesRepository: sl(),
+      sharedPreferencesRepository: sl(),
     ),
   );
 

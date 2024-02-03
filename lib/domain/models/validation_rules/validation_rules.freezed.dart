@@ -63,22 +63,22 @@ class _$ValidationRulesCopyWithImpl<$Res, $Val extends ValidationRules>
 }
 
 /// @nodoc
-abstract class _$$_ValidationRulesCopyWith<$Res>
+abstract class _$$ValidationRulesImplCopyWith<$Res>
     implements $ValidationRulesCopyWith<$Res> {
-  factory _$$_ValidationRulesCopyWith(
-          _$_ValidationRules value, $Res Function(_$_ValidationRules) then) =
-      __$$_ValidationRulesCopyWithImpl<$Res>;
+  factory _$$ValidationRulesImplCopyWith(_$ValidationRulesImpl value,
+          $Res Function(_$ValidationRulesImpl) then) =
+      __$$ValidationRulesImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String regexRule, String errorMessage});
 }
 
 /// @nodoc
-class __$$_ValidationRulesCopyWithImpl<$Res>
-    extends _$ValidationRulesCopyWithImpl<$Res, _$_ValidationRules>
-    implements _$$_ValidationRulesCopyWith<$Res> {
-  __$$_ValidationRulesCopyWithImpl(
-      _$_ValidationRules _value, $Res Function(_$_ValidationRules) _then)
+class __$$ValidationRulesImplCopyWithImpl<$Res>
+    extends _$ValidationRulesCopyWithImpl<$Res, _$ValidationRulesImpl>
+    implements _$$ValidationRulesImplCopyWith<$Res> {
+  __$$ValidationRulesImplCopyWithImpl(
+      _$ValidationRulesImpl _value, $Res Function(_$ValidationRulesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -87,7 +87,7 @@ class __$$_ValidationRulesCopyWithImpl<$Res>
     Object? regexRule = null,
     Object? errorMessage = null,
   }) {
-    return _then(_$_ValidationRules(
+    return _then(_$ValidationRulesImpl(
       regexRule: null == regexRule
           ? _value.regexRule
           : regexRule // ignore: cast_nullable_to_non_nullable
@@ -102,8 +102,8 @@ class __$$_ValidationRulesCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_ValidationRules implements _ValidationRules {
-  const _$_ValidationRules(
+class _$ValidationRulesImpl implements _ValidationRules {
+  const _$ValidationRulesImpl(
       {required this.regexRule, required this.errorMessage});
 
   @override
@@ -117,10 +117,10 @@ class _$_ValidationRules implements _ValidationRules {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ValidationRules &&
+            other is _$ValidationRulesImpl &&
             (identical(other.regexRule, regexRule) ||
                 other.regexRule == regexRule) &&
             (identical(other.errorMessage, errorMessage) ||
@@ -133,14 +133,15 @@ class _$_ValidationRules implements _ValidationRules {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ValidationRulesCopyWith<_$_ValidationRules> get copyWith =>
-      __$$_ValidationRulesCopyWithImpl<_$_ValidationRules>(this, _$identity);
+  _$$ValidationRulesImplCopyWith<_$ValidationRulesImpl> get copyWith =>
+      __$$ValidationRulesImplCopyWithImpl<_$ValidationRulesImpl>(
+          this, _$identity);
 }
 
 abstract class _ValidationRules implements ValidationRules {
   const factory _ValidationRules(
       {required final String regexRule,
-      required final String errorMessage}) = _$_ValidationRules;
+      required final String errorMessage}) = _$ValidationRulesImpl;
 
   @override
   String get regexRule;
@@ -148,6 +149,6 @@ abstract class _ValidationRules implements ValidationRules {
   String get errorMessage;
   @override
   @JsonKey(ignore: true)
-  _$$_ValidationRulesCopyWith<_$_ValidationRules> get copyWith =>
+  _$$ValidationRulesImplCopyWith<_$ValidationRulesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

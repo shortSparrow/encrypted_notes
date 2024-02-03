@@ -68,22 +68,22 @@ class _$SyncedDeviceCopyWithImpl<$Res, $Val extends SyncedDevice>
 }
 
 /// @nodoc
-abstract class _$$_SyncedDeviceCopyWith<$Res>
+abstract class _$$SyncedDeviceImplCopyWith<$Res>
     implements $SyncedDeviceCopyWith<$Res> {
-  factory _$$_SyncedDeviceCopyWith(
-          _$_SyncedDevice value, $Res Function(_$_SyncedDevice) then) =
-      __$$_SyncedDeviceCopyWithImpl<$Res>;
+  factory _$$SyncedDeviceImplCopyWith(
+          _$SyncedDeviceImpl value, $Res Function(_$SyncedDeviceImpl) then) =
+      __$$SyncedDeviceImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String deviceId, bool isSynced});
 }
 
 /// @nodoc
-class __$$_SyncedDeviceCopyWithImpl<$Res>
-    extends _$SyncedDeviceCopyWithImpl<$Res, _$_SyncedDevice>
-    implements _$$_SyncedDeviceCopyWith<$Res> {
-  __$$_SyncedDeviceCopyWithImpl(
-      _$_SyncedDevice _value, $Res Function(_$_SyncedDevice) _then)
+class __$$SyncedDeviceImplCopyWithImpl<$Res>
+    extends _$SyncedDeviceCopyWithImpl<$Res, _$SyncedDeviceImpl>
+    implements _$$SyncedDeviceImplCopyWith<$Res> {
+  __$$SyncedDeviceImplCopyWithImpl(
+      _$SyncedDeviceImpl _value, $Res Function(_$SyncedDeviceImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,7 +92,7 @@ class __$$_SyncedDeviceCopyWithImpl<$Res>
     Object? deviceId = null,
     Object? isSynced = null,
   }) {
-    return _then(_$_SyncedDevice(
+    return _then(_$SyncedDeviceImpl(
       deviceId: null == deviceId
           ? _value.deviceId
           : deviceId // ignore: cast_nullable_to_non_nullable
@@ -107,11 +107,11 @@ class __$$_SyncedDeviceCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SyncedDevice implements _SyncedDevice {
-  const _$_SyncedDevice({required this.deviceId, required this.isSynced});
+class _$SyncedDeviceImpl implements _SyncedDevice {
+  const _$SyncedDeviceImpl({required this.deviceId, required this.isSynced});
 
-  factory _$_SyncedDevice.fromJson(Map<String, dynamic> json) =>
-      _$$_SyncedDeviceFromJson(json);
+  factory _$SyncedDeviceImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SyncedDeviceImplFromJson(json);
 
   @override
   final String deviceId;
@@ -124,10 +124,10 @@ class _$_SyncedDevice implements _SyncedDevice {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_SyncedDevice &&
+            other is _$SyncedDeviceImpl &&
             (identical(other.deviceId, deviceId) ||
                 other.deviceId == deviceId) &&
             (identical(other.isSynced, isSynced) ||
@@ -141,12 +141,12 @@ class _$_SyncedDevice implements _SyncedDevice {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_SyncedDeviceCopyWith<_$_SyncedDevice> get copyWith =>
-      __$$_SyncedDeviceCopyWithImpl<_$_SyncedDevice>(this, _$identity);
+  _$$SyncedDeviceImplCopyWith<_$SyncedDeviceImpl> get copyWith =>
+      __$$SyncedDeviceImplCopyWithImpl<_$SyncedDeviceImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_SyncedDeviceToJson(
+    return _$$SyncedDeviceImplToJson(
       this,
     );
   }
@@ -155,10 +155,10 @@ class _$_SyncedDevice implements _SyncedDevice {
 abstract class _SyncedDevice implements SyncedDevice {
   const factory _SyncedDevice(
       {required final String deviceId,
-      required final bool isSynced}) = _$_SyncedDevice;
+      required final bool isSynced}) = _$SyncedDeviceImpl;
 
   factory _SyncedDevice.fromJson(Map<String, dynamic> json) =
-      _$_SyncedDevice.fromJson;
+      _$SyncedDeviceImpl.fromJson;
 
   @override
   String get deviceId;
@@ -166,7 +166,7 @@ abstract class _SyncedDevice implements SyncedDevice {
   bool get isSynced;
   @override
   @JsonKey(ignore: true)
-  _$$_SyncedDeviceCopyWith<_$_SyncedDevice> get copyWith =>
+  _$$SyncedDeviceImplCopyWith<_$SyncedDeviceImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -255,9 +255,10 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
 }
 
 /// @nodoc
-abstract class _$$_NoteCopyWith<$Res> implements $NoteCopyWith<$Res> {
-  factory _$$_NoteCopyWith(_$_Note value, $Res Function(_$_Note) then) =
-      __$$_NoteCopyWithImpl<$Res>;
+abstract class _$$NoteImplCopyWith<$Res> implements $NoteCopyWith<$Res> {
+  factory _$$NoteImplCopyWith(
+          _$NoteImpl value, $Res Function(_$NoteImpl) then) =
+      __$$NoteImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -271,9 +272,10 @@ abstract class _$$_NoteCopyWith<$Res> implements $NoteCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_NoteCopyWithImpl<$Res> extends _$NoteCopyWithImpl<$Res, _$_Note>
-    implements _$$_NoteCopyWith<$Res> {
-  __$$_NoteCopyWithImpl(_$_Note _value, $Res Function(_$_Note) _then)
+class __$$NoteImplCopyWithImpl<$Res>
+    extends _$NoteCopyWithImpl<$Res, _$NoteImpl>
+    implements _$$NoteImplCopyWith<$Res> {
+  __$$NoteImplCopyWithImpl(_$NoteImpl _value, $Res Function(_$NoteImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -287,7 +289,7 @@ class __$$_NoteCopyWithImpl<$Res> extends _$NoteCopyWithImpl<$Res, _$_Note>
     Object? globalId = freezed,
     Object? syncedDevices = null,
   }) {
-    return _then(_$_Note(
+    return _then(_$NoteImpl(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -322,8 +324,8 @@ class __$$_NoteCopyWithImpl<$Res> extends _$NoteCopyWithImpl<$Res, _$_Note>
 
 /// @nodoc
 
-class _$_Note implements _Note {
-  const _$_Note(
+class _$NoteImpl implements _Note {
+  const _$NoteImpl(
       {required this.title,
       required this.message,
       required this.createdAt,
@@ -360,10 +362,10 @@ class _$_Note implements _Note {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Note &&
+            other is _$NoteImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.createdAt, createdAt) ||
@@ -391,8 +393,8 @@ class _$_Note implements _Note {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteCopyWith<_$_Note> get copyWith =>
-      __$$_NoteCopyWithImpl<_$_Note>(this, _$identity);
+  _$$NoteImplCopyWith<_$NoteImpl> get copyWith =>
+      __$$NoteImplCopyWithImpl<_$NoteImpl>(this, _$identity);
 }
 
 abstract class _Note implements Note {
@@ -403,7 +405,7 @@ abstract class _Note implements Note {
       required final String updatedAt,
       required final int id,
       required final int? globalId,
-      required final List<SyncedDevice> syncedDevices}) = _$_Note;
+      required final List<SyncedDevice> syncedDevices}) = _$NoteImpl;
 
   @override
   String get title;
@@ -421,7 +423,8 @@ abstract class _Note implements Note {
   List<SyncedDevice> get syncedDevices;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteCopyWith<_$_Note> get copyWith => throw _privateConstructorUsedError;
+  _$$NoteImplCopyWith<_$NoteImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -521,11 +524,11 @@ class _$EncryptedNoteCopyWithImpl<$Res, $Val extends EncryptedNote>
 }
 
 /// @nodoc
-abstract class _$$_EncryptedNoteCopyWith<$Res>
+abstract class _$$EncryptedNoteImplCopyWith<$Res>
     implements $EncryptedNoteCopyWith<$Res> {
-  factory _$$_EncryptedNoteCopyWith(
-          _$_EncryptedNote value, $Res Function(_$_EncryptedNote) then) =
-      __$$_EncryptedNoteCopyWithImpl<$Res>;
+  factory _$$EncryptedNoteImplCopyWith(
+          _$EncryptedNoteImpl value, $Res Function(_$EncryptedNoteImpl) then) =
+      __$$EncryptedNoteImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -542,11 +545,11 @@ abstract class _$$_EncryptedNoteCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_EncryptedNoteCopyWithImpl<$Res>
-    extends _$EncryptedNoteCopyWithImpl<$Res, _$_EncryptedNote>
-    implements _$$_EncryptedNoteCopyWith<$Res> {
-  __$$_EncryptedNoteCopyWithImpl(
-      _$_EncryptedNote _value, $Res Function(_$_EncryptedNote) _then)
+class __$$EncryptedNoteImplCopyWithImpl<$Res>
+    extends _$EncryptedNoteCopyWithImpl<$Res, _$EncryptedNoteImpl>
+    implements _$$EncryptedNoteImplCopyWith<$Res> {
+  __$$EncryptedNoteImplCopyWithImpl(
+      _$EncryptedNoteImpl _value, $Res Function(_$EncryptedNoteImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -560,7 +563,7 @@ class __$$_EncryptedNoteCopyWithImpl<$Res>
     Object? globalId = freezed,
     Object? syncedDevices = null,
   }) {
-    return _then(_$_EncryptedNote(
+    return _then(_$EncryptedNoteImpl(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -595,8 +598,8 @@ class __$$_EncryptedNoteCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_EncryptedNote implements _EncryptedNote {
-  const _$_EncryptedNote(
+class _$EncryptedNoteImpl implements _EncryptedNote {
+  const _$EncryptedNoteImpl(
       {required this.title,
       required this.message,
       required this.createdAt,
@@ -633,10 +636,10 @@ class _$_EncryptedNote implements _EncryptedNote {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EncryptedNote &&
+            other is _$EncryptedNoteImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.message, message) || other.message == message) &&
             (identical(other.createdAt, createdAt) ||
@@ -664,8 +667,8 @@ class _$_EncryptedNote implements _EncryptedNote {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EncryptedNoteCopyWith<_$_EncryptedNote> get copyWith =>
-      __$$_EncryptedNoteCopyWithImpl<_$_EncryptedNote>(this, _$identity);
+  _$$EncryptedNoteImplCopyWith<_$EncryptedNoteImpl> get copyWith =>
+      __$$EncryptedNoteImplCopyWithImpl<_$EncryptedNoteImpl>(this, _$identity);
 }
 
 abstract class _EncryptedNote implements EncryptedNote {
@@ -676,7 +679,7 @@ abstract class _EncryptedNote implements EncryptedNote {
       required final String updatedAt,
       required final int id,
       required final int? globalId,
-      required final List<SyncedDevice> syncedDevices}) = _$_EncryptedNote;
+      required final List<SyncedDevice> syncedDevices}) = _$EncryptedNoteImpl;
 
   @override
   String get title;
@@ -694,7 +697,7 @@ abstract class _EncryptedNote implements EncryptedNote {
   List<SyncedDevice> get syncedDevices;
   @override
   @JsonKey(ignore: true)
-  _$$_EncryptedNoteCopyWith<_$_EncryptedNote> get copyWith =>
+  _$$EncryptedNoteImplCopyWith<_$EncryptedNoteImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -747,22 +750,22 @@ class _$NoteForServerCopyWithImpl<$Res, $Val extends NoteForServer>
 }
 
 /// @nodoc
-abstract class _$$_NoteForServerCopyWith<$Res>
+abstract class _$$NoteForServerImplCopyWith<$Res>
     implements $NoteForServerCopyWith<$Res> {
-  factory _$$_NoteForServerCopyWith(
-          _$_NoteForServer value, $Res Function(_$_NoteForServer) then) =
-      __$$_NoteForServerCopyWithImpl<$Res>;
+  factory _$$NoteForServerImplCopyWith(
+          _$NoteForServerImpl value, $Res Function(_$NoteForServerImpl) then) =
+      __$$NoteForServerImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int? globalId, List<NoteDataForServer> data});
 }
 
 /// @nodoc
-class __$$_NoteForServerCopyWithImpl<$Res>
-    extends _$NoteForServerCopyWithImpl<$Res, _$_NoteForServer>
-    implements _$$_NoteForServerCopyWith<$Res> {
-  __$$_NoteForServerCopyWithImpl(
-      _$_NoteForServer _value, $Res Function(_$_NoteForServer) _then)
+class __$$NoteForServerImplCopyWithImpl<$Res>
+    extends _$NoteForServerCopyWithImpl<$Res, _$NoteForServerImpl>
+    implements _$$NoteForServerImplCopyWith<$Res> {
+  __$$NoteForServerImplCopyWithImpl(
+      _$NoteForServerImpl _value, $Res Function(_$NoteForServerImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -771,7 +774,7 @@ class __$$_NoteForServerCopyWithImpl<$Res>
     Object? globalId = freezed,
     Object? data = null,
   }) {
-    return _then(_$_NoteForServer(
+    return _then(_$NoteForServerImpl(
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
@@ -786,8 +789,8 @@ class __$$_NoteForServerCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_NoteForServer implements _NoteForServer {
-  const _$_NoteForServer(
+class _$NoteForServerImpl implements _NoteForServer {
+  const _$NoteForServerImpl(
       {required this.globalId, required final List<NoteDataForServer> data})
       : _data = data;
 
@@ -807,10 +810,10 @@ class _$_NoteForServer implements _NoteForServer {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteForServer &&
+            other is _$NoteForServerImpl &&
             (identical(other.globalId, globalId) ||
                 other.globalId == globalId) &&
             const DeepCollectionEquality().equals(other._data, _data));
@@ -823,14 +826,14 @@ class _$_NoteForServer implements _NoteForServer {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteForServerCopyWith<_$_NoteForServer> get copyWith =>
-      __$$_NoteForServerCopyWithImpl<_$_NoteForServer>(this, _$identity);
+  _$$NoteForServerImplCopyWith<_$NoteForServerImpl> get copyWith =>
+      __$$NoteForServerImplCopyWithImpl<_$NoteForServerImpl>(this, _$identity);
 }
 
 abstract class _NoteForServer implements NoteForServer {
   const factory _NoteForServer(
       {required final int? globalId,
-      required final List<NoteDataForServer> data}) = _$_NoteForServer;
+      required final List<NoteDataForServer> data}) = _$NoteForServerImpl;
 
   @override
   int? get globalId;
@@ -838,7 +841,7 @@ abstract class _NoteForServer implements NoteForServer {
   List<NoteDataForServer> get data;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteForServerCopyWith<_$_NoteForServer> get copyWith =>
+  _$$NoteForServerImplCopyWith<_$NoteForServerImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -910,11 +913,11 @@ class _$NoteDataForServerCopyWithImpl<$Res, $Val extends NoteDataForServer>
 }
 
 /// @nodoc
-abstract class _$$_NoteDataForServerCopyWith<$Res>
+abstract class _$$NoteDataForServerImplCopyWith<$Res>
     implements $NoteDataForServerCopyWith<$Res> {
-  factory _$$_NoteDataForServerCopyWith(_$_NoteDataForServer value,
-          $Res Function(_$_NoteDataForServer) then) =
-      __$$_NoteDataForServerCopyWithImpl<$Res>;
+  factory _$$NoteDataForServerImplCopyWith(_$NoteDataForServerImpl value,
+          $Res Function(_$NoteDataForServerImpl) then) =
+      __$$NoteDataForServerImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({NoteDataForServerMetaData metaData, NoteDataForServerData data});
@@ -926,11 +929,11 @@ abstract class _$$_NoteDataForServerCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_NoteDataForServerCopyWithImpl<$Res>
-    extends _$NoteDataForServerCopyWithImpl<$Res, _$_NoteDataForServer>
-    implements _$$_NoteDataForServerCopyWith<$Res> {
-  __$$_NoteDataForServerCopyWithImpl(
-      _$_NoteDataForServer _value, $Res Function(_$_NoteDataForServer) _then)
+class __$$NoteDataForServerImplCopyWithImpl<$Res>
+    extends _$NoteDataForServerCopyWithImpl<$Res, _$NoteDataForServerImpl>
+    implements _$$NoteDataForServerImplCopyWith<$Res> {
+  __$$NoteDataForServerImplCopyWithImpl(_$NoteDataForServerImpl _value,
+      $Res Function(_$NoteDataForServerImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -939,7 +942,7 @@ class __$$_NoteDataForServerCopyWithImpl<$Res>
     Object? metaData = null,
     Object? data = null,
   }) {
-    return _then(_$_NoteDataForServer(
+    return _then(_$NoteDataForServerImpl(
       metaData: null == metaData
           ? _value.metaData
           : metaData // ignore: cast_nullable_to_non_nullable
@@ -954,8 +957,8 @@ class __$$_NoteDataForServerCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_NoteDataForServer implements _NoteDataForServer {
-  const _$_NoteDataForServer({required this.metaData, required this.data});
+class _$NoteDataForServerImpl implements _NoteDataForServer {
+  const _$NoteDataForServerImpl({required this.metaData, required this.data});
 
   @override
   final NoteDataForServerMetaData metaData;
@@ -968,10 +971,10 @@ class _$_NoteDataForServer implements _NoteDataForServer {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteDataForServer &&
+            other is _$NoteDataForServerImpl &&
             (identical(other.metaData, metaData) ||
                 other.metaData == metaData) &&
             (identical(other.data, data) || other.data == data));
@@ -983,15 +986,15 @@ class _$_NoteDataForServer implements _NoteDataForServer {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteDataForServerCopyWith<_$_NoteDataForServer> get copyWith =>
-      __$$_NoteDataForServerCopyWithImpl<_$_NoteDataForServer>(
+  _$$NoteDataForServerImplCopyWith<_$NoteDataForServerImpl> get copyWith =>
+      __$$NoteDataForServerImplCopyWithImpl<_$NoteDataForServerImpl>(
           this, _$identity);
 }
 
 abstract class _NoteDataForServer implements NoteDataForServer {
   const factory _NoteDataForServer(
       {required final NoteDataForServerMetaData metaData,
-      required final NoteDataForServerData data}) = _$_NoteDataForServer;
+      required final NoteDataForServerData data}) = _$NoteDataForServerImpl;
 
   @override
   NoteDataForServerMetaData get metaData;
@@ -999,7 +1002,7 @@ abstract class _NoteDataForServer implements NoteDataForServer {
   NoteDataForServerData get data;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteDataForServerCopyWith<_$_NoteDataForServer> get copyWith =>
+  _$$NoteDataForServerImplCopyWith<_$NoteDataForServerImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1069,12 +1072,12 @@ class _$NoteDataForServerMetaDataCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_NoteDataForServerMetaDataCopyWith<$Res>
+abstract class _$$NoteDataForServerMetaDataImplCopyWith<$Res>
     implements $NoteDataForServerMetaDataCopyWith<$Res> {
-  factory _$$_NoteDataForServerMetaDataCopyWith(
-          _$_NoteDataForServerMetaData value,
-          $Res Function(_$_NoteDataForServerMetaData) then) =
-      __$$_NoteDataForServerMetaDataCopyWithImpl<$Res>;
+  factory _$$NoteDataForServerMetaDataImplCopyWith(
+          _$NoteDataForServerMetaDataImpl value,
+          $Res Function(_$NoteDataForServerMetaDataImpl) then) =
+      __$$NoteDataForServerMetaDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -1085,13 +1088,13 @@ abstract class _$$_NoteDataForServerMetaDataCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_NoteDataForServerMetaDataCopyWithImpl<$Res>
+class __$$NoteDataForServerMetaDataImplCopyWithImpl<$Res>
     extends _$NoteDataForServerMetaDataCopyWithImpl<$Res,
-        _$_NoteDataForServerMetaData>
-    implements _$$_NoteDataForServerMetaDataCopyWith<$Res> {
-  __$$_NoteDataForServerMetaDataCopyWithImpl(
-      _$_NoteDataForServerMetaData _value,
-      $Res Function(_$_NoteDataForServerMetaData) _then)
+        _$NoteDataForServerMetaDataImpl>
+    implements _$$NoteDataForServerMetaDataImplCopyWith<$Res> {
+  __$$NoteDataForServerMetaDataImplCopyWithImpl(
+      _$NoteDataForServerMetaDataImpl _value,
+      $Res Function(_$NoteDataForServerMetaDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1102,7 +1105,7 @@ class __$$_NoteDataForServerMetaDataCopyWithImpl<$Res>
     Object? sendToDeviceId = null,
     Object? globalId = freezed,
   }) {
-    return _then(_$_NoteDataForServerMetaData(
+    return _then(_$NoteDataForServerMetaDataImpl(
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -1125,8 +1128,8 @@ class __$$_NoteDataForServerMetaDataCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_NoteDataForServerMetaData implements _NoteDataForServerMetaData {
-  const _$_NoteDataForServerMetaData(
+class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
+  const _$NoteDataForServerMetaDataImpl(
       {required this.createdAt,
       required this.updatedAt,
       required this.sendToDeviceId,
@@ -1147,10 +1150,10 @@ class _$_NoteDataForServerMetaData implements _NoteDataForServerMetaData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteDataForServerMetaData &&
+            other is _$NoteDataForServerMetaDataImpl &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -1168,9 +1171,9 @@ class _$_NoteDataForServerMetaData implements _NoteDataForServerMetaData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteDataForServerMetaDataCopyWith<_$_NoteDataForServerMetaData>
-      get copyWith => __$$_NoteDataForServerMetaDataCopyWithImpl<
-          _$_NoteDataForServerMetaData>(this, _$identity);
+  _$$NoteDataForServerMetaDataImplCopyWith<_$NoteDataForServerMetaDataImpl>
+      get copyWith => __$$NoteDataForServerMetaDataImplCopyWithImpl<
+          _$NoteDataForServerMetaDataImpl>(this, _$identity);
 }
 
 abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
@@ -1178,7 +1181,7 @@ abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
       {required final String createdAt,
       required final String updatedAt,
       required final String sendToDeviceId,
-      required final int? globalId}) = _$_NoteDataForServerMetaData;
+      required final int? globalId}) = _$NoteDataForServerMetaDataImpl;
 
   @override
   String get createdAt;
@@ -1190,7 +1193,7 @@ abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
   int? get globalId;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteDataForServerMetaDataCopyWith<_$_NoteDataForServerMetaData>
+  _$$NoteDataForServerMetaDataImplCopyWith<_$NoteDataForServerMetaDataImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1263,11 +1266,12 @@ class _$NoteDataForServerDataCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_NoteDataForServerDataCopyWith<$Res>
+abstract class _$$NoteDataForServerDataImplCopyWith<$Res>
     implements $NoteDataForServerDataCopyWith<$Res> {
-  factory _$$_NoteDataForServerDataCopyWith(_$_NoteDataForServerData value,
-          $Res Function(_$_NoteDataForServerData) then) =
-      __$$_NoteDataForServerDataCopyWithImpl<$Res>;
+  factory _$$NoteDataForServerDataImplCopyWith(
+          _$NoteDataForServerDataImpl value,
+          $Res Function(_$NoteDataForServerDataImpl) then) =
+      __$$NoteDataForServerDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({EncryptedMessage title, EncryptedMessage message});
@@ -1279,11 +1283,12 @@ abstract class _$$_NoteDataForServerDataCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_NoteDataForServerDataCopyWithImpl<$Res>
-    extends _$NoteDataForServerDataCopyWithImpl<$Res, _$_NoteDataForServerData>
-    implements _$$_NoteDataForServerDataCopyWith<$Res> {
-  __$$_NoteDataForServerDataCopyWithImpl(_$_NoteDataForServerData _value,
-      $Res Function(_$_NoteDataForServerData) _then)
+class __$$NoteDataForServerDataImplCopyWithImpl<$Res>
+    extends _$NoteDataForServerDataCopyWithImpl<$Res,
+        _$NoteDataForServerDataImpl>
+    implements _$$NoteDataForServerDataImplCopyWith<$Res> {
+  __$$NoteDataForServerDataImplCopyWithImpl(_$NoteDataForServerDataImpl _value,
+      $Res Function(_$NoteDataForServerDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1292,7 +1297,7 @@ class __$$_NoteDataForServerDataCopyWithImpl<$Res>
     Object? title = null,
     Object? message = null,
   }) {
-    return _then(_$_NoteDataForServerData(
+    return _then(_$NoteDataForServerDataImpl(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -1307,8 +1312,9 @@ class __$$_NoteDataForServerDataCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_NoteDataForServerData implements _NoteDataForServerData {
-  const _$_NoteDataForServerData({required this.title, required this.message});
+class _$NoteDataForServerDataImpl implements _NoteDataForServerData {
+  const _$NoteDataForServerDataImpl(
+      {required this.title, required this.message});
 
   @override
   final EncryptedMessage title;
@@ -1321,10 +1327,10 @@ class _$_NoteDataForServerData implements _NoteDataForServerData {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteDataForServerData &&
+            other is _$NoteDataForServerDataImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.message, message) || other.message == message));
   }
@@ -1335,15 +1341,15 @@ class _$_NoteDataForServerData implements _NoteDataForServerData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteDataForServerDataCopyWith<_$_NoteDataForServerData> get copyWith =>
-      __$$_NoteDataForServerDataCopyWithImpl<_$_NoteDataForServerData>(
-          this, _$identity);
+  _$$NoteDataForServerDataImplCopyWith<_$NoteDataForServerDataImpl>
+      get copyWith => __$$NoteDataForServerDataImplCopyWithImpl<
+          _$NoteDataForServerDataImpl>(this, _$identity);
 }
 
 abstract class _NoteDataForServerData implements NoteDataForServerData {
   const factory _NoteDataForServerData(
       {required final EncryptedMessage title,
-      required final EncryptedMessage message}) = _$_NoteDataForServerData;
+      required final EncryptedMessage message}) = _$NoteDataForServerDataImpl;
 
   @override
   EncryptedMessage get title;
@@ -1351,8 +1357,8 @@ abstract class _NoteDataForServerData implements NoteDataForServerData {
   EncryptedMessage get message;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteDataForServerDataCopyWith<_$_NoteDataForServerData> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$NoteDataForServerDataImplCopyWith<_$NoteDataForServerDataImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 NoteDataForServerEncryptedData _$NoteDataForServerEncryptedDataFromJson(
@@ -1432,12 +1438,12 @@ class _$NoteDataForServerEncryptedDataCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_NoteDataForServerEncryptedDataCopyWith<$Res>
+abstract class _$$NoteDataForServerEncryptedDataImplCopyWith<$Res>
     implements $NoteDataForServerEncryptedDataCopyWith<$Res> {
-  factory _$$_NoteDataForServerEncryptedDataCopyWith(
-          _$_NoteDataForServerEncryptedData value,
-          $Res Function(_$_NoteDataForServerEncryptedData) then) =
-      __$$_NoteDataForServerEncryptedDataCopyWithImpl<$Res>;
+  factory _$$NoteDataForServerEncryptedDataImplCopyWith(
+          _$NoteDataForServerEncryptedDataImpl value,
+          $Res Function(_$NoteDataForServerEncryptedDataImpl) then) =
+      __$$NoteDataForServerEncryptedDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({EncryptedMessage title, EncryptedMessage message});
@@ -1449,13 +1455,13 @@ abstract class _$$_NoteDataForServerEncryptedDataCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_NoteDataForServerEncryptedDataCopyWithImpl<$Res>
+class __$$NoteDataForServerEncryptedDataImplCopyWithImpl<$Res>
     extends _$NoteDataForServerEncryptedDataCopyWithImpl<$Res,
-        _$_NoteDataForServerEncryptedData>
-    implements _$$_NoteDataForServerEncryptedDataCopyWith<$Res> {
-  __$$_NoteDataForServerEncryptedDataCopyWithImpl(
-      _$_NoteDataForServerEncryptedData _value,
-      $Res Function(_$_NoteDataForServerEncryptedData) _then)
+        _$NoteDataForServerEncryptedDataImpl>
+    implements _$$NoteDataForServerEncryptedDataImplCopyWith<$Res> {
+  __$$NoteDataForServerEncryptedDataImplCopyWithImpl(
+      _$NoteDataForServerEncryptedDataImpl _value,
+      $Res Function(_$NoteDataForServerEncryptedDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1464,7 +1470,7 @@ class __$$_NoteDataForServerEncryptedDataCopyWithImpl<$Res>
     Object? title = null,
     Object? message = null,
   }) {
-    return _then(_$_NoteDataForServerEncryptedData(
+    return _then(_$NoteDataForServerEncryptedDataImpl(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -1479,14 +1485,14 @@ class __$$_NoteDataForServerEncryptedDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_NoteDataForServerEncryptedData
+class _$NoteDataForServerEncryptedDataImpl
     implements _NoteDataForServerEncryptedData {
-  const _$_NoteDataForServerEncryptedData(
+  const _$NoteDataForServerEncryptedDataImpl(
       {required this.title, required this.message});
 
-  factory _$_NoteDataForServerEncryptedData.fromJson(
+  factory _$NoteDataForServerEncryptedDataImpl.fromJson(
           Map<String, dynamic> json) =>
-      _$$_NoteDataForServerEncryptedDataFromJson(json);
+      _$$NoteDataForServerEncryptedDataImplFromJson(json);
 
   @override
   final EncryptedMessage title;
@@ -1499,10 +1505,10 @@ class _$_NoteDataForServerEncryptedData
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteDataForServerEncryptedData &&
+            other is _$NoteDataForServerEncryptedDataImpl &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.message, message) || other.message == message));
   }
@@ -1514,13 +1520,14 @@ class _$_NoteDataForServerEncryptedData
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteDataForServerEncryptedDataCopyWith<_$_NoteDataForServerEncryptedData>
-      get copyWith => __$$_NoteDataForServerEncryptedDataCopyWithImpl<
-          _$_NoteDataForServerEncryptedData>(this, _$identity);
+  _$$NoteDataForServerEncryptedDataImplCopyWith<
+          _$NoteDataForServerEncryptedDataImpl>
+      get copyWith => __$$NoteDataForServerEncryptedDataImplCopyWithImpl<
+          _$NoteDataForServerEncryptedDataImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_NoteDataForServerEncryptedDataToJson(
+    return _$$NoteDataForServerEncryptedDataImplToJson(
       this,
     );
   }
@@ -1531,10 +1538,10 @@ abstract class _NoteDataForServerEncryptedData
   const factory _NoteDataForServerEncryptedData(
           {required final EncryptedMessage title,
           required final EncryptedMessage message}) =
-      _$_NoteDataForServerEncryptedData;
+      _$NoteDataForServerEncryptedDataImpl;
 
   factory _NoteDataForServerEncryptedData.fromJson(Map<String, dynamic> json) =
-      _$_NoteDataForServerEncryptedData.fromJson;
+      _$NoteDataForServerEncryptedDataImpl.fromJson;
 
   @override
   EncryptedMessage get title;
@@ -1542,7 +1549,8 @@ abstract class _NoteDataForServerEncryptedData
   EncryptedMessage get message;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteDataForServerEncryptedDataCopyWith<_$_NoteDataForServerEncryptedData>
+  _$$NoteDataForServerEncryptedDataImplCopyWith<
+          _$NoteDataForServerEncryptedDataImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1606,22 +1614,22 @@ class _$EncryptedMessageCopyWithImpl<$Res, $Val extends EncryptedMessage>
 }
 
 /// @nodoc
-abstract class _$$_EncryptedMessageCopyWith<$Res>
+abstract class _$$EncryptedMessageImplCopyWith<$Res>
     implements $EncryptedMessageCopyWith<$Res> {
-  factory _$$_EncryptedMessageCopyWith(
-          _$_EncryptedMessage value, $Res Function(_$_EncryptedMessage) then) =
-      __$$_EncryptedMessageCopyWithImpl<$Res>;
+  factory _$$EncryptedMessageImplCopyWith(_$EncryptedMessageImpl value,
+          $Res Function(_$EncryptedMessageImpl) then) =
+      __$$EncryptedMessageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<int> cipherText, List<int> nonce, List<int> mac});
 }
 
 /// @nodoc
-class __$$_EncryptedMessageCopyWithImpl<$Res>
-    extends _$EncryptedMessageCopyWithImpl<$Res, _$_EncryptedMessage>
-    implements _$$_EncryptedMessageCopyWith<$Res> {
-  __$$_EncryptedMessageCopyWithImpl(
-      _$_EncryptedMessage _value, $Res Function(_$_EncryptedMessage) _then)
+class __$$EncryptedMessageImplCopyWithImpl<$Res>
+    extends _$EncryptedMessageCopyWithImpl<$Res, _$EncryptedMessageImpl>
+    implements _$$EncryptedMessageImplCopyWith<$Res> {
+  __$$EncryptedMessageImplCopyWithImpl(_$EncryptedMessageImpl _value,
+      $Res Function(_$EncryptedMessageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1631,7 +1639,7 @@ class __$$_EncryptedMessageCopyWithImpl<$Res>
     Object? nonce = null,
     Object? mac = null,
   }) {
-    return _then(_$_EncryptedMessage(
+    return _then(_$EncryptedMessageImpl(
       cipherText: null == cipherText
           ? _value._cipherText
           : cipherText // ignore: cast_nullable_to_non_nullable
@@ -1650,8 +1658,8 @@ class __$$_EncryptedMessageCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_EncryptedMessage implements _EncryptedMessage {
-  const _$_EncryptedMessage(
+class _$EncryptedMessageImpl implements _EncryptedMessage {
+  const _$EncryptedMessageImpl(
       {required final List<int> cipherText,
       required final List<int> nonce,
       required final List<int> mac})
@@ -1659,8 +1667,8 @@ class _$_EncryptedMessage implements _EncryptedMessage {
         _nonce = nonce,
         _mac = mac;
 
-  factory _$_EncryptedMessage.fromJson(Map<String, dynamic> json) =>
-      _$$_EncryptedMessageFromJson(json);
+  factory _$EncryptedMessageImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EncryptedMessageImplFromJson(json);
 
   final List<int> _cipherText;
   @override
@@ -1692,10 +1700,10 @@ class _$_EncryptedMessage implements _EncryptedMessage {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EncryptedMessage &&
+            other is _$EncryptedMessageImpl &&
             const DeepCollectionEquality()
                 .equals(other._cipherText, _cipherText) &&
             const DeepCollectionEquality().equals(other._nonce, _nonce) &&
@@ -1713,12 +1721,13 @@ class _$_EncryptedMessage implements _EncryptedMessage {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EncryptedMessageCopyWith<_$_EncryptedMessage> get copyWith =>
-      __$$_EncryptedMessageCopyWithImpl<_$_EncryptedMessage>(this, _$identity);
+  _$$EncryptedMessageImplCopyWith<_$EncryptedMessageImpl> get copyWith =>
+      __$$EncryptedMessageImplCopyWithImpl<_$EncryptedMessageImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_EncryptedMessageToJson(
+    return _$$EncryptedMessageImplToJson(
       this,
     );
   }
@@ -1728,10 +1737,10 @@ abstract class _EncryptedMessage implements EncryptedMessage {
   const factory _EncryptedMessage(
       {required final List<int> cipherText,
       required final List<int> nonce,
-      required final List<int> mac}) = _$_EncryptedMessage;
+      required final List<int> mac}) = _$EncryptedMessageImpl;
 
   factory _EncryptedMessage.fromJson(Map<String, dynamic> json) =
-      _$_EncryptedMessage.fromJson;
+      _$EncryptedMessageImpl.fromJson;
 
   @override
   List<int> get cipherText;
@@ -1741,6 +1750,6 @@ abstract class _EncryptedMessage implements EncryptedMessage {
   List<int> get mac;
   @override
   @JsonKey(ignore: true)
-  _$$_EncryptedMessageCopyWith<_$_EncryptedMessage> get copyWith =>
+  _$$EncryptedMessageImplCopyWith<_$EncryptedMessageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

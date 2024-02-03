@@ -67,20 +67,21 @@ class _$AppPageCopyWithImpl<$Res, $Val extends AppPage>
 }
 
 /// @nodoc
-abstract class _$$_AppPageCopyWith<$Res> implements $AppPageCopyWith<$Res> {
-  factory _$$_AppPageCopyWith(
-          _$_AppPage value, $Res Function(_$_AppPage) then) =
-      __$$_AppPageCopyWithImpl<$Res>;
+abstract class _$$AppPageImplCopyWith<$Res> implements $AppPageCopyWith<$Res> {
+  factory _$$AppPageImplCopyWith(
+          _$AppPageImpl value, $Res Function(_$AppPageImpl) then) =
+      __$$AppPageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, String route, String path});
 }
 
 /// @nodoc
-class __$$_AppPageCopyWithImpl<$Res>
-    extends _$AppPageCopyWithImpl<$Res, _$_AppPage>
-    implements _$$_AppPageCopyWith<$Res> {
-  __$$_AppPageCopyWithImpl(_$_AppPage _value, $Res Function(_$_AppPage) _then)
+class __$$AppPageImplCopyWithImpl<$Res>
+    extends _$AppPageCopyWithImpl<$Res, _$AppPageImpl>
+    implements _$$AppPageImplCopyWith<$Res> {
+  __$$AppPageImplCopyWithImpl(
+      _$AppPageImpl _value, $Res Function(_$AppPageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -90,7 +91,7 @@ class __$$_AppPageCopyWithImpl<$Res>
     Object? route = null,
     Object? path = null,
   }) {
-    return _then(_$_AppPage(
+    return _then(_$AppPageImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -109,8 +110,8 @@ class __$$_AppPageCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_AppPage implements _AppPage {
-  const _$_AppPage(
+class _$AppPageImpl implements _AppPage {
+  const _$AppPageImpl(
       {required this.name, required this.route, required this.path});
 
   @override
@@ -126,10 +127,10 @@ class _$_AppPage implements _AppPage {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AppPage &&
+            other is _$AppPageImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.route, route) || other.route == route) &&
             (identical(other.path, path) || other.path == path));
@@ -141,15 +142,15 @@ class _$_AppPage implements _AppPage {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AppPageCopyWith<_$_AppPage> get copyWith =>
-      __$$_AppPageCopyWithImpl<_$_AppPage>(this, _$identity);
+  _$$AppPageImplCopyWith<_$AppPageImpl> get copyWith =>
+      __$$AppPageImplCopyWithImpl<_$AppPageImpl>(this, _$identity);
 }
 
 abstract class _AppPage implements AppPage {
   const factory _AppPage(
       {required final String name,
       required final String route,
-      required final String path}) = _$_AppPage;
+      required final String path}) = _$AppPageImpl;
 
   @override
   String get name;
@@ -159,6 +160,6 @@ abstract class _AppPage implements AppPage {
   String get path;
   @override
   @JsonKey(ignore: true)
-  _$$_AppPageCopyWith<_$_AppPage> get copyWith =>
+  _$$AppPageImplCopyWith<_$AppPageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
