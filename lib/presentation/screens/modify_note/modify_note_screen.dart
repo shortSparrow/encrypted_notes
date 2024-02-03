@@ -1,7 +1,9 @@
 import 'package:encrypted_notes/injection.dart';
 import 'package:encrypted_notes/presentation/core/widgets/Button.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/bloc/modify_note_bloc.dart';
+import 'package:encrypted_notes/presentation/screens/modify_note/widgets/synced_device_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum ModifyNoteMode { add, edit }
@@ -33,6 +35,32 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
   final messageEditorController = TextEditingController();
   final titleEditorController = TextEditingController();
 
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 400,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Expanded(child: SyncedDeviceList()),
+                const SizedBox(height: 20),
+                Button(
+                  onPressed: () {},
+                  text: "Save",
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<ModifyNoteBloc>().state;
@@ -43,14 +71,21 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
       appBar: AppBar(
         title: TextField(
           controller: titleEditorController..text = title,
-          decoration:  InputDecoration(
+          decoration: InputDecoration(
             border: InputBorder.none,
             label: null,
             contentPadding: EdgeInsets.zero,
-            hintText: state.mode == ModifyNoteMode.add ? "new note": null,
+            hintText: state.mode == ModifyNoteMode.add ? "new note" : null,
           ),
           style: const TextStyle(fontSize: 20, height: 1),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _dialogBuilder(context);
+              },
+              icon: const Icon(Icons.add_task_sharp)),
+        ],
       ),
       body: SafeArea(
           child: Padding(
@@ -67,9 +102,11 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
               ),
             ),
             Button(
-              onPressed: () => context.read<ModifyNoteBloc>().add(SaveNote(
-                  message: messageEditorController.text,
-                  title: titleEditorController.text)),
+              onPressed: () => context.read<ModifyNoteBloc>().add(
+                    SaveNote(
+                        message: messageEditorController.text,
+                        title: titleEditorController.text),
+                  ),
               text: "Save",
             )
           ],
