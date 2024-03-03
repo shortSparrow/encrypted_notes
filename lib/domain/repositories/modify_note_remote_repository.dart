@@ -14,7 +14,7 @@ class NotesDeviceInfoResponse {
 }
 
 class NotesResponse {
-  final int globalId;
+  final String globalId;
   final List<NotesDeviceInfoResponse> addNotesDeviceInfoResponse;
 
   NotesResponse({

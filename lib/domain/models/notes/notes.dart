@@ -24,7 +24,7 @@ class Note with _$Note {
     required String createdAt,
     required String updatedAt,
     required int id,
-    required int? globalId,
+    required String? globalId,
     required List<SyncedDevice> syncedDevices,
   }) = _Note;
 }
@@ -38,7 +38,7 @@ class EncryptedNote with _$EncryptedNote {
     required String createdAt,
     required String updatedAt,
     required int id,
-    required int? globalId,
+    required String? globalId,
     required List<SyncedDevice> syncedDevices,
   }) = _EncryptedNote;
 }
@@ -46,9 +46,12 @@ class EncryptedNote with _$EncryptedNote {
 @freezed
 class NoteForServer with _$NoteForServer {
   const factory NoteForServer({
-    required int? globalId,
+    required String? globalId,
     required List<NoteDataForServer> data,
   }) = _NoteForServer;
+
+  factory NoteForServer.fromJson(Map<String, dynamic> json) =>
+      _$NoteForServerFromJson(json);
 }
 
 @freezed
@@ -57,6 +60,9 @@ class NoteDataForServer with _$NoteDataForServer {
     required NoteDataForServerMetaData metaData,
     required NoteDataForServerData data,
   }) = _NoteDataForServer;
+
+  factory NoteDataForServer.fromJson(Map<String, dynamic> json) =>
+      _$NoteDataForServerFromJson(json);
 }
 
 @freezed
@@ -65,8 +71,11 @@ class NoteDataForServerMetaData with _$NoteDataForServerMetaData {
     required String createdAt,
     required String updatedAt,
     required String sendToDeviceId,
-    required int? globalId,
+    required String? globalId,
   }) = _NoteDataForServerMetaData;
+
+  factory NoteDataForServerMetaData.fromJson(Map<String, dynamic> json) =>
+      _$NoteDataForServerMetaDataFromJson(json);
 }
 
 // TODO probably delete because duplicate NoteDataForServerEncryptedData
@@ -76,6 +85,9 @@ class NoteDataForServerData with _$NoteDataForServerData {
     required EncryptedMessage title,
     required EncryptedMessage message,
   }) = _NoteDataForServerData;
+
+  factory NoteDataForServerData.fromJson(Map<String, dynamic> json) =>
+      _$NoteDataForServerDataFromJson(json);
 }
 
 @freezed

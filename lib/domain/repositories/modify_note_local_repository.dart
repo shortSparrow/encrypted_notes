@@ -12,5 +12,5 @@ abstract class ModifyNoteLocalRepository {
     String syncedDevicesJson,
     int noteId,
   );
-  Future<bool> addGlobalIdToNote(int globalId, int noteId);
+  Future<bool> addGlobalIdToNote(String globalId, int noteId);
 }

@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 @DataClassName("NoteDb")
 class Notes extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get globalId => integer().nullable()();
+  TextColumn get globalId => text().nullable()();
   TextColumn get message => text()();
   TextColumn get title => text()();
   TextColumn get createdAt => text()

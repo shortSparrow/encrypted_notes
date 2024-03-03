@@ -95,7 +95,7 @@ class TestEncryptionUseCase {
       createdAt: '1',
       updatedAt: '1',
       id: 1,
-      globalId: 1,
+      globalId: '1',
       syncedDevices: syncedDevices,
     );
 
@@ -146,7 +146,7 @@ class TestEncryptionUseCase {
       createdAt: '1',
       updatedAt: '1',
       id: 1,
-      globalId: 1,
+      globalId: '1',
       syncedDevices: syncedDevices,
     );
     final generateKeys = GenerateKeys();

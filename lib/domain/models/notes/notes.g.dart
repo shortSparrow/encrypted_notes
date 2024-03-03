@@ -18,6 +18,69 @@ Map<String, dynamic> _$$SyncedDeviceImplToJson(_$SyncedDeviceImpl instance) =>
       'isSynced': instance.isSynced,
     };
 
+_$NoteForServerImpl _$$NoteForServerImplFromJson(Map<String, dynamic> json) =>
+    _$NoteForServerImpl(
+      globalId: json['globalId'] as String?,
+      data: (json['data'] as List<dynamic>)
+          .map((e) => NoteDataForServer.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$NoteForServerImplToJson(_$NoteForServerImpl instance) =>
+    <String, dynamic>{
+      'globalId': instance.globalId,
+      'data': instance.data,
+    };
+
+_$NoteDataForServerImpl _$$NoteDataForServerImplFromJson(
+        Map<String, dynamic> json) =>
+    _$NoteDataForServerImpl(
+      metaData: NoteDataForServerMetaData.fromJson(
+          json['metaData'] as Map<String, dynamic>),
+      data:
+          NoteDataForServerData.fromJson(json['data'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$NoteDataForServerImplToJson(
+        _$NoteDataForServerImpl instance) =>
+    <String, dynamic>{
+      'metaData': instance.metaData,
+      'data': instance.data,
+    };
+
+_$NoteDataForServerMetaDataImpl _$$NoteDataForServerMetaDataImplFromJson(
+        Map<String, dynamic> json) =>
+    _$NoteDataForServerMetaDataImpl(
+      createdAt: json['createdAt'] as String,
+      updatedAt: json['updatedAt'] as String,
+      sendToDeviceId: json['sendToDeviceId'] as String,
+      globalId: json['globalId'] as String?,
+    );
+
+Map<String, dynamic> _$$NoteDataForServerMetaDataImplToJson(
+        _$NoteDataForServerMetaDataImpl instance) =>
+    <String, dynamic>{
+      'createdAt': instance.createdAt,
+      'updatedAt': instance.updatedAt,
+      'sendToDeviceId': instance.sendToDeviceId,
+      'globalId': instance.globalId,
+    };
+
+_$NoteDataForServerDataImpl _$$NoteDataForServerDataImplFromJson(
+        Map<String, dynamic> json) =>
+    _$NoteDataForServerDataImpl(
+      title: EncryptedMessage.fromJson(json['title'] as Map<String, dynamic>),
+      message:
+          EncryptedMessage.fromJson(json['message'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$NoteDataForServerDataImplToJson(
+        _$NoteDataForServerDataImpl instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'message': instance.message,
+    };
+
 _$NoteDataForServerEncryptedDataImpl
     _$$NoteDataForServerEncryptedDataImplFromJson(Map<String, dynamic> json) =>
         _$NoteDataForServerEncryptedDataImpl(

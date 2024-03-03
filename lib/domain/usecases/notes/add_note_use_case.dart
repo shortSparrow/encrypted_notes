@@ -185,7 +185,7 @@ class AddNoteUseCase {
   Future _synchronizeRemoteResponse(
     List<NotesDeviceInfoResponse> response,
     int noteId,
-    int globalId,
+    String globalId,
   ) async {
     final syncingDeviceStatusList = response
         .map((item) => SyncedDevice(

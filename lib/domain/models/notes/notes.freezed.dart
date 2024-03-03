@@ -12,7 +12,7 @@ part of 'notes.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 SyncedDevice _$SyncedDeviceFromJson(Map<String, dynamic> json) {
   return _SyncedDevice.fromJson(json);
@@ -178,7 +178,7 @@ mixin _$Note {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   int get id => throw _privateConstructorUsedError;
-  int? get globalId => throw _privateConstructorUsedError;
+  String? get globalId => throw _privateConstructorUsedError;
   List<SyncedDevice> get syncedDevices => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -196,7 +196,7 @@ abstract class $NoteCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       int id,
-      int? globalId,
+      String? globalId,
       List<SyncedDevice> syncedDevices});
 }
 
@@ -245,7 +245,7 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       syncedDevices: null == syncedDevices
           ? _value.syncedDevices
           : syncedDevices // ignore: cast_nullable_to_non_nullable
@@ -267,7 +267,7 @@ abstract class _$$NoteImplCopyWith<$Res> implements $NoteCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       int id,
-      int? globalId,
+      String? globalId,
       List<SyncedDevice> syncedDevices});
 }
 
@@ -313,7 +313,7 @@ class __$$NoteImplCopyWithImpl<$Res>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       syncedDevices: null == syncedDevices
           ? _value._syncedDevices
           : syncedDevices // ignore: cast_nullable_to_non_nullable
@@ -347,7 +347,7 @@ class _$NoteImpl implements _Note {
   @override
   final int id;
   @override
-  final int? globalId;
+  final String? globalId;
   final List<SyncedDevice> _syncedDevices;
   @override
   List<SyncedDevice> get syncedDevices {
@@ -404,7 +404,7 @@ abstract class _Note implements Note {
       required final String createdAt,
       required final String updatedAt,
       required final int id,
-      required final int? globalId,
+      required final String? globalId,
       required final List<SyncedDevice> syncedDevices}) = _$NoteImpl;
 
   @override
@@ -418,7 +418,7 @@ abstract class _Note implements Note {
   @override
   int get id;
   @override
-  int? get globalId;
+  String? get globalId;
   @override
   List<SyncedDevice> get syncedDevices;
   @override
@@ -435,7 +435,7 @@ mixin _$EncryptedNote {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   int get id => throw _privateConstructorUsedError;
-  int? get globalId => throw _privateConstructorUsedError;
+  String? get globalId => throw _privateConstructorUsedError;
   List<SyncedDevice> get syncedDevices => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -455,7 +455,7 @@ abstract class $EncryptedNoteCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       int id,
-      int? globalId,
+      String? globalId,
       List<SyncedDevice> syncedDevices});
 
   $EncryptedMessageCopyWith<$Res> get message;
@@ -506,7 +506,7 @@ class _$EncryptedNoteCopyWithImpl<$Res, $Val extends EncryptedNote>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       syncedDevices: null == syncedDevices
           ? _value.syncedDevices
           : syncedDevices // ignore: cast_nullable_to_non_nullable
@@ -537,7 +537,7 @@ abstract class _$$EncryptedNoteImplCopyWith<$Res>
       String createdAt,
       String updatedAt,
       int id,
-      int? globalId,
+      String? globalId,
       List<SyncedDevice> syncedDevices});
 
   @override
@@ -587,7 +587,7 @@ class __$$EncryptedNoteImplCopyWithImpl<$Res>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       syncedDevices: null == syncedDevices
           ? _value._syncedDevices
           : syncedDevices // ignore: cast_nullable_to_non_nullable
@@ -621,7 +621,7 @@ class _$EncryptedNoteImpl implements _EncryptedNote {
   @override
   final int id;
   @override
-  final int? globalId;
+  final String? globalId;
   final List<SyncedDevice> _syncedDevices;
   @override
   List<SyncedDevice> get syncedDevices {
@@ -678,7 +678,7 @@ abstract class _EncryptedNote implements EncryptedNote {
       required final String createdAt,
       required final String updatedAt,
       required final int id,
-      required final int? globalId,
+      required final String? globalId,
       required final List<SyncedDevice> syncedDevices}) = _$EncryptedNoteImpl;
 
   @override
@@ -692,7 +692,7 @@ abstract class _EncryptedNote implements EncryptedNote {
   @override
   int get id;
   @override
-  int? get globalId;
+  String? get globalId;
   @override
   List<SyncedDevice> get syncedDevices;
   @override
@@ -701,11 +701,16 @@ abstract class _EncryptedNote implements EncryptedNote {
       throw _privateConstructorUsedError;
 }
 
+NoteForServer _$NoteForServerFromJson(Map<String, dynamic> json) {
+  return _NoteForServer.fromJson(json);
+}
+
 /// @nodoc
 mixin _$NoteForServer {
-  int? get globalId => throw _privateConstructorUsedError;
+  String? get globalId => throw _privateConstructorUsedError;
   List<NoteDataForServer> get data => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $NoteForServerCopyWith<NoteForServer> get copyWith =>
       throw _privateConstructorUsedError;
@@ -717,7 +722,7 @@ abstract class $NoteForServerCopyWith<$Res> {
           NoteForServer value, $Res Function(NoteForServer) then) =
       _$NoteForServerCopyWithImpl<$Res, NoteForServer>;
   @useResult
-  $Res call({int? globalId, List<NoteDataForServer> data});
+  $Res call({String? globalId, List<NoteDataForServer> data});
 }
 
 /// @nodoc
@@ -740,7 +745,7 @@ class _$NoteForServerCopyWithImpl<$Res, $Val extends NoteForServer>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -757,7 +762,7 @@ abstract class _$$NoteForServerImplCopyWith<$Res>
       __$$NoteForServerImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? globalId, List<NoteDataForServer> data});
+  $Res call({String? globalId, List<NoteDataForServer> data});
 }
 
 /// @nodoc
@@ -778,7 +783,7 @@ class __$$NoteForServerImplCopyWithImpl<$Res>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -788,14 +793,17 @@ class __$$NoteForServerImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$NoteForServerImpl implements _NoteForServer {
   const _$NoteForServerImpl(
       {required this.globalId, required final List<NoteDataForServer> data})
       : _data = data;
 
+  factory _$NoteForServerImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NoteForServerImplFromJson(json);
+
   @override
-  final int? globalId;
+  final String? globalId;
   final List<NoteDataForServer> _data;
   @override
   List<NoteDataForServer> get data {
@@ -819,6 +827,7 @@ class _$NoteForServerImpl implements _NoteForServer {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType, globalId, const DeepCollectionEquality().hash(_data));
@@ -828,15 +837,25 @@ class _$NoteForServerImpl implements _NoteForServer {
   @pragma('vm:prefer-inline')
   _$$NoteForServerImplCopyWith<_$NoteForServerImpl> get copyWith =>
       __$$NoteForServerImplCopyWithImpl<_$NoteForServerImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$NoteForServerImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _NoteForServer implements NoteForServer {
   const factory _NoteForServer(
-      {required final int? globalId,
+      {required final String? globalId,
       required final List<NoteDataForServer> data}) = _$NoteForServerImpl;
 
+  factory _NoteForServer.fromJson(Map<String, dynamic> json) =
+      _$NoteForServerImpl.fromJson;
+
   @override
-  int? get globalId;
+  String? get globalId;
   @override
   List<NoteDataForServer> get data;
   @override
@@ -845,11 +864,16 @@ abstract class _NoteForServer implements NoteForServer {
       throw _privateConstructorUsedError;
 }
 
+NoteDataForServer _$NoteDataForServerFromJson(Map<String, dynamic> json) {
+  return _NoteDataForServer.fromJson(json);
+}
+
 /// @nodoc
 mixin _$NoteDataForServer {
   NoteDataForServerMetaData get metaData => throw _privateConstructorUsedError;
   NoteDataForServerData get data => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $NoteDataForServerCopyWith<NoteDataForServer> get copyWith =>
       throw _privateConstructorUsedError;
@@ -956,9 +980,12 @@ class __$$NoteDataForServerImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$NoteDataForServerImpl implements _NoteDataForServer {
   const _$NoteDataForServerImpl({required this.metaData, required this.data});
+
+  factory _$NoteDataForServerImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NoteDataForServerImplFromJson(json);
 
   @override
   final NoteDataForServerMetaData metaData;
@@ -980,6 +1007,7 @@ class _$NoteDataForServerImpl implements _NoteDataForServer {
             (identical(other.data, data) || other.data == data));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, metaData, data);
 
@@ -989,12 +1017,22 @@ class _$NoteDataForServerImpl implements _NoteDataForServer {
   _$$NoteDataForServerImplCopyWith<_$NoteDataForServerImpl> get copyWith =>
       __$$NoteDataForServerImplCopyWithImpl<_$NoteDataForServerImpl>(
           this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$NoteDataForServerImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _NoteDataForServer implements NoteDataForServer {
   const factory _NoteDataForServer(
       {required final NoteDataForServerMetaData metaData,
       required final NoteDataForServerData data}) = _$NoteDataForServerImpl;
+
+  factory _NoteDataForServer.fromJson(Map<String, dynamic> json) =
+      _$NoteDataForServerImpl.fromJson;
 
   @override
   NoteDataForServerMetaData get metaData;
@@ -1006,13 +1044,19 @@ abstract class _NoteDataForServer implements NoteDataForServer {
       throw _privateConstructorUsedError;
 }
 
+NoteDataForServerMetaData _$NoteDataForServerMetaDataFromJson(
+    Map<String, dynamic> json) {
+  return _NoteDataForServerMetaData.fromJson(json);
+}
+
 /// @nodoc
 mixin _$NoteDataForServerMetaData {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   String get sendToDeviceId => throw _privateConstructorUsedError;
-  int? get globalId => throw _privateConstructorUsedError;
+  String? get globalId => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $NoteDataForServerMetaDataCopyWith<NoteDataForServerMetaData> get copyWith =>
       throw _privateConstructorUsedError;
@@ -1028,7 +1072,7 @@ abstract class $NoteDataForServerMetaDataCopyWith<$Res> {
       {String createdAt,
       String updatedAt,
       String sendToDeviceId,
-      int? globalId});
+      String? globalId});
 }
 
 /// @nodoc
@@ -1066,7 +1110,7 @@ class _$NoteDataForServerMetaDataCopyWithImpl<$Res,
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
     ) as $Val);
   }
 }
@@ -1084,7 +1128,7 @@ abstract class _$$NoteDataForServerMetaDataImplCopyWith<$Res>
       {String createdAt,
       String updatedAt,
       String sendToDeviceId,
-      int? globalId});
+      String? globalId});
 }
 
 /// @nodoc
@@ -1121,19 +1165,22 @@ class __$$NoteDataForServerMetaDataImplCopyWithImpl<$Res>
       globalId: freezed == globalId
           ? _value.globalId
           : globalId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
     ));
   }
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
   const _$NoteDataForServerMetaDataImpl(
       {required this.createdAt,
       required this.updatedAt,
       required this.sendToDeviceId,
       required this.globalId});
+
+  factory _$NoteDataForServerMetaDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NoteDataForServerMetaDataImplFromJson(json);
 
   @override
   final String createdAt;
@@ -1142,7 +1189,7 @@ class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
   @override
   final String sendToDeviceId;
   @override
-  final int? globalId;
+  final String? globalId;
 
   @override
   String toString() {
@@ -1164,6 +1211,7 @@ class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
                 other.globalId == globalId));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode =>
       Object.hash(runtimeType, createdAt, updatedAt, sendToDeviceId, globalId);
@@ -1174,6 +1222,13 @@ class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
   _$$NoteDataForServerMetaDataImplCopyWith<_$NoteDataForServerMetaDataImpl>
       get copyWith => __$$NoteDataForServerMetaDataImplCopyWithImpl<
           _$NoteDataForServerMetaDataImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$NoteDataForServerMetaDataImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
@@ -1181,7 +1236,10 @@ abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
       {required final String createdAt,
       required final String updatedAt,
       required final String sendToDeviceId,
-      required final int? globalId}) = _$NoteDataForServerMetaDataImpl;
+      required final String? globalId}) = _$NoteDataForServerMetaDataImpl;
+
+  factory _NoteDataForServerMetaData.fromJson(Map<String, dynamic> json) =
+      _$NoteDataForServerMetaDataImpl.fromJson;
 
   @override
   String get createdAt;
@@ -1190,11 +1248,16 @@ abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
   @override
   String get sendToDeviceId;
   @override
-  int? get globalId;
+  String? get globalId;
   @override
   @JsonKey(ignore: true)
   _$$NoteDataForServerMetaDataImplCopyWith<_$NoteDataForServerMetaDataImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+NoteDataForServerData _$NoteDataForServerDataFromJson(
+    Map<String, dynamic> json) {
+  return _NoteDataForServerData.fromJson(json);
 }
 
 /// @nodoc
@@ -1202,6 +1265,7 @@ mixin _$NoteDataForServerData {
   EncryptedMessage get title => throw _privateConstructorUsedError;
   EncryptedMessage get message => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $NoteDataForServerDataCopyWith<NoteDataForServerData> get copyWith =>
       throw _privateConstructorUsedError;
@@ -1311,10 +1375,13 @@ class __$$NoteDataForServerDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$NoteDataForServerDataImpl implements _NoteDataForServerData {
   const _$NoteDataForServerDataImpl(
       {required this.title, required this.message});
+
+  factory _$NoteDataForServerDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NoteDataForServerDataImplFromJson(json);
 
   @override
   final EncryptedMessage title;
@@ -1335,6 +1402,7 @@ class _$NoteDataForServerDataImpl implements _NoteDataForServerData {
             (identical(other.message, message) || other.message == message));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, title, message);
 
@@ -1344,12 +1412,22 @@ class _$NoteDataForServerDataImpl implements _NoteDataForServerData {
   _$$NoteDataForServerDataImplCopyWith<_$NoteDataForServerDataImpl>
       get copyWith => __$$NoteDataForServerDataImplCopyWithImpl<
           _$NoteDataForServerDataImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$NoteDataForServerDataImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _NoteDataForServerData implements NoteDataForServerData {
   const factory _NoteDataForServerData(
       {required final EncryptedMessage title,
       required final EncryptedMessage message}) = _$NoteDataForServerDataImpl;
+
+  factory _NoteDataForServerData.fromJson(Map<String, dynamic> json) =
+      _$NoteDataForServerDataImpl.fromJson;
 
   @override
   EncryptedMessage get title;

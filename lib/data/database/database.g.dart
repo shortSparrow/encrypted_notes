@@ -20,9 +20,9 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
   static const VerificationMeta _globalIdMeta =
       const VerificationMeta('globalId');
   @override
-  late final GeneratedColumn<int> globalId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> globalId = GeneratedColumn<String>(
       'global_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _messageMeta =
       const VerificationMeta('message');
   @override
@@ -116,7 +116,7 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       globalId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}global_id']),
+          .read(DriftSqlType.string, data['${effectivePrefix}global_id']),
       message: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}message'])!,
       title: attachedDatabase.typeMapping
@@ -138,7 +138,7 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
 
 class NoteDb extends DataClass implements Insertable<NoteDb> {
   final int id;
-  final int? globalId;
+  final String? globalId;
   final String message;
   final String title;
   final String createdAt;
@@ -157,7 +157,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     if (!nullToAbsent || globalId != null) {
-      map['global_id'] = Variable<int>(globalId);
+      map['global_id'] = Variable<String>(globalId);
     }
     map['message'] = Variable<String>(message);
     map['title'] = Variable<String>(title);
@@ -186,7 +186,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return NoteDb(
       id: serializer.fromJson<int>(json['id']),
-      globalId: serializer.fromJson<int?>(json['globalId']),
+      globalId: serializer.fromJson<String?>(json['globalId']),
       message: serializer.fromJson<String>(json['message']),
       title: serializer.fromJson<String>(json['title']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
@@ -199,7 +199,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'globalId': serializer.toJson<int?>(globalId),
+      'globalId': serializer.toJson<String?>(globalId),
       'message': serializer.toJson<String>(message),
       'title': serializer.toJson<String>(title),
       'createdAt': serializer.toJson<String>(createdAt),
@@ -210,7 +210,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
 
   NoteDb copyWith(
           {int? id,
-          Value<int?> globalId = const Value.absent(),
+          Value<String?> globalId = const Value.absent(),
           String? message,
           String? title,
           String? createdAt,
@@ -257,7 +257,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
 
 class NotesCompanion extends UpdateCompanion<NoteDb> {
   final Value<int> id;
-  final Value<int?> globalId;
+  final Value<String?> globalId;
   final Value<String> message;
   final Value<String> title;
   final Value<String> createdAt;
@@ -284,7 +284,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
         title = Value(title);
   static Insertable<NoteDb> custom({
     Expression<int>? id,
-    Expression<int>? globalId,
+    Expression<String>? globalId,
     Expression<String>? message,
     Expression<String>? title,
     Expression<String>? createdAt,
@@ -304,7 +304,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
 
   NotesCompanion copyWith(
       {Value<int>? id,
-      Value<int?>? globalId,
+      Value<String?>? globalId,
       Value<String>? message,
       Value<String>? title,
       Value<String>? createdAt,
@@ -328,7 +328,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
       map['id'] = Variable<int>(id.value);
     }
     if (globalId.present) {
-      map['global_id'] = Variable<int>(globalId.value);
+      map['global_id'] = Variable<String>(globalId.value);
     }
     if (message.present) {
       map['message'] = Variable<String>(message.value);

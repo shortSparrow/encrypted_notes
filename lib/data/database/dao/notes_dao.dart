@@ -20,7 +20,7 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
     return into(notes).insert(note);
   }
 
-  Future<int> addGlobalIdToNote(int globalId, int noteId) {
+  Future<int> addGlobalIdToNote(String globalId, int noteId) {
     return (update(notes)..where((tbl) => tbl.id.equals(noteId)))
         .write(NotesCompanion(globalId: Value(globalId)));
   }
