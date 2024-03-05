@@ -37,8 +37,8 @@ _$NoteDataForServerImpl _$$NoteDataForServerImplFromJson(
     _$NoteDataForServerImpl(
       metaData: NoteDataForServerMetaData.fromJson(
           json['metaData'] as Map<String, dynamic>),
-      data:
-          NoteDataForServerData.fromJson(json['data'] as Map<String, dynamic>),
+      data: NoteDataForServerEncryptedData.fromJson(
+          json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$NoteDataForServerImplToJson(
@@ -64,21 +64,6 @@ Map<String, dynamic> _$$NoteDataForServerMetaDataImplToJson(
       'updatedAt': instance.updatedAt,
       'sendToDeviceId': instance.sendToDeviceId,
       'globalId': instance.globalId,
-    };
-
-_$NoteDataForServerDataImpl _$$NoteDataForServerDataImplFromJson(
-        Map<String, dynamic> json) =>
-    _$NoteDataForServerDataImpl(
-      title: EncryptedMessage.fromJson(json['title'] as Map<String, dynamic>),
-      message:
-          EncryptedMessage.fromJson(json['message'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$$NoteDataForServerDataImplToJson(
-        _$NoteDataForServerDataImpl instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'message': instance.message,
     };
 
 _$NoteDataForServerEncryptedDataImpl

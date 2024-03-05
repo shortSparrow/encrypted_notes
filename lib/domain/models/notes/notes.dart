@@ -58,7 +58,7 @@ class NoteForServer with _$NoteForServer {
 class NoteDataForServer with _$NoteDataForServer {
   const factory NoteDataForServer({
     required NoteDataForServerMetaData metaData,
-    required NoteDataForServerData data,
+    required NoteDataForServerEncryptedData data,
   }) = _NoteDataForServer;
 
   factory NoteDataForServer.fromJson(Map<String, dynamic> json) =>
@@ -76,18 +76,6 @@ class NoteDataForServerMetaData with _$NoteDataForServerMetaData {
 
   factory NoteDataForServerMetaData.fromJson(Map<String, dynamic> json) =>
       _$NoteDataForServerMetaDataFromJson(json);
-}
-
-// TODO probably delete because duplicate NoteDataForServerEncryptedData
-@freezed
-class NoteDataForServerData with _$NoteDataForServerData {
-  const factory NoteDataForServerData({
-    required EncryptedMessage title,
-    required EncryptedMessage message,
-  }) = _NoteDataForServerData;
-
-  factory NoteDataForServerData.fromJson(Map<String, dynamic> json) =>
-      _$NoteDataForServerDataFromJson(json);
 }
 
 @freezed

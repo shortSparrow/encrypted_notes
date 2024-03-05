@@ -60,8 +60,8 @@ class NotesMapper {
     );
   }
 
-  NoteDataForServerData noteDataForServerEncryptedDataToNoteDataForServerData(
+  NoteDataForServerEncryptedData noteDataForServerEncryptedDataToNoteDataForServerData(
       NoteDataForServerEncryptedData data) {
-    return NoteDataForServerData(message: data.message, title: data.title);
+    return NoteDataForServerEncryptedData(message: data.message, title: data.title);
   }
 }
