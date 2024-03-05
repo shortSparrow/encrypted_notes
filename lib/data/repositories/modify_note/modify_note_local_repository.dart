@@ -53,8 +53,8 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   }
 
   @override
-  Future<bool> addGlobalIdToNote(String globalId, int noteId) async {
-    final result = await notesDao.addGlobalIdToNote(globalId, noteId);
+  Future<bool> addGlobalIdToNote(String noteGlobalId, int noteId) async {
+    final result = await notesDao.addGlobalIdToNote(noteGlobalId, noteId);
     return result != -1;
   }
 }

@@ -14,25 +14,25 @@ class NotesDeviceInfoResponse {
 }
 
 class NotesResponse {
-  final String globalId;
+  final String noteGlobalId;
   final List<NotesDeviceInfoResponse> addNotesDeviceInfoResponse;
 
   NotesResponse({
-    required this.globalId,
+    required this.noteGlobalId,
     required this.addNotesDeviceInfoResponse,
   });
 }
 
 class AddNotesResponse extends NotesResponse {
   AddNotesResponse({
-    required super.globalId,
+    required super.noteGlobalId,
     required super.addNotesDeviceInfoResponse,
   });
 }
 
 class EditNotesResponse extends NotesResponse {
   EditNotesResponse({
-    required super.globalId,
+    required super.noteGlobalId,
     required super.addNotesDeviceInfoResponse,
   });
 }

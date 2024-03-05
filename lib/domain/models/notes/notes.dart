@@ -24,7 +24,7 @@ class Note with _$Note {
     required String createdAt,
     required String updatedAt,
     required int id,
-    required String? globalId,
+    required String? noteGlobalId,
     required List<SyncedDevice> syncedDevices,
   }) = _Note;
 }
@@ -38,7 +38,7 @@ class EncryptedNote with _$EncryptedNote {
     required String createdAt,
     required String updatedAt,
     required int id,
-    required String? globalId,
+    required String? noteGlobalId,
     required List<SyncedDevice> syncedDevices,
   }) = _EncryptedNote;
 }
@@ -46,7 +46,7 @@ class EncryptedNote with _$EncryptedNote {
 @freezed
 class NoteForServer with _$NoteForServer {
   const factory NoteForServer({
-    required String? globalId,
+    required String? noteGlobalId,
     required List<NoteDataForServer> data,
   }) = _NoteForServer;
 
@@ -71,7 +71,7 @@ class NoteDataForServerMetaData with _$NoteDataForServerMetaData {
     required String createdAt,
     required String updatedAt,
     required String sendToDeviceId,
-    required String? globalId,
+    required String? noteGlobalId,
   }) = _NoteDataForServerMetaData;
 
   factory NoteDataForServerMetaData.fromJson(Map<String, dynamic> json) =>

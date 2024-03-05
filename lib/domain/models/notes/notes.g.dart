@@ -20,7 +20,7 @@ Map<String, dynamic> _$$SyncedDeviceImplToJson(_$SyncedDeviceImpl instance) =>
 
 _$NoteForServerImpl _$$NoteForServerImplFromJson(Map<String, dynamic> json) =>
     _$NoteForServerImpl(
-      globalId: json['globalId'] as String?,
+      noteGlobalId: json['noteGlobalId'] as String?,
       data: (json['data'] as List<dynamic>)
           .map((e) => NoteDataForServer.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -28,7 +28,7 @@ _$NoteForServerImpl _$$NoteForServerImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$NoteForServerImplToJson(_$NoteForServerImpl instance) =>
     <String, dynamic>{
-      'globalId': instance.globalId,
+      'noteGlobalId': instance.noteGlobalId,
       'data': instance.data,
     };
 
@@ -54,7 +54,7 @@ _$NoteDataForServerMetaDataImpl _$$NoteDataForServerMetaDataImplFromJson(
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
       sendToDeviceId: json['sendToDeviceId'] as String,
-      globalId: json['globalId'] as String?,
+      noteGlobalId: json['noteGlobalId'] as String?,
     );
 
 Map<String, dynamic> _$$NoteDataForServerMetaDataImplToJson(
@@ -63,7 +63,7 @@ Map<String, dynamic> _$$NoteDataForServerMetaDataImplToJson(
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
       'sendToDeviceId': instance.sendToDeviceId,
-      'globalId': instance.globalId,
+      'noteGlobalId': instance.noteGlobalId,
     };
 
 _$NoteDataForServerEncryptedDataImpl

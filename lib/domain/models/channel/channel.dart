@@ -4,18 +4,18 @@
 
 // class Channel extends Equatable {
 //   final int id;
-//   final int? globalId;
+//   final int? noteGlobalId;
 //   final String name;
 //   final ChannelCategory channelCategory;
 //   // final dynamic visibleData; // what user will see until open channel (like last message in messenger)
 
 //   const Channel({
 //     required this.id,
-//     this.globalId,
+//     this.noteGlobalId,
 //     required this.name,
 //     required this.channelCategory,
 //   });
 
 //   @override
-//   List<Object?> get props => [id, globalId, name, channelCategory];
+//   List<Object?> get props => [id, noteGlobalId, name, channelCategory];
 // }

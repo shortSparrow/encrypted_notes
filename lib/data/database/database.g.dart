@@ -17,11 +17,11 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _globalIdMeta =
-      const VerificationMeta('globalId');
+  static const VerificationMeta _noteGlobalIdMeta =
+      const VerificationMeta('noteGlobalId');
   @override
-  late final GeneratedColumn<String> globalId = GeneratedColumn<String>(
-      'global_id', aliasedName, true,
+  late final GeneratedColumn<String> noteGlobalId = GeneratedColumn<String>(
+      'note_global_id', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _messageMeta =
       const VerificationMeta('message');
@@ -59,8 +59,15 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
           requiredDuringInsert: false,
           defaultValue: const Constant('[]'));
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, globalId, message, title, createdAt, updatedAt, syncedDevicesJson];
+  List<GeneratedColumn> get $columns => [
+        id,
+        noteGlobalId,
+        message,
+        title,
+        createdAt,
+        updatedAt,
+        syncedDevicesJson
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -74,9 +81,11 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('global_id')) {
-      context.handle(_globalIdMeta,
-          globalId.isAcceptableOrUnknown(data['global_id']!, _globalIdMeta));
+    if (data.containsKey('note_global_id')) {
+      context.handle(
+          _noteGlobalIdMeta,
+          noteGlobalId.isAcceptableOrUnknown(
+              data['note_global_id']!, _noteGlobalIdMeta));
     }
     if (data.containsKey('message')) {
       context.handle(_messageMeta,
@@ -115,8 +124,8 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
     return NoteDb(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      globalId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}global_id']),
+      noteGlobalId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}note_global_id']),
       message: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}message'])!,
       title: attachedDatabase.typeMapping
@@ -138,7 +147,7 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, NoteDb> {
 
 class NoteDb extends DataClass implements Insertable<NoteDb> {
   final int id;
-  final String? globalId;
+  final String? noteGlobalId;
   final String message;
   final String title;
   final String createdAt;
@@ -146,7 +155,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
   final String syncedDevicesJson;
   const NoteDb(
       {required this.id,
-      this.globalId,
+      this.noteGlobalId,
       required this.message,
       required this.title,
       required this.createdAt,
@@ -156,8 +165,8 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    if (!nullToAbsent || globalId != null) {
-      map['global_id'] = Variable<String>(globalId);
+    if (!nullToAbsent || noteGlobalId != null) {
+      map['note_global_id'] = Variable<String>(noteGlobalId);
     }
     map['message'] = Variable<String>(message);
     map['title'] = Variable<String>(title);
@@ -170,9 +179,9 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
   NotesCompanion toCompanion(bool nullToAbsent) {
     return NotesCompanion(
       id: Value(id),
-      globalId: globalId == null && nullToAbsent
+      noteGlobalId: noteGlobalId == null && nullToAbsent
           ? const Value.absent()
-          : Value(globalId),
+          : Value(noteGlobalId),
       message: Value(message),
       title: Value(title),
       createdAt: Value(createdAt),
@@ -186,7 +195,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return NoteDb(
       id: serializer.fromJson<int>(json['id']),
-      globalId: serializer.fromJson<String?>(json['globalId']),
+      noteGlobalId: serializer.fromJson<String?>(json['noteGlobalId']),
       message: serializer.fromJson<String>(json['message']),
       title: serializer.fromJson<String>(json['title']),
       createdAt: serializer.fromJson<String>(json['createdAt']),
@@ -199,7 +208,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'globalId': serializer.toJson<String?>(globalId),
+      'noteGlobalId': serializer.toJson<String?>(noteGlobalId),
       'message': serializer.toJson<String>(message),
       'title': serializer.toJson<String>(title),
       'createdAt': serializer.toJson<String>(createdAt),
@@ -210,7 +219,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
 
   NoteDb copyWith(
           {int? id,
-          Value<String?> globalId = const Value.absent(),
+          Value<String?> noteGlobalId = const Value.absent(),
           String? message,
           String? title,
           String? createdAt,
@@ -218,7 +227,8 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
           String? syncedDevicesJson}) =>
       NoteDb(
         id: id ?? this.id,
-        globalId: globalId.present ? globalId.value : this.globalId,
+        noteGlobalId:
+            noteGlobalId.present ? noteGlobalId.value : this.noteGlobalId,
         message: message ?? this.message,
         title: title ?? this.title,
         createdAt: createdAt ?? this.createdAt,
@@ -229,7 +239,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
   String toString() {
     return (StringBuffer('NoteDb(')
           ..write('id: $id, ')
-          ..write('globalId: $globalId, ')
+          ..write('noteGlobalId: $noteGlobalId, ')
           ..write('message: $message, ')
           ..write('title: $title, ')
           ..write('createdAt: $createdAt, ')
@@ -240,14 +250,14 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, globalId, message, title, createdAt, updatedAt, syncedDevicesJson);
+  int get hashCode => Object.hash(id, noteGlobalId, message, title, createdAt,
+      updatedAt, syncedDevicesJson);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is NoteDb &&
           other.id == this.id &&
-          other.globalId == this.globalId &&
+          other.noteGlobalId == this.noteGlobalId &&
           other.message == this.message &&
           other.title == this.title &&
           other.createdAt == this.createdAt &&
@@ -257,7 +267,7 @@ class NoteDb extends DataClass implements Insertable<NoteDb> {
 
 class NotesCompanion extends UpdateCompanion<NoteDb> {
   final Value<int> id;
-  final Value<String?> globalId;
+  final Value<String?> noteGlobalId;
   final Value<String> message;
   final Value<String> title;
   final Value<String> createdAt;
@@ -265,7 +275,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
   final Value<String> syncedDevicesJson;
   const NotesCompanion({
     this.id = const Value.absent(),
-    this.globalId = const Value.absent(),
+    this.noteGlobalId = const Value.absent(),
     this.message = const Value.absent(),
     this.title = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -274,7 +284,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
   });
   NotesCompanion.insert({
     this.id = const Value.absent(),
-    this.globalId = const Value.absent(),
+    this.noteGlobalId = const Value.absent(),
     required String message,
     required String title,
     this.createdAt = const Value.absent(),
@@ -284,7 +294,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
         title = Value(title);
   static Insertable<NoteDb> custom({
     Expression<int>? id,
-    Expression<String>? globalId,
+    Expression<String>? noteGlobalId,
     Expression<String>? message,
     Expression<String>? title,
     Expression<String>? createdAt,
@@ -293,7 +303,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (globalId != null) 'global_id': globalId,
+      if (noteGlobalId != null) 'note_global_id': noteGlobalId,
       if (message != null) 'message': message,
       if (title != null) 'title': title,
       if (createdAt != null) 'created_at': createdAt,
@@ -304,7 +314,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
 
   NotesCompanion copyWith(
       {Value<int>? id,
-      Value<String?>? globalId,
+      Value<String?>? noteGlobalId,
       Value<String>? message,
       Value<String>? title,
       Value<String>? createdAt,
@@ -312,7 +322,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
       Value<String>? syncedDevicesJson}) {
     return NotesCompanion(
       id: id ?? this.id,
-      globalId: globalId ?? this.globalId,
+      noteGlobalId: noteGlobalId ?? this.noteGlobalId,
       message: message ?? this.message,
       title: title ?? this.title,
       createdAt: createdAt ?? this.createdAt,
@@ -327,8 +337,8 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (globalId.present) {
-      map['global_id'] = Variable<String>(globalId.value);
+    if (noteGlobalId.present) {
+      map['note_global_id'] = Variable<String>(noteGlobalId.value);
     }
     if (message.present) {
       map['message'] = Variable<String>(message.value);
@@ -352,7 +362,7 @@ class NotesCompanion extends UpdateCompanion<NoteDb> {
   String toString() {
     return (StringBuffer('NotesCompanion(')
           ..write('id: $id, ')
-          ..write('globalId: $globalId, ')
+          ..write('noteGlobalId: $noteGlobalId, ')
           ..write('message: $message, ')
           ..write('title: $title, ')
           ..write('createdAt: $createdAt, ')

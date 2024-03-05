@@ -12,7 +12,7 @@ part of 'notes.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 SyncedDevice _$SyncedDeviceFromJson(Map<String, dynamic> json) {
   return _SyncedDevice.fromJson(json);
@@ -178,7 +178,7 @@ mixin _$Note {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   int get id => throw _privateConstructorUsedError;
-  String? get globalId => throw _privateConstructorUsedError;
+  String? get noteGlobalId => throw _privateConstructorUsedError;
   List<SyncedDevice> get syncedDevices => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -196,7 +196,7 @@ abstract class $NoteCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       int id,
-      String? globalId,
+      String? noteGlobalId,
       List<SyncedDevice> syncedDevices});
 }
 
@@ -218,7 +218,7 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? id = null,
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
     Object? syncedDevices = null,
   }) {
     return _then(_value.copyWith(
@@ -242,9 +242,9 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
       syncedDevices: null == syncedDevices
           ? _value.syncedDevices
@@ -267,7 +267,7 @@ abstract class _$$NoteImplCopyWith<$Res> implements $NoteCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       int id,
-      String? globalId,
+      String? noteGlobalId,
       List<SyncedDevice> syncedDevices});
 }
 
@@ -286,7 +286,7 @@ class __$$NoteImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? id = null,
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
     Object? syncedDevices = null,
   }) {
     return _then(_$NoteImpl(
@@ -310,9 +310,9 @@ class __$$NoteImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
       syncedDevices: null == syncedDevices
           ? _value._syncedDevices
@@ -331,7 +331,7 @@ class _$NoteImpl implements _Note {
       required this.createdAt,
       required this.updatedAt,
       required this.id,
-      required this.globalId,
+      required this.noteGlobalId,
       required final List<SyncedDevice> syncedDevices})
       : _syncedDevices = syncedDevices;
 
@@ -347,7 +347,7 @@ class _$NoteImpl implements _Note {
   @override
   final int id;
   @override
-  final String? globalId;
+  final String? noteGlobalId;
   final List<SyncedDevice> _syncedDevices;
   @override
   List<SyncedDevice> get syncedDevices {
@@ -358,7 +358,7 @@ class _$NoteImpl implements _Note {
 
   @override
   String toString() {
-    return 'Note(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, globalId: $globalId, syncedDevices: $syncedDevices)';
+    return 'Note(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, noteGlobalId: $noteGlobalId, syncedDevices: $syncedDevices)';
   }
 
   @override
@@ -373,8 +373,8 @@ class _$NoteImpl implements _Note {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.globalId, globalId) ||
-                other.globalId == globalId) &&
+            (identical(other.noteGlobalId, noteGlobalId) ||
+                other.noteGlobalId == noteGlobalId) &&
             const DeepCollectionEquality()
                 .equals(other._syncedDevices, _syncedDevices));
   }
@@ -387,7 +387,7 @@ class _$NoteImpl implements _Note {
       createdAt,
       updatedAt,
       id,
-      globalId,
+      noteGlobalId,
       const DeepCollectionEquality().hash(_syncedDevices));
 
   @JsonKey(ignore: true)
@@ -404,7 +404,7 @@ abstract class _Note implements Note {
       required final String createdAt,
       required final String updatedAt,
       required final int id,
-      required final String? globalId,
+      required final String? noteGlobalId,
       required final List<SyncedDevice> syncedDevices}) = _$NoteImpl;
 
   @override
@@ -418,7 +418,7 @@ abstract class _Note implements Note {
   @override
   int get id;
   @override
-  String? get globalId;
+  String? get noteGlobalId;
   @override
   List<SyncedDevice> get syncedDevices;
   @override
@@ -435,7 +435,7 @@ mixin _$EncryptedNote {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   int get id => throw _privateConstructorUsedError;
-  String? get globalId => throw _privateConstructorUsedError;
+  String? get noteGlobalId => throw _privateConstructorUsedError;
   List<SyncedDevice> get syncedDevices => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -455,7 +455,7 @@ abstract class $EncryptedNoteCopyWith<$Res> {
       String createdAt,
       String updatedAt,
       int id,
-      String? globalId,
+      String? noteGlobalId,
       List<SyncedDevice> syncedDevices});
 
   $EncryptedMessageCopyWith<$Res> get message;
@@ -479,7 +479,7 @@ class _$EncryptedNoteCopyWithImpl<$Res, $Val extends EncryptedNote>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? id = null,
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
     Object? syncedDevices = null,
   }) {
     return _then(_value.copyWith(
@@ -503,9 +503,9 @@ class _$EncryptedNoteCopyWithImpl<$Res, $Val extends EncryptedNote>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
       syncedDevices: null == syncedDevices
           ? _value.syncedDevices
@@ -537,7 +537,7 @@ abstract class _$$EncryptedNoteImplCopyWith<$Res>
       String createdAt,
       String updatedAt,
       int id,
-      String? globalId,
+      String? noteGlobalId,
       List<SyncedDevice> syncedDevices});
 
   @override
@@ -560,7 +560,7 @@ class __$$EncryptedNoteImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? id = null,
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
     Object? syncedDevices = null,
   }) {
     return _then(_$EncryptedNoteImpl(
@@ -584,9 +584,9 @@ class __$$EncryptedNoteImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
       syncedDevices: null == syncedDevices
           ? _value._syncedDevices
@@ -605,7 +605,7 @@ class _$EncryptedNoteImpl implements _EncryptedNote {
       required this.createdAt,
       required this.updatedAt,
       required this.id,
-      required this.globalId,
+      required this.noteGlobalId,
       required final List<SyncedDevice> syncedDevices})
       : _syncedDevices = syncedDevices;
 
@@ -621,7 +621,7 @@ class _$EncryptedNoteImpl implements _EncryptedNote {
   @override
   final int id;
   @override
-  final String? globalId;
+  final String? noteGlobalId;
   final List<SyncedDevice> _syncedDevices;
   @override
   List<SyncedDevice> get syncedDevices {
@@ -632,7 +632,7 @@ class _$EncryptedNoteImpl implements _EncryptedNote {
 
   @override
   String toString() {
-    return 'EncryptedNote(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, globalId: $globalId, syncedDevices: $syncedDevices)';
+    return 'EncryptedNote(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, noteGlobalId: $noteGlobalId, syncedDevices: $syncedDevices)';
   }
 
   @override
@@ -647,8 +647,8 @@ class _$EncryptedNoteImpl implements _EncryptedNote {
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.globalId, globalId) ||
-                other.globalId == globalId) &&
+            (identical(other.noteGlobalId, noteGlobalId) ||
+                other.noteGlobalId == noteGlobalId) &&
             const DeepCollectionEquality()
                 .equals(other._syncedDevices, _syncedDevices));
   }
@@ -661,7 +661,7 @@ class _$EncryptedNoteImpl implements _EncryptedNote {
       createdAt,
       updatedAt,
       id,
-      globalId,
+      noteGlobalId,
       const DeepCollectionEquality().hash(_syncedDevices));
 
   @JsonKey(ignore: true)
@@ -678,7 +678,7 @@ abstract class _EncryptedNote implements EncryptedNote {
       required final String createdAt,
       required final String updatedAt,
       required final int id,
-      required final String? globalId,
+      required final String? noteGlobalId,
       required final List<SyncedDevice> syncedDevices}) = _$EncryptedNoteImpl;
 
   @override
@@ -692,7 +692,7 @@ abstract class _EncryptedNote implements EncryptedNote {
   @override
   int get id;
   @override
-  String? get globalId;
+  String? get noteGlobalId;
   @override
   List<SyncedDevice> get syncedDevices;
   @override
@@ -707,7 +707,7 @@ NoteForServer _$NoteForServerFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$NoteForServer {
-  String? get globalId => throw _privateConstructorUsedError;
+  String? get noteGlobalId => throw _privateConstructorUsedError;
   List<NoteDataForServer> get data => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -722,7 +722,7 @@ abstract class $NoteForServerCopyWith<$Res> {
           NoteForServer value, $Res Function(NoteForServer) then) =
       _$NoteForServerCopyWithImpl<$Res, NoteForServer>;
   @useResult
-  $Res call({String? globalId, List<NoteDataForServer> data});
+  $Res call({String? noteGlobalId, List<NoteDataForServer> data});
 }
 
 /// @nodoc
@@ -738,13 +738,13 @@ class _$NoteForServerCopyWithImpl<$Res, $Val extends NoteForServer>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
     Object? data = null,
   }) {
     return _then(_value.copyWith(
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
       data: null == data
           ? _value.data
@@ -762,7 +762,7 @@ abstract class _$$NoteForServerImplCopyWith<$Res>
       __$$NoteForServerImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? globalId, List<NoteDataForServer> data});
+  $Res call({String? noteGlobalId, List<NoteDataForServer> data});
 }
 
 /// @nodoc
@@ -776,13 +776,13 @@ class __$$NoteForServerImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
     Object? data = null,
   }) {
     return _then(_$NoteForServerImpl(
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
       data: null == data
           ? _value._data
@@ -796,14 +796,14 @@ class __$$NoteForServerImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$NoteForServerImpl implements _NoteForServer {
   const _$NoteForServerImpl(
-      {required this.globalId, required final List<NoteDataForServer> data})
+      {required this.noteGlobalId, required final List<NoteDataForServer> data})
       : _data = data;
 
   factory _$NoteForServerImpl.fromJson(Map<String, dynamic> json) =>
       _$$NoteForServerImplFromJson(json);
 
   @override
-  final String? globalId;
+  final String? noteGlobalId;
   final List<NoteDataForServer> _data;
   @override
   List<NoteDataForServer> get data {
@@ -814,7 +814,7 @@ class _$NoteForServerImpl implements _NoteForServer {
 
   @override
   String toString() {
-    return 'NoteForServer(globalId: $globalId, data: $data)';
+    return 'NoteForServer(noteGlobalId: $noteGlobalId, data: $data)';
   }
 
   @override
@@ -822,15 +822,15 @@ class _$NoteForServerImpl implements _NoteForServer {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$NoteForServerImpl &&
-            (identical(other.globalId, globalId) ||
-                other.globalId == globalId) &&
+            (identical(other.noteGlobalId, noteGlobalId) ||
+                other.noteGlobalId == noteGlobalId) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, globalId, const DeepCollectionEquality().hash(_data));
+      runtimeType, noteGlobalId, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
@@ -848,14 +848,14 @@ class _$NoteForServerImpl implements _NoteForServer {
 
 abstract class _NoteForServer implements NoteForServer {
   const factory _NoteForServer(
-      {required final String? globalId,
+      {required final String? noteGlobalId,
       required final List<NoteDataForServer> data}) = _$NoteForServerImpl;
 
   factory _NoteForServer.fromJson(Map<String, dynamic> json) =
       _$NoteForServerImpl.fromJson;
 
   @override
-  String? get globalId;
+  String? get noteGlobalId;
   @override
   List<NoteDataForServer> get data;
   @override
@@ -1059,7 +1059,7 @@ mixin _$NoteDataForServerMetaData {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
   String get sendToDeviceId => throw _privateConstructorUsedError;
-  String? get globalId => throw _privateConstructorUsedError;
+  String? get noteGlobalId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -1077,7 +1077,7 @@ abstract class $NoteDataForServerMetaDataCopyWith<$Res> {
       {String createdAt,
       String updatedAt,
       String sendToDeviceId,
-      String? globalId});
+      String? noteGlobalId});
 }
 
 /// @nodoc
@@ -1097,7 +1097,7 @@ class _$NoteDataForServerMetaDataCopyWithImpl<$Res,
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? sendToDeviceId = null,
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
   }) {
     return _then(_value.copyWith(
       createdAt: null == createdAt
@@ -1112,9 +1112,9 @@ class _$NoteDataForServerMetaDataCopyWithImpl<$Res,
           ? _value.sendToDeviceId
           : sendToDeviceId // ignore: cast_nullable_to_non_nullable
               as String,
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -1133,7 +1133,7 @@ abstract class _$$NoteDataForServerMetaDataImplCopyWith<$Res>
       {String createdAt,
       String updatedAt,
       String sendToDeviceId,
-      String? globalId});
+      String? noteGlobalId});
 }
 
 /// @nodoc
@@ -1152,7 +1152,7 @@ class __$$NoteDataForServerMetaDataImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? updatedAt = null,
     Object? sendToDeviceId = null,
-    Object? globalId = freezed,
+    Object? noteGlobalId = freezed,
   }) {
     return _then(_$NoteDataForServerMetaDataImpl(
       createdAt: null == createdAt
@@ -1167,9 +1167,9 @@ class __$$NoteDataForServerMetaDataImplCopyWithImpl<$Res>
           ? _value.sendToDeviceId
           : sendToDeviceId // ignore: cast_nullable_to_non_nullable
               as String,
-      globalId: freezed == globalId
-          ? _value.globalId
-          : globalId // ignore: cast_nullable_to_non_nullable
+      noteGlobalId: freezed == noteGlobalId
+          ? _value.noteGlobalId
+          : noteGlobalId // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -1182,7 +1182,7 @@ class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
       {required this.createdAt,
       required this.updatedAt,
       required this.sendToDeviceId,
-      required this.globalId});
+      required this.noteGlobalId});
 
   factory _$NoteDataForServerMetaDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$NoteDataForServerMetaDataImplFromJson(json);
@@ -1194,11 +1194,11 @@ class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
   @override
   final String sendToDeviceId;
   @override
-  final String? globalId;
+  final String? noteGlobalId;
 
   @override
   String toString() {
-    return 'NoteDataForServerMetaData(createdAt: $createdAt, updatedAt: $updatedAt, sendToDeviceId: $sendToDeviceId, globalId: $globalId)';
+    return 'NoteDataForServerMetaData(createdAt: $createdAt, updatedAt: $updatedAt, sendToDeviceId: $sendToDeviceId, noteGlobalId: $noteGlobalId)';
   }
 
   @override
@@ -1212,14 +1212,14 @@ class _$NoteDataForServerMetaDataImpl implements _NoteDataForServerMetaData {
                 other.updatedAt == updatedAt) &&
             (identical(other.sendToDeviceId, sendToDeviceId) ||
                 other.sendToDeviceId == sendToDeviceId) &&
-            (identical(other.globalId, globalId) ||
-                other.globalId == globalId));
+            (identical(other.noteGlobalId, noteGlobalId) ||
+                other.noteGlobalId == noteGlobalId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, createdAt, updatedAt, sendToDeviceId, globalId);
+  int get hashCode => Object.hash(
+      runtimeType, createdAt, updatedAt, sendToDeviceId, noteGlobalId);
 
   @JsonKey(ignore: true)
   @override
@@ -1241,7 +1241,7 @@ abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
       {required final String createdAt,
       required final String updatedAt,
       required final String sendToDeviceId,
-      required final String? globalId}) = _$NoteDataForServerMetaDataImpl;
+      required final String? noteGlobalId}) = _$NoteDataForServerMetaDataImpl;
 
   factory _NoteDataForServerMetaData.fromJson(Map<String, dynamic> json) =
       _$NoteDataForServerMetaDataImpl.fromJson;
@@ -1253,7 +1253,7 @@ abstract class _NoteDataForServerMetaData implements NoteDataForServerMetaData {
   @override
   String get sendToDeviceId;
   @override
-  String? get globalId;
+  String? get noteGlobalId;
   @override
   @JsonKey(ignore: true)
   _$$NoteDataForServerMetaDataImplCopyWith<_$NoteDataForServerMetaDataImpl>

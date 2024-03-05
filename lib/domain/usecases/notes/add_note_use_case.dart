@@ -130,13 +130,13 @@ class AddNoteUseCase {
     try {
       final encryptedData = await _encryptNoteForEachRecipient(note: note);
       final result = await _modifyNoteRemoteRepository
-          .addNotes([NoteForServer(data: encryptedData, globalId: null)]);
+          .addNotes([NoteForServer(data: encryptedData, noteGlobalId: null)]);
 
       for (var responseNote in result) {
         await _synchronizeRemoteResponse(
           responseNote.addNotesDeviceInfoResponse,
           note.id,
-          responseNote.globalId,
+          responseNote.noteGlobalId,
         );
       }
 
@@ -169,7 +169,7 @@ class AddNoteUseCase {
           createdAt: note.createdAt,
           updatedAt: note.updatedAt,
           sendToDeviceId: remoteDevice.id,
-          globalId: null,
+          noteGlobalId: null,
         ),
         data:
             _notesMapper.noteDataForServerEncryptedDataToNoteDataForServerData(
@@ -185,7 +185,7 @@ class AddNoteUseCase {
   Future _synchronizeRemoteResponse(
     List<NotesDeviceInfoResponse> response,
     int noteId,
-    String globalId,
+    String noteGlobalId,
   ) async {
     final syncingDeviceStatusList = response
         .map((item) => SyncedDevice(
@@ -200,7 +200,7 @@ class AddNoteUseCase {
         noteId,
       );
 
-      await _modifyNoteLocalRepository.addGlobalIdToNote(globalId, noteId);
+      await _modifyNoteLocalRepository.addGlobalIdToNote(noteGlobalId, noteId);
     });
   }
 }

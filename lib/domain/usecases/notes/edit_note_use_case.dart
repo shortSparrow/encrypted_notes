@@ -81,13 +81,13 @@ class EditNoteUseCase {
 
   RemoteEditResponse _editNoteRemote({required Note note}) async {
     try {
-      if (note.globalId == null) {
+      if (note.noteGlobalId == null) {
         return left(GeneralFailure(message: "no global id"));
       }
       final encryptedNoteList = await _encryptNoteForEachRecipient(note: note);
 
       final result = await _modifyNoteRemoteRepository.editNotes([
-        NoteForServer(globalId: note.globalId, data: encryptedNoteList),
+        NoteForServer(noteGlobalId: note.noteGlobalId, data: encryptedNoteList),
       ]);
 
       for (var responseNote in result) {
@@ -130,7 +130,7 @@ class EditNoteUseCase {
           createdAt: note.createdAt,
           updatedAt: note.updatedAt,
           sendToDeviceId: remoteDevice.id,
-          globalId: note.globalId,
+          noteGlobalId: note.noteGlobalId,
         ),
         data:
             _notesMapper.noteDataForServerEncryptedDataToNoteDataForServerData(

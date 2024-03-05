@@ -36,11 +36,11 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   @override
   Future<List<AddNotesResponse>> addNotes(List<NoteForServer> data) async {
     // TODO implement
-    final globalId = DateTime.timestamp().millisecond;
+    final noteGlobalId = DateTime.timestamp().millisecond.toString();
     await Future.delayed(const Duration(seconds: 1));
     return [
       AddNotesResponse(
-        globalId: globalId,
+        noteGlobalId: noteGlobalId,
         addNotesDeviceInfoResponse: [
           NotesDeviceInfoResponse(
             deviceId: "device_1",
@@ -71,7 +71,7 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
     await Future.delayed(const Duration(seconds: 1));
     return [
       EditNotesResponse(
-        globalId: data[0].globalId as int,
+        noteGlobalId: data[0].noteGlobalId as int,
         addNotesDeviceInfoResponse: [
           NotesDeviceInfoResponse(
             deviceId: "device_1",

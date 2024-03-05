@@ -21,7 +21,7 @@ class NotesMapper {
       updatedAt: noteDb.updatedAt,
       id: noteDb.id,
       syncedDevices: syncedDevices,
-      globalId: noteDb.globalId,
+      noteGlobalId: noteDb.noteGlobalId,
     );
   }
 
@@ -43,7 +43,7 @@ class NotesMapper {
       updatedAt: noteDb.updatedAt,
       id: noteDb.id,
       syncedDevices: syncedDevices,
-      globalId: noteDb.globalId,
+      noteGlobalId: noteDb.noteGlobalId,
     );
   }
 
@@ -55,7 +55,7 @@ class NotesMapper {
       createdAt: encryptedNote.createdAt,
       updatedAt: encryptedNote.updatedAt,
       id: encryptedNote.id,
-      globalId: encryptedNote.globalId,
+      noteGlobalId: encryptedNote.noteGlobalId,
       syncedDevices: encryptedNote.syncedDevices,
     );
   }
