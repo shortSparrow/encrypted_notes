@@ -7,10 +7,12 @@ abstract class ModifyNoteLocalRepository {
   Future<bool> deleteNote(int noteId);
   Stream<List<EncryptedNote>> getNotes();
   Future<EncryptedNote?> getNoteById(int id);
-
+  Future<EncryptedNote?> getNoteByGlobalId(String globalId);
+  Future<List<EncryptedNote>> getNotesWhichHasUnSyncedDevice();
   Future updateSyncingDeviceForNote(
     String syncedDevicesJson,
     int noteId,
   );
   Future<bool> addGlobalIdToNote(String noteGlobalId, int noteId);
+  Future replaceLocalNotesWithRemote(List<NotesCompanion> notes);
 }

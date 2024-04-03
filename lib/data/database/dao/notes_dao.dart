@@ -11,8 +11,19 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
     return select(notes);
   }
 
+  Future<List<NoteDb>> getNotesWhichHasUnSyncedDevice() {
+    return (select(notes)
+          ..where((tbl) => tbl.syncedDevicesJson.contains('"isSynced":false')))
+        .get();
+  }
+
   Future<NoteDb?> getNoteById(int noteId) {
     return (select(notes)..where((tbl) => tbl.id.equals(noteId)))
+        .getSingleOrNull();
+  }
+
+  Future<NoteDb?> getNoteByGlobalId(String globalId) {
+    return (select(notes)..where((tbl) => tbl.noteGlobalId.equals(globalId)))
         .getSingleOrNull();
   }
 
@@ -33,9 +44,11 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
     return (delete(notes)..where((tbl) => tbl.id.equals(noteId))).go();
   }
 
-// FIXME current problem, if server return me different device id, I just ovveride my loca id and lost info about synchronizing
+  Future deleteAllNotes() {
+    return delete(notes).go();
+  }
+
   Future<int> updateSyncingDeviceForNote(String syncedDevicesJson, int noteId) {
-    // TODO right now I just override whole raw with values from server. Maybe would be better to get current syncedDevicesJson, update them using new values from server and then update database
     return (update(notes)..where((tbl) => tbl.id.equals(noteId)))
         .write(NotesCompanion(syncedDevicesJson: Value(syncedDevicesJson)));
   }

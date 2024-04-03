@@ -1,19 +1,16 @@
-import 'package:cryptography/cryptography.dart';
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
+import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
-import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 
 class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   final NotesMapper notesMapper = NotesMapper();
 
   ModifyNoteRemoteRepositoryImpl();
-
-  @override
-  Future<bool> addNote(Note note) {
-    // TODO: implement addNote
-    throw UnimplementedError();
-  }
 
   @override
   Future<bool> deleteNote(int noteId) {
@@ -22,77 +19,100 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   }
 
   @override
-  Future<bool> editNote(Note note) {
-    // TODO: implement editNote
-    throw UnimplementedError();
+  Future<List<GetAllNotesResponse>> getNotes() async {
+    try {
+      final response = await apiClient.get<List<dynamic>>('/get-all-notes');
+
+      final allNotes = response.data?.map((note) {
+        List<dynamic> syncedWithDevices = note['metaData']['syncedWithDevices'];
+        List<String> syncedWithDevicesId =
+            syncedWithDevices.map((item) => item.toString()).toList();
+
+        return GetAllNotesResponse(
+          title: EncryptedMessage.fromJson(note['data']['title']),
+          message: EncryptedMessage.fromJson(note['data']['message']),
+          createdAt: note['metaData']['createdAt'],
+          updatedAt: note['metaData']['updatedAt'],
+          noteGlobalId: note['metaData']['noteGlobalId'],
+          sendFromDeviceId: note['metaData']['sendFromDeviceId'],
+          syncedWithDevicesId:
+              syncedWithDevicesId, // todo maybe list return error, check types
+        );
+      }).toList();
+
+      if (allNotes == null) {
+        throw UnexpectedFailure();
+      }
+
+      return allNotes;
+    } on DioException catch (e) {
+      print("addNote error ${e}");
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data,
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
   }
 
   @override
-  Stream<List<Note>> getNotes() {
-    // TODO: implement getNotes
-    throw UnimplementedError();
-  }
+  Future<AddNotesResponse> addNote(List<NoteDataForServer> data) async {
+    try {
+      final response = await apiClient.post<Map<String, dynamic>>(
+        '/add-notes',
+        data: jsonEncode(data),
+      );
 
-  @override
-  Future<List<AddNotesResponse>> addNotes(List<NoteForServer> data) async {
-    // TODO implement
-    final noteGlobalId = DateTime.timestamp().millisecond.toString();
-    await Future.delayed(const Duration(seconds: 1));
-    return [
-      AddNotesResponse(
+      final noteGlobalId = response.data?['noteGlobalId'];
+      final parsedResponse = response.data?['notes']?.map((e) => NoteResponse(
+            deviceId: e["sendToDeviceId"],
+            isSuccess: e["isSuccess"],
+            noteGlobalId: noteGlobalId,
+          ));
+
+      return AddNotesResponse(
         noteGlobalId: noteGlobalId,
-        addNotesDeviceInfoResponse: [
-          NotesDeviceInfoResponse(
-            deviceId: "device_1",
-            isSuccess: true,
-            devicePublicKey:
-                SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
-          ),
-          NotesDeviceInfoResponse(
-            deviceId: "device_2",
-            isSuccess: true,
-            devicePublicKey:
-                SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
-          ),
-          NotesDeviceInfoResponse(
-            deviceId: "device_3",
-            isSuccess: false,
-            devicePublicKey:
-                SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
-          ),
-        ],
-      )
-    ];
+        notes: List<NoteResponse>.from(parsedResponse),
+      );
+    } on DioException catch (e) {
+      print("addNote error ${e}");
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data,
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
   }
 
   @override
-  Future<List<EditNotesResponse>> editNotes(List<NoteForServer> data) async {
-    // TODO implement
-    await Future.delayed(const Duration(seconds: 1));
-    return [
-      EditNotesResponse(
-        noteGlobalId: data[0].noteGlobalId as int,
-        addNotesDeviceInfoResponse: [
-          NotesDeviceInfoResponse(
-            deviceId: "device_1",
-            isSuccess: true,
-            devicePublicKey:
-                SimplePublicKey(publicBytes_1, type: KeyPairType.x25519),
-          ),
-          NotesDeviceInfoResponse(
-            deviceId: "device_2",
-            isSuccess: true,
-            devicePublicKey:
-                SimplePublicKey(publicBytes_2, type: KeyPairType.x25519),
-          ),
-          NotesDeviceInfoResponse(
-            deviceId: "device_3",
-            isSuccess: false,
-            devicePublicKey:
-                SimplePublicKey(publicBytes_3, type: KeyPairType.x25519),
-          ),
-        ],
-      )
-    ];
+  Future<EditNotesResponse> editNote(List<NoteDataForServer> data) async {
+    try {
+      final response = await apiClient.put<Map<String, dynamic>>(
+        '/edit-notes',
+        data: jsonEncode(data),
+      );
+
+      final noteGlobalId = response.data?['noteGlobalId'];
+      final parsedResponse = response.data?['notes']?.map((e) => NoteResponse(
+            deviceId: e["sendToDeviceId"],
+            isSuccess: e["isSuccess"],
+            noteGlobalId: noteGlobalId,
+          ));
+
+      return EditNotesResponse(
+        noteGlobalId: noteGlobalId,
+        notes: List<NoteResponse>.from(parsedResponse),
+      );
+    } on DioException catch (e) {
+      print("editNote error ${e}");
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data,
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
   }
 }

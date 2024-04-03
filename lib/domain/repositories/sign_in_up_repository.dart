@@ -1,19 +1,41 @@
+import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 
-// TODO probably add special sightUpFailure
-abstract class SignInUpRepository {
-  Future<User> signUp(
-    String deviceId,
-    String phone,
-    String password,
-  );
+class RegisterUserResponse {
+  final User user;
+  final UserTokens tokens;
 
-  Future<User> singIn(
-    String deviceId,
-    String phone,
-    String password,
-  );
+  RegisterUserResponse({
+    required this.user,
+    required this.tokens,
+  });
+}
+
+class LoginUserResponse {
+  final User user;
+  final UserTokens tokens;
+
+  LoginUserResponse({
+    required this.user,
+    required this.tokens,
+  });
+}
+
+abstract class SignInUpRepository {
+  Future<RegisterUserResponse> signUp({
+    required String deviceId,
+    required String phone,
+    required String password,
+    required SimplePublicKey noteEncryptionPublicKey,
+  });
+
+  Future<LoginUserResponse> singIn({
+    required String deviceId,
+    required String phone,
+    required String password,
+    required SimplePublicKey noteEncryptionPublicKey,
+  });
 
 // TODO add logout
-  // Future<Either<Failure, bool>> logout();
+// Future<Either<Failure, bool>> logout();
 }

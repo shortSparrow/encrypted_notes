@@ -20,6 +20,8 @@ class RemoteDeviceMapper {
       systemVersion: remoteDeviceDb.systemVersion,
       devicePublicKey: SimplePublicKeyConvertorExtension.fromJsonString(
           remoteDeviceDb.devicePublicKey),
+      userId: remoteDeviceDb.userId,
+      deleted: false
     );
   }
 }

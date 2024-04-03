@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:collection/collection.dart';
 
 import 'package:dartz/dartz.dart';
+import 'package:drift/drift.dart';
+import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
@@ -8,6 +12,7 @@ import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 
 class GetNotesResponse {
@@ -28,17 +33,20 @@ class LoadNoteUseCase {
     required SecretSharedPreferencesRepository
         secretSharedPreferencesRepository,
     required MessageEncryptionUseCase messageEncryptionUseCase,
+    required RemoteDeviceRepositoryLocal remoteDeviceRepositoryLocal,
   })  : _modifyNoteLocalRepository = modifyNoteRepository,
         _modifyNoteRemoteRepository = modifyNoteRemoteRepository,
         _notesMapper = notesMapper,
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
-        _messageEncryptionUseCase = messageEncryptionUseCase;
+        _messageEncryptionUseCase = messageEncryptionUseCase,
+        _remoteDeviceRepositoryLocal = remoteDeviceRepositoryLocal;
 
   final ModifyNoteLocalRepository _modifyNoteLocalRepository;
   final ModifyNoteRemoteRepository _modifyNoteRemoteRepository;
   final NotesMapper _notesMapper;
   final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
   final MessageEncryptionUseCase _messageEncryptionUseCase;
+  final RemoteDeviceRepositoryLocal _remoteDeviceRepositoryLocal;
 
   GetNotesResponse getNotes() {
     return GetNotesResponse(
@@ -51,10 +59,93 @@ class LoadNoteUseCase {
     yield RequestStatus.loading;
     try {
       final notesFromServer = await _modifyNoteRemoteRepository.getNotes();
-      // TODO sync loaded notes with local
+      final notesWhichHasUnSyncedDevice =
+          await _modifyNoteLocalRepository.getNotesWhichHasUnSyncedDevice();
+
+      final _notes = await Future.wait(
+        notesFromServer.map((data) async {
+          final device = await _remoteDeviceRepositoryLocal
+              .getRemoteDeviceById(data.sendFromDeviceId);
+
+          if (device == null) {
+            // TODO можливо спробувати запитати в сервера remoteDevice
+            return null;
+          }
+
+          final decryptedTitle =
+              await _messageEncryptionUseCase.decryptMessageE2E(
+            data.title,
+            device.devicePublicKey,
+          );
+
+          final decryptedMessage =
+              await _messageEncryptionUseCase.decryptMessageE2E(
+            data.message,
+            device.devicePublicKey,
+          );
+
+          print("decryptedMessage: ${decryptedMessage}");
+
+          final localSecretKey =
+              await _secretSharedPreferencesRepository.getLocalSymmetricKey();
+
+          final encryptedMessageLocal =
+              await _messageEncryptionUseCase.encryptMessageForLocal(
+            decryptedMessage,
+            localSecretKey,
+          );
+
+          final indexMatched = notesWhichHasUnSyncedDevice.indexWhere(
+              (element) => element.noteGlobalId == data.noteGlobalId);
+          final localNoteUnSyncedDevicesId = indexMatched == -1
+              ? List.empty()
+              : notesWhichHasUnSyncedDevice[indexMatched]
+                  .syncedDevices
+                  .where((element) => element.isSynced == false)
+                  .toList();
+
+          print("localNoteUnSyncedDevicesId: ${localNoteUnSyncedDevicesId}");
+
+          final isUnSynced = localNoteUnSyncedDevicesId.any((element) {
+            return data.syncedWithDevicesId.contains(element.deviceId) == true;
+          });
+          print("isUnSynced: ${isUnSynced}");
+
+          // ** If we have conflict between local and remote don't override local data
+          if (isUnSynced) {
+            return null;
+          }
+
+          return NotesCompanion(
+            noteGlobalId: Value(data.noteGlobalId),
+            message: Value(jsonEncode(encryptedMessageLocal.toJson())),
+            title: Value(decryptedTitle),
+            createdAt: Value(data.createdAt),
+            updatedAt: Value(data.updatedAt),
+            syncedDevicesJson: Value(
+              jsonEncode(
+                data.syncedWithDevicesId.map((syncedDeviceId) {
+                  return SyncedDevice(
+                    deviceId: syncedDeviceId,
+                    isSynced: true,
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        }).toList(),
+      );
+
+      List<NotesCompanion> notes = _notes
+          .where((element) => element != null)
+          .toList()
+          .cast<NotesCompanion>();
+// Зараз оверрайдтиь , але може бути так що локально все ок, а на сервер не відправилось в такому випадку сервер знищить локальні дані (треба дивитися чи isSinced: tue)
+      _modifyNoteLocalRepository.replaceLocalNotesWithRemote(notes);
 
       yield RequestStatus.success;
     } catch (e) {
+      print("_getLoadingNotesFromServer error: ${e}");
       yield RequestStatus.failed;
     }
   }

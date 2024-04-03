@@ -26,6 +26,26 @@ class SingUpBody extends StatelessWidget {
                 context.go(AppScreens.home.path);
               }
             }
+            if (state.signUpStatus == RequestStatus.failed) {
+              final errorMessage = state.signUpError;
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('AlertDialog error'),
+                  content: Text("${errorMessage}"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
           builder: (context, state) {
             final phoneErrorMessage =

@@ -112,6 +112,7 @@ final devicePublicKey_3 =
     SimplePublicKey(publicBytes_3, type: KeyPairType.x25519);
 
 // TODO implement real
+// Що це і нахуя воно треба?
 class GetSyncedDeviceListUseCase {
   Future<List<SyncedDevice>> getSyncedDeviceList() async {
     return const [

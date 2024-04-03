@@ -44,17 +44,6 @@ class EncryptedNote with _$EncryptedNote {
 }
 
 @freezed
-class NoteForServer with _$NoteForServer {
-  const factory NoteForServer({
-    required String? noteGlobalId,
-    required List<NoteDataForServer> data,
-  }) = _NoteForServer;
-
-  factory NoteForServer.fromJson(Map<String, dynamic> json) =>
-      _$NoteForServerFromJson(json);
-}
-
-@freezed
 class NoteDataForServer with _$NoteDataForServer {
   const factory NoteDataForServer({
     required NoteDataForServerMetaData metaData,

@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 
 abstract class UserKeys {
   static const user = 'user';
+  static const tokens = 'tokens';
 }
 
 // When user logout we must delete  data for user, when login save again
@@ -14,8 +15,12 @@ class UserLocalRepositoryImpl extends UserLocalRepository {
   final userState = Hive.box(HiveBoxes.userBox);
 
   @override
-  User getUser() {
-    return User.fromJson(jsonDecode(userState.get(UserKeys.user)));
+  User? getUser() {
+    final user = userState.get(UserKeys.user);
+    if (user == null) {
+      return null;
+    }
+    return User.fromJson(jsonDecode(user));
   }
 
   @override
@@ -26,13 +31,34 @@ class UserLocalRepositoryImpl extends UserLocalRepository {
   @override
   setBioWebId(List<int> id) async {
     final user = getUser();
-    await userState.put(UserKeys.user, user.copyWith(bioWedId: id));
+    await userState.put(UserKeys.user, user!.copyWith(bioWedId: id));
   }
 
   @override
-  setToken(String token) async {
-    final user = getUser();
-    await userState.put(UserKeys.user, user.copyWith(token: token));
+  setUserTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    await userState.put(
+      UserKeys.tokens,
+      jsonEncode(
+        UserTokens(
+          refreshToken: refreshToken,
+          accessToken: accessToken,
+        ),
+      ),
+    );
+  }
+
+  @override
+  UserTokens? getUserTokens() {
+    final tokens = userState.get(UserKeys.tokens);
+    if (tokens == null) {
+      return null;
+    }
+    final tokensJson = jsonDecode(tokens);
+
+    return UserTokens.fromJson(tokensJson);
   }
 
   @override

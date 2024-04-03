@@ -21,6 +21,26 @@ class SingInBody extends StatelessWidget {
             if (state.signInStatus == RequestStatus.success) {
               context.go(AppScreens.home.path);
             }
+            if (state.signInStatus == RequestStatus.failed) {
+              final errorMessage = state.signUpError;
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('AlertDialog error'),
+                  content:  Text("${errorMessage}"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
           builder: (context, state) {
             final phoneErrorMessage =
@@ -37,7 +57,8 @@ class SingInBody extends StatelessWidget {
             final loginDisable = phoneErrorMessage != null ||
                 passwordErrorMessage != null ||
                 state.phone.value.isEmpty ||
-                state.password.value.isEmpty || isLoading;
+                state.password.value.isEmpty ||
+                isLoading;
 
             return Expanded(
               child: Column(

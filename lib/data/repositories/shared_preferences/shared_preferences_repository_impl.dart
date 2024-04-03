@@ -9,12 +9,19 @@ class SharedPreferencesRepositoryImpl extends SharedPreferencesRepository {
   @override
   UserStateDb getUserState() {
     final isLogged = userState.get(UserStateKeys.isLogged, defaultValue: false);
+    final deviceId = userState.get(UserStateKeys.deviceId, defaultValue: '');
 
-    return UserStateDb(isLogged: isLogged);
+    return UserStateDb(isLogged: isLogged, deviceId: deviceId);
   }
 
   @override
   setIsLogged(bool isLogged) async {
     await userState.put(UserStateKeys.isLogged, isLogged);
+  }
+
+// FIXME note used now
+  @override
+  Future setUniqueDeviceId(String deviceId) async {
+    await userState.put(UserStateKeys.deviceId, deviceId);
   }
 }

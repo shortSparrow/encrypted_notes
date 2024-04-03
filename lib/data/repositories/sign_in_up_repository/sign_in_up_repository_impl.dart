@@ -1,27 +1,94 @@
+import 'dart:convert';
+
+import 'package:cryptography/cryptography.dart';
+import 'package:dio/dio.dart';
+import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/sign_in_up_repository.dart';
+import 'package:encrypted_notes/extensions/encryption_key_extension.dart';
 
-// TODO implement requiest with Dio
 class SignInUpRepositoryImpl extends SignInUpRepository {
   @override
-  Future<User>singIn(
-    String deviceId,
-    String phone,
-    String password,
-  ) async {
-    // if response has 404 error or anyting els thtow this error
-    await Future.delayed(const Duration(seconds: 2));
-    return User(phone: phone, token: phone, bioWedId: null, id: '1'); // FIXME  or maybe nor null if user set it before (check the flow)
+  Future<LoginUserResponse> singIn({
+    required String deviceId,
+    required String phone,
+    required String password,
+    required SimplePublicKey noteEncryptionPublicKey,
+  }) async {
+    try {
+      final result = await apiClient.post<Map<String, dynamic>>(
+        '/login',
+        data: jsonEncode(
+          {
+            "deviceId": deviceId,
+            "phone": phone,
+            "password": password,
+            "noteEncryptionPublicKey": noteEncryptionPublicKey.toJson()
+          },
+        ),
+      );
+
+      return LoginUserResponse(
+        user: User(
+          phone: phone,
+          bioWedId: null,
+          id: result.data?["userId"],
+        ),
+        tokens: UserTokens(
+          accessToken: result.data?["accessToken"],
+          refreshToken: result.data?["refreshToken"],
+        ),
+      );
+    } on DioException catch (e) {
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data["message"],
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
   }
 
   @override
-  Future<User> signUp(
-    String deviceId,
-    String phone,
-    String password,
-  ) async {
-    // if response has 404 error or anyting els thtow this error
+  Future<RegisterUserResponse> signUp({
+    required String deviceId,
+    required String phone,
+    required String password,
+    required SimplePublicKey noteEncryptionPublicKey,
+  }) async {
     await Future.delayed(const Duration(seconds: 2));
-    return User(phone: phone, token: password, bioWedId: null, id: '1');
+    try {
+      final result = await apiClient.post<Map<String, dynamic>>(
+        '/register',
+        data: jsonEncode(
+          {
+            "deviceId": deviceId,
+            "phone": phone,
+            "password": password,
+            "noteEncryptionPublicKey": noteEncryptionPublicKey.toJson()
+          },
+        ),
+      );
+
+      return RegisterUserResponse(
+        user: User(
+          phone: phone,
+          bioWedId: null,
+          id: result.data?["userId"],
+        ),
+        tokens: UserTokens(
+          accessToken: result.data?["accessToken"],
+          refreshToken: result.data?["refreshToken"],
+        ),
+      );
+    } on DioException catch (e) {
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data["message"],
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
   }
 }

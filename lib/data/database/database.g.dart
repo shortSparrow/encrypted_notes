@@ -384,12 +384,17 @@ class $RemoteDevicesTable extends RemoteDevices
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _deviceNameMeta =
       const VerificationMeta('deviceName');
   @override
   late final GeneratedColumn<String> deviceName = GeneratedColumn<String>(
-      'device_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'device_name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _systemVersionMeta =
       const VerificationMeta('systemVersion');
   @override
@@ -404,7 +409,7 @@ class $RemoteDevicesTable extends RemoteDevices
       type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, deviceName, systemVersion, devicePublicKey];
+      [id, userId, deviceName, systemVersion, devicePublicKey];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -420,13 +425,17 @@ class $RemoteDevicesTable extends RemoteDevices
     } else if (isInserting) {
       context.missing(_idMeta);
     }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
     if (data.containsKey('device_name')) {
       context.handle(
           _deviceNameMeta,
           deviceName.isAcceptableOrUnknown(
               data['device_name']!, _deviceNameMeta));
-    } else if (isInserting) {
-      context.missing(_deviceNameMeta);
     }
     if (data.containsKey('system_version')) {
       context.handle(
@@ -453,8 +462,10 @@ class $RemoteDevicesTable extends RemoteDevices
     return RemoteDeviceDb(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user_id'])!,
       deviceName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}device_name'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}device_name']),
       systemVersion: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}system_version']),
       devicePublicKey: attachedDatabase.typeMapping.read(
@@ -470,19 +481,24 @@ class $RemoteDevicesTable extends RemoteDevices
 
 class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
   final String id;
-  final String deviceName;
+  final int userId;
+  final String? deviceName;
   final String? systemVersion;
   final String devicePublicKey;
   const RemoteDeviceDb(
       {required this.id,
-      required this.deviceName,
+      required this.userId,
+      this.deviceName,
       this.systemVersion,
       required this.devicePublicKey});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['device_name'] = Variable<String>(deviceName);
+    map['user_id'] = Variable<int>(userId);
+    if (!nullToAbsent || deviceName != null) {
+      map['device_name'] = Variable<String>(deviceName);
+    }
     if (!nullToAbsent || systemVersion != null) {
       map['system_version'] = Variable<String>(systemVersion);
     }
@@ -493,7 +509,10 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
   RemoteDevicesCompanion toCompanion(bool nullToAbsent) {
     return RemoteDevicesCompanion(
       id: Value(id),
-      deviceName: Value(deviceName),
+      userId: Value(userId),
+      deviceName: deviceName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deviceName),
       systemVersion: systemVersion == null && nullToAbsent
           ? const Value.absent()
           : Value(systemVersion),
@@ -506,7 +525,8 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RemoteDeviceDb(
       id: serializer.fromJson<String>(json['id']),
-      deviceName: serializer.fromJson<String>(json['deviceName']),
+      userId: serializer.fromJson<int>(json['userId']),
+      deviceName: serializer.fromJson<String?>(json['deviceName']),
       systemVersion: serializer.fromJson<String?>(json['systemVersion']),
       devicePublicKey: serializer.fromJson<String>(json['devicePublicKey']),
     );
@@ -516,7 +536,8 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'deviceName': serializer.toJson<String>(deviceName),
+      'userId': serializer.toJson<int>(userId),
+      'deviceName': serializer.toJson<String?>(deviceName),
       'systemVersion': serializer.toJson<String?>(systemVersion),
       'devicePublicKey': serializer.toJson<String>(devicePublicKey),
     };
@@ -524,12 +545,14 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
 
   RemoteDeviceDb copyWith(
           {String? id,
-          String? deviceName,
+          int? userId,
+          Value<String?> deviceName = const Value.absent(),
           Value<String?> systemVersion = const Value.absent(),
           String? devicePublicKey}) =>
       RemoteDeviceDb(
         id: id ?? this.id,
-        deviceName: deviceName ?? this.deviceName,
+        userId: userId ?? this.userId,
+        deviceName: deviceName.present ? deviceName.value : this.deviceName,
         systemVersion:
             systemVersion.present ? systemVersion.value : this.systemVersion,
         devicePublicKey: devicePublicKey ?? this.devicePublicKey,
@@ -538,6 +561,7 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
   String toString() {
     return (StringBuffer('RemoteDeviceDb(')
           ..write('id: $id, ')
+          ..write('userId: $userId, ')
           ..write('deviceName: $deviceName, ')
           ..write('systemVersion: $systemVersion, ')
           ..write('devicePublicKey: $devicePublicKey')
@@ -547,12 +571,13 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
 
   @override
   int get hashCode =>
-      Object.hash(id, deviceName, systemVersion, devicePublicKey);
+      Object.hash(id, userId, deviceName, systemVersion, devicePublicKey);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RemoteDeviceDb &&
           other.id == this.id &&
+          other.userId == this.userId &&
           other.deviceName == this.deviceName &&
           other.systemVersion == this.systemVersion &&
           other.devicePublicKey == this.devicePublicKey);
@@ -560,12 +585,14 @@ class RemoteDeviceDb extends DataClass implements Insertable<RemoteDeviceDb> {
 
 class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
   final Value<String> id;
-  final Value<String> deviceName;
+  final Value<int> userId;
+  final Value<String?> deviceName;
   final Value<String?> systemVersion;
   final Value<String> devicePublicKey;
   final Value<int> rowid;
   const RemoteDevicesCompanion({
     this.id = const Value.absent(),
+    this.userId = const Value.absent(),
     this.deviceName = const Value.absent(),
     this.systemVersion = const Value.absent(),
     this.devicePublicKey = const Value.absent(),
@@ -573,15 +600,17 @@ class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
   });
   RemoteDevicesCompanion.insert({
     required String id,
-    required String deviceName,
+    required int userId,
+    this.deviceName = const Value.absent(),
     this.systemVersion = const Value.absent(),
     required String devicePublicKey,
     this.rowid = const Value.absent(),
   })  : id = Value(id),
-        deviceName = Value(deviceName),
+        userId = Value(userId),
         devicePublicKey = Value(devicePublicKey);
   static Insertable<RemoteDeviceDb> custom({
     Expression<String>? id,
+    Expression<int>? userId,
     Expression<String>? deviceName,
     Expression<String>? systemVersion,
     Expression<String>? devicePublicKey,
@@ -589,6 +618,7 @@ class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
       if (deviceName != null) 'device_name': deviceName,
       if (systemVersion != null) 'system_version': systemVersion,
       if (devicePublicKey != null) 'device_public_key': devicePublicKey,
@@ -598,12 +628,14 @@ class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
 
   RemoteDevicesCompanion copyWith(
       {Value<String>? id,
-      Value<String>? deviceName,
+      Value<int>? userId,
+      Value<String?>? deviceName,
       Value<String?>? systemVersion,
       Value<String>? devicePublicKey,
       Value<int>? rowid}) {
     return RemoteDevicesCompanion(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
       deviceName: deviceName ?? this.deviceName,
       systemVersion: systemVersion ?? this.systemVersion,
       devicePublicKey: devicePublicKey ?? this.devicePublicKey,
@@ -616,6 +648,9 @@ class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
     }
     if (deviceName.present) {
       map['device_name'] = Variable<String>(deviceName.value);
@@ -636,6 +671,7 @@ class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
   String toString() {
     return (StringBuffer('RemoteDevicesCompanion(')
           ..write('id: $id, ')
+          ..write('userId: $userId, ')
           ..write('deviceName: $deviceName, ')
           ..write('systemVersion: $systemVersion, ')
           ..write('devicePublicKey: $devicePublicKey, ')

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/dao/notes_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
@@ -31,8 +32,9 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
 
   @override
   Stream<List<EncryptedNote>> getNotes() {
-    return notesDao.getNotes().watch().map((event) =>
-        event.map((noteDb) => notesMapper.dbNoteToEncryptedNote(noteDb)).toList());
+    return notesDao.getNotes().watch().map((event) => event
+        .map((noteDb) => notesMapper.dbNoteToEncryptedNote(noteDb))
+        .toList());
   }
 
   @override
@@ -53,8 +55,43 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   }
 
   @override
+  Future<EncryptedNote?> getNoteByGlobalId(String globalId) async {
+    final result = await notesDao.getNoteByGlobalId(globalId);
+    if (result == null) {
+      return null;
+    }
+    return notesMapper.dbNoteToEncryptedNote(result);
+  }
+
+  @override
   Future<bool> addGlobalIdToNote(String noteGlobalId, int noteId) async {
     final result = await notesDao.addGlobalIdToNote(noteGlobalId, noteId);
     return result != -1;
+  }
+
+// TODO FIX
+  @override
+  Future replaceLocalNotesWithRemote(List<NotesCompanion> notes) async {
+    await AppDatabase.getInstance().transaction(() async {
+      for (var note in notes) {
+        final noteGlobalId = note.noteGlobalId.value!; // fixme remove !
+        final existingNote = await notesDao.getNoteByGlobalId(noteGlobalId);
+
+        if (existingNote != null) {
+          await notesDao.editNote(note.copyWith(id: Value(existingNote.id)));
+        } else {
+          await notesDao.addNote(note);
+        }
+      }
+    });
+  }
+
+  @override
+  Future<List<EncryptedNote>> getNotesWhichHasUnSyncedDevice() async {
+    final list = await notesDao.getNotesWhichHasUnSyncedDevice();
+
+    return list
+        .map((noteDb) => notesMapper.dbNoteToEncryptedNote(noteDb))
+        .toList();
   }
 }

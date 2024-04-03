@@ -3,6 +3,7 @@ import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/remote_device_mapper.dart';
 import 'package:encrypted_notes/data/repositories/modify_note/modify_note_local_repository.dart';
 import 'package:encrypted_notes/data/repositories/remote_device_repository/remote_device_repository_local_impl.dart';
+import 'package:encrypted_notes/data/repositories/remote_device_repository/remote_device_repository_remote_impl.dart';
 import 'package:encrypted_notes/data/repositories/shared_preferences/secret_shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/shared_preferences/shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/data/repositories/sign_in_up_repository/sign_in_up_repository_impl.dart';
@@ -11,10 +12,12 @@ import 'package:encrypted_notes/domain/repositories/modify_note_remote_repositor
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
+import 'package:encrypted_notes/domain/repositories/synced_client_repository_remote.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
@@ -102,6 +105,10 @@ Future<void> init() async {
         remoteDeviceMapper: sl(), remoteDevicesDao: sl()),
   );
 
+  sl.registerFactory<RemoteDeviceRepositoryRemote>(
+    () => RemoteDeviceRepositoryImpl(),
+  );
+
   // ** usecase
   sl.registerFactory<BiometricAuthUseCase>(
     () => BiometricAuthUseCase(
@@ -119,6 +126,7 @@ Future<void> init() async {
       messageEncryptionUseCase: sl(),
       secretSharedPreferencesRepository: sl(),
       userLocalRepository: sl(),
+      remoteDeviceRepositoryLocal: sl(),
     ),
   );
   // TODO remove
@@ -139,6 +147,7 @@ Future<void> init() async {
       notesMapper: sl(),
       secretSharedPreferencesRepository: sl(),
       messageEncryptionUseCase: sl(),
+      remoteDeviceRepositoryLocal: sl(),
     ),
   );
 
@@ -150,6 +159,7 @@ Future<void> init() async {
       messageEncryptionUseCase: sl(),
       secretSharedPreferencesRepository: sl(),
       remoteDeviceRepositoryLocal: sl(),
+      getUserDevicesUseCase: sl(),
     ),
   );
 
@@ -170,6 +180,13 @@ Future<void> init() async {
 
   sl.registerFactory<GetSyncedDeviceListUseCase>(
     () => GetSyncedDeviceListUseCase(),
+  );
+
+  sl.registerFactory<GetUserRemoteDevicesUseCase>(
+    () => GetUserRemoteDevicesUseCase(
+      remoteDeviceRepositoryRemote: sl(),
+      remoteDeviceRepositoryLocal: sl(),
+    ),
   );
 
   // **************** UTILS

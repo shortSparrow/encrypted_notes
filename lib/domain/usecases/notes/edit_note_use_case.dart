@@ -81,18 +81,35 @@ class EditNoteUseCase {
 
   RemoteEditResponse _editNoteRemote({required Note note}) async {
     try {
-      if (note.noteGlobalId == null) {
-        return left(GeneralFailure(message: "no global id"));
+      if (note.syncedDevices.isEmpty) {
+        return left(GeneralFailure(message: "syncedDevices is empty"));
       }
+
       final encryptedNoteList = await _encryptNoteForEachRecipient(note: note);
+      if (note.noteGlobalId != null) {
+        final result =
+            await _modifyNoteRemoteRepository.editNote(encryptedNoteList);
 
-      final result = await _modifyNoteRemoteRepository.editNotes([
-        NoteForServer(noteGlobalId: note.noteGlobalId, data: encryptedNoteList),
-      ]);
-
-      for (var responseNote in result) {
         await _synchronizeRemoteResponse(
-          responseNote.addNotesDeviceInfoResponse,
+          result,
+          note.id,
+        );
+      } else {
+        // for cases when user create locally and can't send to server (internet trouble), this means note has not noteGlobalId,and this not exist on server
+        // So we should add this note to server as addNote() not updateNote()
+        final result =
+            await _modifyNoteRemoteRepository.addNote(encryptedNoteList);
+
+        await _modifyNoteLocalRepository.addGlobalIdToNote(
+          result.noteGlobalId,
+          note.id,
+        );
+
+        await _synchronizeRemoteResponse(
+          EditNotesResponse(
+            notes: result.notes,
+            noteGlobalId: result.noteGlobalId,
+          ),
           note.id,
         );
       }
@@ -144,19 +161,38 @@ class EditNoteUseCase {
   }
 
   Future _synchronizeRemoteResponse(
-    List<NotesDeviceInfoResponse> response,
+    EditNotesResponse response,
     int noteId,
   ) async {
-    final syncingDeviceStatusList = response
+    final syncingDeviceStatusList = response.notes
         .map((item) => SyncedDevice(
               deviceId: item.deviceId,
               isSynced: item.isSuccess,
             ))
         .toList();
 
+    final note = await _modifyNoteLocalRepository.getNoteById(noteId);
+    final newSyncedDevices = note?.syncedDevices ?? List.empty();
+
+    final updated = newSyncedDevices.map((_device) {
+      final indexExistingDevice = syncingDeviceStatusList
+          .indexWhere((element) => element.deviceId == _device.deviceId);
+
+      if (indexExistingDevice != -1) {
+        final updatedDevice =
+            syncingDeviceStatusList.removeAt(indexExistingDevice);
+        return updatedDevice;
+      } else {
+        return _device;
+      }
+    }).toList();
+
+    updated.addAll(syncingDeviceStatusList);
+    print("updated AFTER: ${updated}");
+
     await AppDatabase.getInstance().transaction(() async {
       await _modifyNoteLocalRepository.updateSyncingDeviceForNote(
-        jsonEncode(syncingDeviceStatusList),
+        jsonEncode(updated),
         noteId,
       );
     });

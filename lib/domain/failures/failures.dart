@@ -32,3 +32,20 @@ class JsFailure extends Failure {
   @override
   List<Object> get props => [message, reason];
 }
+
+class UnexpectedFailure extends Failure {}
+
+class NetworkFailure extends GeneralFailure {
+  int statusCode;
+  String message;
+
+  NetworkFailure({
+    int? statusCode,
+    String? message,
+  })  : statusCode = statusCode ?? 0,
+        message = message ?? 'Unknown error',
+        super(message: message ?? 'Unknown error');
+
+  @override
+  List<Object> get props => [statusCode, message];
+}

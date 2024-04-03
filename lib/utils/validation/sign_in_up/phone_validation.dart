@@ -2,7 +2,7 @@ import 'package:encrypted_notes/domain/models/validation_rules/validation_rules.
 
 final phoneValidationRules = [
   const ValidationRules(
-    regexRule: r"^\+?\d{1,4}[-\s]?\d{1,4}[-\s]?\d{1,4}[-\s]?\d{1,6}$",
+    regexRule: r'^\+[1-9]{1}[0-9]{3,14}$',
     errorMessage: "Invalid phone",
   ),
 ];

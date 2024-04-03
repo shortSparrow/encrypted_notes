@@ -1,47 +1,59 @@
-import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 
-class NotesDeviceInfoResponse {
+class NoteResponse {
   final String deviceId;
   final bool isSuccess;
-  final SimplePublicKey devicePublicKey;
-
-  NotesDeviceInfoResponse({
-    required this.deviceId,
-    this.isSuccess = false,
-    required this.devicePublicKey,
-  });
-}
-
-class NotesResponse {
   final String noteGlobalId;
-  final List<NotesDeviceInfoResponse> addNotesDeviceInfoResponse;
 
-  NotesResponse({
+  NoteResponse({
+    required this.deviceId,
+    required this.isSuccess,
     required this.noteGlobalId,
-    required this.addNotesDeviceInfoResponse,
   });
 }
 
-class AddNotesResponse extends NotesResponse {
+class AddNotesResponse {
+  final List<NoteResponse> notes;
+  final String noteGlobalId;
+
   AddNotesResponse({
-    required super.noteGlobalId,
-    required super.addNotesDeviceInfoResponse,
+    required this.notes,
+    required this.noteGlobalId,
   });
 }
 
-class EditNotesResponse extends NotesResponse {
+class EditNotesResponse {
+  final List<NoteResponse> notes;
+  final String noteGlobalId;
+
   EditNotesResponse({
-    required super.noteGlobalId,
-    required super.addNotesDeviceInfoResponse,
+    required this.notes,
+    required this.noteGlobalId,
   });
+}
+
+class GetAllNotesResponse {
+  final EncryptedMessage title;
+  final EncryptedMessage message;
+  final String createdAt;
+  final String updatedAt;
+  final String noteGlobalId;
+  final String sendFromDeviceId; // send initially from device
+  final List<String> syncedWithDevicesId; // send initially from device
+
+  GetAllNotesResponse(
+      {required this.title,
+      required this.message,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.noteGlobalId,
+      required this.sendFromDeviceId,
+      required this.syncedWithDevicesId});
 }
 
 abstract class ModifyNoteRemoteRepository {
-  Future<bool> addNote(Note note);
-  Future<List<AddNotesResponse>> addNotes(List<NoteForServer> data);
-  Future<List<EditNotesResponse>> editNotes(List<NoteForServer> data);
-  Future<bool> editNote(Note note);
+  Future<AddNotesResponse> addNote(List<NoteDataForServer> data);
+  Future<EditNotesResponse> editNote(List<NoteDataForServer> data);
   Future<bool> deleteNote(int noteId);
-  Stream<List<Note>> getNotes();
+  Future<List<GetAllNotesResponse>> getNotes();
 }

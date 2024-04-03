@@ -18,20 +18,6 @@ Map<String, dynamic> _$$SyncedDeviceImplToJson(_$SyncedDeviceImpl instance) =>
       'isSynced': instance.isSynced,
     };
 
-_$NoteForServerImpl _$$NoteForServerImplFromJson(Map<String, dynamic> json) =>
-    _$NoteForServerImpl(
-      noteGlobalId: json['noteGlobalId'] as String?,
-      data: (json['data'] as List<dynamic>)
-          .map((e) => NoteDataForServer.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-
-Map<String, dynamic> _$$NoteForServerImplToJson(_$NoteForServerImpl instance) =>
-    <String, dynamic>{
-      'noteGlobalId': instance.noteGlobalId,
-      'data': instance.data,
-    };
-
 _$NoteDataForServerImpl _$$NoteDataForServerImplFromJson(
         Map<String, dynamic> json) =>
     _$NoteDataForServerImpl(

@@ -2,14 +2,15 @@ import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
-import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
+import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.dart';
 import 'package:encrypted_notes/domain/usecases/notes/load_notes_use_case.dart';
+import 'package:encrypted_notes/extensions/Either.dart';
+import 'package:encrypted_notes/presentation/screens/modify_note/bloc/modify_note_state.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/modify_note_screen.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'modify_note_event.dart';
-part 'modify_note_state.dart';
 
 class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
   final AddNoteUseCase _addNoteUseCase;
@@ -37,6 +38,7 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     if (event.mode == ModifyNoteMode.edit && event.noteId != null) {
       add(LoadNote(noteId: event.noteId as int));
     }
+
   }
 
   Future _onLoadNote(
@@ -61,6 +63,8 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     SaveNote event,
     Emitter<ModifyNoteState> emit,
   ) async {
+    this.emit(state.copyWith(loadingSaveNote: RequestStatus.loading));
+
     if (state.mode == ModifyNoteMode.add) {
       _addNote(message: event.message, title: event.title);
     } else if (state.mode == ModifyNoteMode.edit) {
@@ -69,13 +73,14 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
   }
 
   Future _editNote(String message, String title) async {
+    print("NOTE: ${message}");
     final response = await _editNoteUseCase.editNote(
       note: state.editableNote!.copyWith(
         message: message,
         title: title,
       ),
     );
-
+    
     response.local.then((value) {
       value.fold(
         (l) {
@@ -97,13 +102,19 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
         },
       );
     });
+
+    emit(
+      state.copyWith(
+        loadingSaveNote: RequestStatus.success,
+        mode: ModifyNoteMode.edit,
+      ),
+    ); // TODO fix it, may be not success
   }
 
   Future _addNote({required String message, required String title}) async {
     final response = await _addNoteUseCase.addNote(
       message: message,
       title: title.isEmpty ? "unknown" : title,
-      syncedDevices: getTestSyncedDeviceList()
     );
 
     response.local.then((value) {
@@ -113,6 +124,7 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
         },
         (r) {
           print("Success local: ${r}");
+          //  TODO set editablde note or go from screen
           if (this.isClosed) {
             // TODO show global error
           }
@@ -126,9 +138,17 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
           print("Error remote: ${l}");
         },
         (r) {
+          //  TODO set editablde note or go from screen
           print("Success remote: ${r}");
         },
       );
     });
+
+    emit(
+      state.copyWith(
+        loadingSaveNote: RequestStatus.success,
+        mode: ModifyNoteMode.edit,
+      ),
+    ); // TODO fix it, may be not success
   }
 }

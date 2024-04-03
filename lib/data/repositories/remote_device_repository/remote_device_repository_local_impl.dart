@@ -19,7 +19,7 @@ class RemoteDeviceRepositoryLocalImpl extends RemoteDeviceRepositoryLocal {
   }
 
   @override
-  Stream<List<RemoteDevice>> getAllRemoteDevices() {
+  Stream<List<RemoteDevice>> getAllRemoteDevicesStream() {
     return remoteDevicesDao.getRemoteDevices().watch().map((event) => event
         .map(
             (remoteDevice) => remoteDeviceMapper.dbToRemoteDevice(remoteDevice))
@@ -27,7 +27,18 @@ class RemoteDeviceRepositoryLocalImpl extends RemoteDeviceRepositoryLocal {
   }
 
   @override
-  Future<List<RemoteDevice>> getListRemoteDeviceById(List<String> devicesId) async {
+  Future<List<RemoteDevice>> getAllRemoteDevices() async {
+    final list = await remoteDevicesDao.getRemoteDevices().get();
+
+    return list
+        .map(
+            (remoteDevice) => remoteDeviceMapper.dbToRemoteDevice(remoteDevice))
+        .toList();
+  }
+
+  @override
+  Future<List<RemoteDevice>> getListRemoteDeviceById(
+      List<String> devicesId) async {
     final list = await remoteDevicesDao.getListRemoteDeviceById(devicesId);
     return list
         .map(
@@ -44,7 +55,22 @@ class RemoteDeviceRepositoryLocalImpl extends RemoteDeviceRepositoryLocal {
   }
 
   @override
-  Future<bool> updateRemoteDevice(RemoteDevicesCompanion remoteDevice) {
-    return remoteDevicesDao.updateRemoteDevice(remoteDevice);
+  Future<bool> updateRemoteDevice(RemoteDevicesCompanion remoteDevice) async {
+    final isExist =
+        (await remoteDevicesDao.getRemoteDeviceById(remoteDevice.id.value)) !=
+            null;
+
+    if (isExist) {
+      return remoteDevicesDao.updateRemoteDevice(remoteDevice);
+    }
+    final addNewNote = await remoteDevicesDao.addRemoteDevice(remoteDevice);
+    return addNewNote != null;
+  }
+  
+  @override
+  Future<bool> deleteRemoteDevice(String id) async {
+    final deletedDeviceId = await remoteDevicesDao.deleteRemoteDevice(id);
+
+    return deletedDeviceId != 0;
   }
 }

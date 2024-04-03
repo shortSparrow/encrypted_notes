@@ -6,15 +6,11 @@ import 'dart:io' show Platform;
 // TODO add tests
 class GenerateDeviceId {
   final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
-  String? _deviceId;
 
-  Future<String> getDeviceId() async {
-    if (_deviceId != null) {
-      return _deviceId as String;
-    }
-    final deviceId = await _loadDeviceId();
-    _deviceId = deviceId;
-    return deviceId;
+  Future<String> generateUniqueDeviceId() async {
+    String deviceId = await _loadDeviceId();
+    final uniqueDeviceId = deviceId + DateTime.now().toString();
+    return uniqueDeviceId;
   }
 
   Future<String> _loadDeviceId() async {

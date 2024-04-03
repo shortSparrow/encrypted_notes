@@ -46,12 +46,16 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     );
 
     final result =
-        await signInUpUseCase.signUp(state.phone.value, state.password.value);
+        await signInUpUseCase.login(state.phone.value, state.password.value);
 
     result.fold(
-      (failure) => {
-        emit(state.copyWith(
-            signInStatus: RequestStatus.failed, signUpError: "TODO add failure"))
+      (failure) {
+        emit(
+          state.copyWith(
+            signInStatus: RequestStatus.failed,
+            signUpError: failure.message,
+          ),
+        );
       },
       (user) {
         emit(state.copyWith(
@@ -63,6 +67,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   void _onPasswordChanged(OnPasswordChange event, Emitter<SignInState> emit) {
     emit(
       state.copyWith(
+        signInStatus: RequestStatus.idle,
         password: state.password.copyWith(
           value: event.value,
           validation: state.password.isRuntimeValidationEnable
@@ -76,6 +81,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   void _onPhoneChanged(OnPhoneChange event, Emitter<SignInState> emit) {
     emit(
       state.copyWith(
+        signInStatus: RequestStatus.idle,
         phone: state.password.copyWith(
           value: event.value,
           validation: state.phone.isRuntimeValidationEnable
@@ -103,5 +109,4 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     final isValid = possibleError == null;
     return TextFieldValidator(isValid, possibleError?.errorMessage);
   }
-
 }

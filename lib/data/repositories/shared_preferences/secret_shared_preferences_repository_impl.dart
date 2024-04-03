@@ -19,13 +19,13 @@ class SecretSharedPreferencesRepositoryImpl
 
   Future<SecretSharedPreferencesData> _getStorageForCurrentUser() async {
     final String? userData =
-        await secureStorage.read(key: _userLocalRepository.getUser().id);
+        await secureStorage.read(key: _userLocalRepository.getUser()!.id.toString());
     final data = jsonDecode(userData ?? '{}');
     return SecretSharedPreferencesData.fromJson(data);
   }
 
   Future writeToStorage(SecretSharedPreferencesData data) async {
-    final String key = _userLocalRepository.getUser().id;
+    final String key = _userLocalRepository.getUser()!.id.toString();
 
     await secureStorage.write(key: key, value: jsonEncode(data));
   }

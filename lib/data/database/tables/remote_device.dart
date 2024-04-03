@@ -3,7 +3,8 @@ import 'package:drift/drift.dart';
 @DataClassName("RemoteDeviceDb")
 class RemoteDevices extends Table {
   TextColumn get id => text()();
-  TextColumn get deviceName => text()();
+  IntColumn get userId => integer()();
+  TextColumn get deviceName => text().nullable()();
   TextColumn get systemVersion => text().nullable()();
   TextColumn get devicePublicKey => text()();
 
