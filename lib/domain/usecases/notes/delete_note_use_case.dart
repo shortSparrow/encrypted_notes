@@ -54,7 +54,7 @@ class DeleteNoteUseCase {
     try {
       final isRemoteDeletedSuccess =
           await _modifyNoteRemoteRepository.deleteNotes([globalNoteId]);
-      if (isRemoteDeletedSuccess[0].isDeleteSuccess == true) {
+      if (isRemoteDeletedSuccess.firstOrNull?.isDeleteSuccess == true) {
         final isLocalSuccess = await _deleteLocally(noteId);
         return DeleteNoteResponse(locally: isLocalSuccess, remote: true);
       } else {

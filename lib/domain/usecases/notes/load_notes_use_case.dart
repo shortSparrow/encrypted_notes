@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:collection/collection.dart';
 
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
+import 'package:encrypted_notes/data/remote/models/delete_notes/delete_notes.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
+import 'package:encrypted_notes/domain/models/failedDeletedNotes/failedDeletedNotes.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
@@ -58,32 +59,40 @@ class LoadNoteUseCase {
   Stream<RequestStatus> _getLoadingNotesFromServer() async* {
     yield RequestStatus.loading;
     try {
-      final notesFromServer = await _modifyNoteRemoteRepository.getNotes();
-      final notesWhichHasUnSyncedDevice =
-          await _modifyNoteLocalRepository.getNotesWhichHasUnSyncedDevice();
-      final failedDeletedNote =
-          await _modifyNoteLocalRepository.getAllFailedDeletedNote();
+      late List<GetAllNotesResponse> notesFromServer;
+      late List<EncryptedNote> notesWhichHasUnSyncedDevice;
+      late List<FailedDeletedNote> failedDeletedNote;
+      late List<GetRemovingNotesResponse> deletedNotesForLocalSync;
 
-      final localNotes = await _modifyNoteLocalRepository.getNotes().first;
+      await Future.wait([
+        _modifyNoteRemoteRepository
+            .getNotes()
+            .then((value) => notesFromServer = value),
+        _modifyNoteLocalRepository
+            .getNotesWhichHasUnSyncedDevice()
+            .then((value) => notesWhichHasUnSyncedDevice = value),
+        _modifyNoteLocalRepository
+            .getAllFailedDeletedNote()
+            .then((value) => failedDeletedNote = value),
+        _modifyNoteRemoteRepository
+            .getRemovingNotes()
+            .then((value) => deletedNotesForLocalSync = value),
+      ]);
 
-      final notesToDelete = localNotes.where((e) {
-        final notExistOnServer = notesFromServer.firstWhereOrNull(
-                (element) => element.noteGlobalId == e.noteGlobalId) ==
-            null;
+      final List<String> deletedNoteSync = [];
+      for (var deletedNote in deletedNotesForLocalSync) {
+        final isSuccess = await _modifyNoteLocalRepository
+            .deleteNoteByGlobalId(deletedNote.noteGlobalId);
 
-        print("notExistOnServer: ${notExistOnServer}");
-        final isFailedDeleted = failedDeletedNote
-            .any((element) => element.noteGlobalId == e.noteGlobalId);
-// TODO також можна додати обробку на випадок якщо це лише локально збережена ноаттка
-        return notExistOnServer && !isFailedDeleted;
-      });
-
-      for (var note in notesToDelete) {
-        await _modifyNoteLocalRepository
-            .deleteNoteByGlobalId(note.noteGlobalId as String);
+        if (isSuccess == true) {
+          deletedNoteSync.add(deletedNote.noteGlobalId);
+        }
       }
 
-      print("notesToDelete: ${notesToDelete}");
+      if (deletedNoteSync.isNotEmpty) {
+        _modifyNoteRemoteRepository
+            .confirmRemovingNoteFromDevice(deletedNoteSync);
+      }
 
       final _notes = await Future.wait(
         notesFromServer.map((data) async {
@@ -154,6 +163,7 @@ class LoadNoteUseCase {
                   return SyncedDevice(
                     deviceId: syncedDeviceId,
                     isSynced: true,
+                    // todo add wasDeleted
                   );
                 }).toList(),
               ),

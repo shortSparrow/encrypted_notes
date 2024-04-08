@@ -1,6 +1,6 @@
-import 'package:encrypted_notes/data/repositories/modify_note/modify_note_remote_repository.dart';
+import 'package:encrypted_notes/data/remote/models/delete_notes/delete_notes.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
-
+// TODO Перенести це в модельки в remote
 class NoteResponse {
   final String deviceId;
   final bool isSuccess;
@@ -57,4 +57,6 @@ abstract class ModifyNoteRemoteRepository {
   Future<EditNotesResponse> editNote(List<NoteDataForServer> data);
   Future<List<DeleteNotesResponse>> deleteNotes(List<String> globalNoteIds);
   Future<List<GetAllNotesResponse>> getNotes();
+  Future<List<GetRemovingNotesResponse>> getRemovingNotes();
+  Future<void> confirmRemovingNoteFromDevice(List<String> globalNoteIds);
 }
