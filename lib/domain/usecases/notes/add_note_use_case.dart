@@ -5,6 +5,7 @@ import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
+import 'package:encrypted_notes/domain/models/notes/modify_notes.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/combined_local_remote_response/combined_local_remote_response.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';

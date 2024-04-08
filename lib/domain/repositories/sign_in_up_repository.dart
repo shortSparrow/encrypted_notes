@@ -1,25 +1,6 @@
 import 'package:cryptography/cryptography.dart';
-import 'package:encrypted_notes/domain/models/user/user.dart';
-
-class RegisterUserResponse {
-  final User user;
-  final UserTokens tokens;
-
-  RegisterUserResponse({
-    required this.user,
-    required this.tokens,
-  });
-}
-
-class LoginUserResponse {
-  final User user;
-  final UserTokens tokens;
-
-  LoginUserResponse({
-    required this.user,
-    required this.tokens,
-  });
-}
+import 'package:encrypted_notes/domain/models/login/login.dart';
+import 'package:encrypted_notes/domain/models/register/register.dart';
 
 abstract class SignInUpRepository {
   Future<RegisterUserResponse> signUp({

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:dio/dio.dart';
 import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/domain/models/login/login.dart';
+import 'package:encrypted_notes/domain/models/register/register.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/sign_in_up_repository.dart';

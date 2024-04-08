@@ -89,3 +89,4 @@ class EncryptedMessage with _$EncryptedMessage {
   factory EncryptedMessage.fromJson(Map<String, dynamic> json) =>
       _$EncryptedMessageFromJson(json);
 }
+
