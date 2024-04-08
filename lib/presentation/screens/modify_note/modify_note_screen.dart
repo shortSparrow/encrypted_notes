@@ -94,7 +94,9 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
           actions: [
             IconButton(
                 onPressed: () {
-                  _dialogBuilder(context);
+                  context.read<ModifyNoteBloc>().add(const OnDeleteNote());
+
+                  // _dialogBuilder(context);
                 },
                 icon: const Icon(Icons.add_task_sharp)),
           ],

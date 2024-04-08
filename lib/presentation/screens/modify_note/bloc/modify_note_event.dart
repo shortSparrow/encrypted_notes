@@ -14,6 +14,11 @@ class SaveNote extends ModifyNoteEvent {
   const SaveNote({required this.message, required this.title});
 }
 
+class OnDeleteNote extends ModifyNoteEvent {
+  const OnDeleteNote();
+}
+
+
 class LoadNote extends ModifyNoteEvent {
   final int noteId;
 

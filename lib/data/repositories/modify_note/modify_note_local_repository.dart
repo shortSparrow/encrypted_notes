@@ -1,15 +1,21 @@
 import 'package:drift/drift.dart';
+import 'package:encrypted_notes/data/database/dao/failed_deleted_notes.dart';
 import 'package:encrypted_notes/data/database/dao/notes_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
+import 'package:encrypted_notes/domain/models/failedDeletedNotes/failedDeletedNotes.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
 
 class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
   final NotesDao notesDao;
+  final FailedDeletedNotesDao failedDeletedNotesDao;
   final NotesMapper notesMapper = NotesMapper();
 
-  ModifyNoteLocalRepositoryImpl({required this.notesDao});
+  ModifyNoteLocalRepositoryImpl({
+    required this.notesDao,
+    required this.failedDeletedNotesDao,
+  });
 
   @override
   Future<int> addNote(NotesCompanion note) async {
@@ -69,7 +75,6 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
     return result != -1;
   }
 
-// TODO FIX
   @override
   Future replaceLocalNotesWithRemote(List<NotesCompanion> notes) async {
     await AppDatabase.getInstance().transaction(() async {
@@ -93,5 +98,36 @@ class ModifyNoteLocalRepositoryImpl extends ModifyNoteLocalRepository {
     return list
         .map((noteDb) => notesMapper.dbNoteToEncryptedNote(noteDb))
         .toList();
+  }
+
+  @override
+  Future<int> addFailedRemoteDeletedNote(
+      FailedDeletedNotesCompanion failedDeleted) {
+    return failedDeletedNotesDao.addFailedRemoteDeletedNote(failedDeleted);
+  }
+
+  @override
+  Future<List<FailedDeletedNote>> getAllFailedDeletedNote() async {
+    final list = await failedDeletedNotesDao.getAllFailedDeletedNote();
+    return list
+        .map(
+          (e) => FailedDeletedNote(
+            id: e.id,
+            noteId: e.noteId,
+            noteGlobalId: e.noteGlobalId,
+          ),
+        )
+        .toList();
+  }
+
+  @override
+  Future removeFailedRemoteDeletedNote(List<String> globalNoteId) async {
+    await failedDeletedNotesDao.deleteFailedRemoteDeletedNote(globalNoteId);
+  }
+
+  @override
+  Future<bool> deleteNoteByGlobalId(String noteGlobalId) async {
+    final id = await notesDao.deleteNoteByGlobalId(noteGlobalId);
+    return id != -1;
   }
 }

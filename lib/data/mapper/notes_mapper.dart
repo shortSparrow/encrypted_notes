@@ -62,6 +62,18 @@ class NotesMapper {
     );
   }
 
+  // NotesCompanion noteToDbNote(EncryptedNote note) {
+  //   return NotesCompanion(
+  //     title: Value(note.title),
+  //     message: Value(jsonEncode(note.message.toJson())),
+  //     createdAt: Value(note.createdAt),
+  //     updatedAt: Value(note.updatedAt),
+  //     id: Value(note.id),
+  //     noteGlobalId: Value(note.noteGlobalId),
+  //     syncedDevicesJson: Value(jsonEncode(note.syncedDevices)),
+  //   );
+  // }
+
   // NotesCompanion getAllNotesResponseToNoteCampaign(GetAllNotesResponse note) {
   //   return NotesCompanion(
   //     noteGlobalId: Value(note.noteGlobalId),

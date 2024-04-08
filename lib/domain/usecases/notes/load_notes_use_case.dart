@@ -61,6 +61,29 @@ class LoadNoteUseCase {
       final notesFromServer = await _modifyNoteRemoteRepository.getNotes();
       final notesWhichHasUnSyncedDevice =
           await _modifyNoteLocalRepository.getNotesWhichHasUnSyncedDevice();
+      final failedDeletedNote =
+          await _modifyNoteLocalRepository.getAllFailedDeletedNote();
+
+      final localNotes = await _modifyNoteLocalRepository.getNotes().first;
+
+      final notesToDelete = localNotes.where((e) {
+        final notExistOnServer = notesFromServer.firstWhereOrNull(
+                (element) => element.noteGlobalId == e.noteGlobalId) ==
+            null;
+
+        print("notExistOnServer: ${notExistOnServer}");
+        final isFailedDeleted = failedDeletedNote
+            .any((element) => element.noteGlobalId == e.noteGlobalId);
+// TODO також можна додати обробку на випадок якщо це лише локально збережена ноаттка
+        return notExistOnServer && !isFailedDeleted;
+      });
+
+      for (var note in notesToDelete) {
+        await _modifyNoteLocalRepository
+            .deleteNoteByGlobalId(note.noteGlobalId as String);
+      }
+
+      print("notesToDelete: ${notesToDelete}");
 
       final _notes = await Future.wait(
         notesFromServer.map((data) async {
@@ -110,9 +133,12 @@ class LoadNoteUseCase {
             return data.syncedWithDevicesId.contains(element.deviceId) == true;
           });
           print("isUnSynced: ${isUnSynced}");
+          final isFailedDeleted = failedDeletedNote
+              .any((element) => element.noteGlobalId == data.noteGlobalId);
+          print("isFailedDeleted: ${isFailedDeleted}");
 
           // ** If we have conflict between local and remote don't override local data
-          if (isUnSynced) {
+          if (isUnSynced || isFailedDeleted) {
             return null;
           }
 

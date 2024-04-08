@@ -9,10 +9,12 @@ import 'package:encrypted_notes/data/repositories/shared_preferences/shared_pref
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
+import 'package:encrypted_notes/domain/usecases/notes/delete_failed_remote_deleted_notes_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 import 'package:encrypted_notes/extensions/ColorExtension.dart';
@@ -40,12 +42,16 @@ void main() async {
   await di.init();
   await dotenv.load(fileName: ".env");
 
-  final SharedPreferencesRepositoryImpl sharedPreferencesRepositoryImpl = sl();
+  final SharedPreferencesRepository sharedPreferencesRepositoryImpl = sl();
 
   if (sharedPreferencesRepositoryImpl.getUserState().isLogged) {
     setHTTPAccessToken();
     final GetUserRemoteDevicesUseCase getUserDevicesUseCase = sl();
+    final DeleteFailedRemoteDeletedNotesUseCase
+        deleteFailedRemoteDeletedNotesUseCase = sl();
     getUserDevicesUseCase.updateRemoteDevicesLocalData();
+    
+    deleteFailedRemoteDeletedNotesUseCase.deleteAllFailedDeletedNotes();
   }
 
   // try {

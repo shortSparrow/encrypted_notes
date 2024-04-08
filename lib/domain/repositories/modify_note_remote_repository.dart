@@ -1,3 +1,4 @@
+import 'package:encrypted_notes/data/repositories/modify_note/modify_note_remote_repository.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 
 class NoteResponse {
@@ -54,6 +55,6 @@ class GetAllNotesResponse {
 abstract class ModifyNoteRemoteRepository {
   Future<AddNotesResponse> addNote(List<NoteDataForServer> data);
   Future<EditNotesResponse> editNote(List<NoteDataForServer> data);
-  Future<bool> deleteNote(int noteId);
+  Future<List<DeleteNotesResponse>> deleteNotes(List<String> globalNoteIds);
   Future<List<GetAllNotesResponse>> getNotes();
 }

@@ -44,6 +44,10 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
     return (delete(notes)..where((tbl) => tbl.id.equals(noteId))).go();
   }
 
+  Future<int> deleteNoteByGlobalId(String noteGlobalId) {
+    return (delete(notes)..where((tbl) => tbl.noteGlobalId.equals(noteGlobalId))).go();
+  }
+
   Future deleteAllNotes() {
     return delete(notes).go();
   }

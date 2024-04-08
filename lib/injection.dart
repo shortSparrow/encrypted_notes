@@ -1,3 +1,4 @@
+import 'package:encrypted_notes/data/database/dao/failed_deleted_notes.dart';
 import 'package:encrypted_notes/data/database/dao/remote_device_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/remote_device_mapper.dart';
@@ -16,6 +17,8 @@ import 'package:encrypted_notes/domain/repositories/synced_client_repository_rem
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/delete_failed_remote_deleted_notes_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/delete_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
@@ -72,13 +75,18 @@ Future<void> init() async {
       addNoteUseCase: sl(),
       loadNoteUseCase: sl(),
       editNoteUseCase: sl(),
+      deleteNoteUseCase: sl(),
     ),
   );
 
   // **************** DATA LAYER
   sl.registerSingleton<NotesDao>(AppDatabase.getInstance().notesDao);
   sl.registerSingleton<RemoteDevicesDao>(
-      AppDatabase.getInstance().remoteDevicesDao);
+    AppDatabase.getInstance().remoteDevicesDao,
+  );
+  sl.registerSingleton<FailedDeletedNotesDao>(
+    AppDatabase.getInstance().failedDeletedNotesDao,
+  );
 
   // **************** DOMAIN LAYER
 
@@ -88,8 +96,10 @@ Future<void> init() async {
   sl.registerSingleton<SharedPreferencesRepository>(
       SharedPreferencesRepositoryImpl());
 
-  sl.registerSingleton<ModifyNoteLocalRepository>(
-      ModifyNoteLocalRepositoryImpl(notesDao: sl()));
+  sl.registerSingleton<ModifyNoteLocalRepository>(ModifyNoteLocalRepositoryImpl(
+    notesDao: sl(),
+    failedDeletedNotesDao: sl(),
+  ));
 
   sl.registerSingleton<ModifyNoteRemoteRepository>(
       ModifyNoteRemoteRepositoryImpl());
@@ -186,6 +196,20 @@ Future<void> init() async {
     () => GetUserRemoteDevicesUseCase(
       remoteDeviceRepositoryRemote: sl(),
       remoteDeviceRepositoryLocal: sl(),
+    ),
+  );
+
+  sl.registerFactory<DeleteNoteUseCase>(
+    () => DeleteNoteUseCase(
+      modifyNoteLocalRepository: sl(),
+      modifyNoteRemoteRepository: sl(),
+    ),
+  );
+
+  sl.registerFactory<DeleteFailedRemoteDeletedNotesUseCase>(
+    () => DeleteFailedRemoteDeletedNotesUseCase(
+      modifyNoteLocalRepository: sl(),
+      modifyNoteRemoteRepository: sl(),
     ),
   );
 

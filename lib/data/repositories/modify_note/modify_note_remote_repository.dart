@@ -7,15 +7,45 @@ import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 
+class DeleteNotesResponse {
+  final String globalNoteId;
+  final bool isDeleteSuccess;
+
+  DeleteNotesResponse(
+      {required this.globalNoteId, required this.isDeleteSuccess});
+}
+
 class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   final NotesMapper notesMapper = NotesMapper();
 
   ModifyNoteRemoteRepositoryImpl();
 
   @override
-  Future<bool> deleteNote(int noteId) {
-    // TODO: implement deleteNote
-    throw UnimplementedError();
+  Future<List<DeleteNotesResponse>> deleteNotes(
+      List<String> globalNoteIds) async {
+    try {
+      final response = await apiClient.delete<List<dynamic>>(
+        '/delete-notes',
+        data: jsonEncode(globalNoteIds),
+      );
+
+      return response.data
+              ?.map(
+                (e) => DeleteNotesResponse(
+                    globalNoteId: e['noteGlobalId'],
+                    isDeleteSuccess: e['isSuccess']),
+              )
+              .toList() ??
+          List.empty();
+    } on DioException catch (e) {
+      print("deleteNote error ${e}");
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data,
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
   }
 
   @override
@@ -35,8 +65,7 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
           updatedAt: note['metaData']['updatedAt'],
           noteGlobalId: note['metaData']['noteGlobalId'],
           sendFromDeviceId: note['metaData']['sendFromDeviceId'],
-          syncedWithDevicesId:
-              syncedWithDevicesId, // todo maybe list return error, check types
+          syncedWithDevicesId: syncedWithDevicesId,
         );
       }).toList();
 
@@ -46,12 +75,13 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
 
       return allNotes;
     } on DioException catch (e) {
-      print("addNote error ${e}");
+      print("addNote DioException ${e}");
       throw NetworkFailure(
         statusCode: e.response?.statusCode,
         message: e.response?.data,
       );
     } catch (e) {
+      print("getNotes unexpected Error");
       throw UnexpectedFailure();
     }
   }

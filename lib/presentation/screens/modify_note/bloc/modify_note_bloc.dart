@@ -1,10 +1,8 @@
-import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/delete_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
-import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.dart';
 import 'package:encrypted_notes/domain/usecases/notes/load_notes_use_case.dart';
-import 'package:encrypted_notes/extensions/Either.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/bloc/modify_note_state.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/modify_note_screen.dart';
 import 'package:equatable/equatable.dart';
@@ -16,18 +14,34 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
   final AddNoteUseCase _addNoteUseCase;
   final EditNoteUseCase _editNoteUseCase;
   final LoadNoteUseCase _loadNoteUseCase;
+  final DeleteNoteUseCase _deleteNoteUseCase;
 
   ModifyNoteBloc({
     required AddNoteUseCase addNoteUseCase,
     required LoadNoteUseCase loadNoteUseCase,
     required EditNoteUseCase editNoteUseCase,
+    required DeleteNoteUseCase deleteNoteUseCase,
   })  : _addNoteUseCase = addNoteUseCase,
         _loadNoteUseCase = loadNoteUseCase,
         _editNoteUseCase = editNoteUseCase,
+        _deleteNoteUseCase = deleteNoteUseCase,
         super(const ModifyNoteState()) {
     on<SaveNote>(_onSaveNote);
     on<LoadNote>(_onLoadNote);
     on<SetParams>(_onSetParams);
+    on<OnDeleteNote>(_onDeleteNote);
+  }
+
+  Future _onDeleteNote(
+    OnDeleteNote event,
+    Emitter<ModifyNoteState> emit,
+  ) async {
+    try {
+      final deletionResult = await _deleteNoteUseCase.deleteNote(state.editableNote!.id, state.editableNote?.noteGlobalId);
+      // TODO handle result
+    } catch(err) {
+      print("_onDeleteNote err: ${err}");
+    }
   }
 
   Future _onSetParams(
@@ -38,7 +52,6 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     if (event.mode == ModifyNoteMode.edit && event.noteId != null) {
       add(LoadNote(noteId: event.noteId as int));
     }
-
   }
 
   Future _onLoadNote(
@@ -80,7 +93,7 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
         title: title,
       ),
     );
-    
+
     response.local.then((value) {
       value.fold(
         (l) {

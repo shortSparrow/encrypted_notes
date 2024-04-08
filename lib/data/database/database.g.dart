@@ -681,16 +681,239 @@ class RemoteDevicesCompanion extends UpdateCompanion<RemoteDeviceDb> {
   }
 }
 
+class $FailedDeletedNotesTable extends FailedDeletedNotes
+    with TableInfo<$FailedDeletedNotesTable, FailedDeletedNotesDb> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FailedDeletedNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _noteIdMeta = const VerificationMeta('noteId');
+  @override
+  late final GeneratedColumn<int> noteId = GeneratedColumn<int>(
+      'note_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _noteGlobalIdMeta =
+      const VerificationMeta('noteGlobalId');
+  @override
+  late final GeneratedColumn<String> noteGlobalId = GeneratedColumn<String>(
+      'note_global_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, noteId, noteGlobalId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'failed_deleted_notes';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<FailedDeletedNotesDb> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('note_id')) {
+      context.handle(_noteIdMeta,
+          noteId.isAcceptableOrUnknown(data['note_id']!, _noteIdMeta));
+    } else if (isInserting) {
+      context.missing(_noteIdMeta);
+    }
+    if (data.containsKey('note_global_id')) {
+      context.handle(
+          _noteGlobalIdMeta,
+          noteGlobalId.isAcceptableOrUnknown(
+              data['note_global_id']!, _noteGlobalIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FailedDeletedNotesDb map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FailedDeletedNotesDb(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      noteId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}note_id'])!,
+      noteGlobalId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}note_global_id']),
+    );
+  }
+
+  @override
+  $FailedDeletedNotesTable createAlias(String alias) {
+    return $FailedDeletedNotesTable(attachedDatabase, alias);
+  }
+}
+
+class FailedDeletedNotesDb extends DataClass
+    implements Insertable<FailedDeletedNotesDb> {
+  final int id;
+  final int noteId;
+  final String? noteGlobalId;
+  const FailedDeletedNotesDb(
+      {required this.id, required this.noteId, this.noteGlobalId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['note_id'] = Variable<int>(noteId);
+    if (!nullToAbsent || noteGlobalId != null) {
+      map['note_global_id'] = Variable<String>(noteGlobalId);
+    }
+    return map;
+  }
+
+  FailedDeletedNotesCompanion toCompanion(bool nullToAbsent) {
+    return FailedDeletedNotesCompanion(
+      id: Value(id),
+      noteId: Value(noteId),
+      noteGlobalId: noteGlobalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(noteGlobalId),
+    );
+  }
+
+  factory FailedDeletedNotesDb.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FailedDeletedNotesDb(
+      id: serializer.fromJson<int>(json['id']),
+      noteId: serializer.fromJson<int>(json['noteId']),
+      noteGlobalId: serializer.fromJson<String?>(json['noteGlobalId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'noteId': serializer.toJson<int>(noteId),
+      'noteGlobalId': serializer.toJson<String?>(noteGlobalId),
+    };
+  }
+
+  FailedDeletedNotesDb copyWith(
+          {int? id,
+          int? noteId,
+          Value<String?> noteGlobalId = const Value.absent()}) =>
+      FailedDeletedNotesDb(
+        id: id ?? this.id,
+        noteId: noteId ?? this.noteId,
+        noteGlobalId:
+            noteGlobalId.present ? noteGlobalId.value : this.noteGlobalId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('FailedDeletedNotesDb(')
+          ..write('id: $id, ')
+          ..write('noteId: $noteId, ')
+          ..write('noteGlobalId: $noteGlobalId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, noteId, noteGlobalId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FailedDeletedNotesDb &&
+          other.id == this.id &&
+          other.noteId == this.noteId &&
+          other.noteGlobalId == this.noteGlobalId);
+}
+
+class FailedDeletedNotesCompanion
+    extends UpdateCompanion<FailedDeletedNotesDb> {
+  final Value<int> id;
+  final Value<int> noteId;
+  final Value<String?> noteGlobalId;
+  const FailedDeletedNotesCompanion({
+    this.id = const Value.absent(),
+    this.noteId = const Value.absent(),
+    this.noteGlobalId = const Value.absent(),
+  });
+  FailedDeletedNotesCompanion.insert({
+    this.id = const Value.absent(),
+    required int noteId,
+    this.noteGlobalId = const Value.absent(),
+  }) : noteId = Value(noteId);
+  static Insertable<FailedDeletedNotesDb> custom({
+    Expression<int>? id,
+    Expression<int>? noteId,
+    Expression<String>? noteGlobalId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (noteId != null) 'note_id': noteId,
+      if (noteGlobalId != null) 'note_global_id': noteGlobalId,
+    });
+  }
+
+  FailedDeletedNotesCompanion copyWith(
+      {Value<int>? id, Value<int>? noteId, Value<String?>? noteGlobalId}) {
+    return FailedDeletedNotesCompanion(
+      id: id ?? this.id,
+      noteId: noteId ?? this.noteId,
+      noteGlobalId: noteGlobalId ?? this.noteGlobalId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (noteId.present) {
+      map['note_id'] = Variable<int>(noteId.value);
+    }
+    if (noteGlobalId.present) {
+      map['note_global_id'] = Variable<String>(noteGlobalId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FailedDeletedNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('noteId: $noteId, ')
+          ..write('noteGlobalId: $noteGlobalId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final $NotesTable notes = $NotesTable(this);
   late final $RemoteDevicesTable remoteDevices = $RemoteDevicesTable(this);
+  late final $FailedDeletedNotesTable failedDeletedNotes =
+      $FailedDeletedNotesTable(this);
   late final NotesDao notesDao = NotesDao(this as AppDatabase);
   late final RemoteDevicesDao remoteDevicesDao =
       RemoteDevicesDao(this as AppDatabase);
+  late final FailedDeletedNotesDao failedDeletedNotesDao =
+      FailedDeletedNotesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [notes, remoteDevices];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [notes, remoteDevices, failedDeletedNotes];
 }
