@@ -8,7 +8,7 @@ part 'modify_note_state.freezed.dart';
 @freezed
 class ModifyNoteState with _$ModifyNoteState {
   const factory ModifyNoteState({
-    Note? editableNote,
+    DecryptedNote? editableNote,
     @Default(RequestStatus.idle) RequestStatus loadingEditNote,
     @Default(RequestStatus.idle) RequestStatus loadingSaveNote,
     @Default(ModifyNoteMode.add) ModifyNoteMode mode,

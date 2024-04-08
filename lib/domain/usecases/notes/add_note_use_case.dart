@@ -143,13 +143,13 @@ class AddNoteUseCase {
         );
 
         return _addNoteRemote(
-          note: _notesMapper.encryptedNoteToNote(note, decryptedMessage),
+          note: _notesMapper.encryptedNoteToDecryptedNote(note, decryptedMessage),
         );
       },
     );
   }
 
-  RemoteAddResponse _addNoteRemote({required Note note}) async {
+  RemoteAddResponse _addNoteRemote({required DecryptedNote note}) async {
     try {
       final encryptedData = await _encryptNoteForEachRecipient(note: note);
       final result = await _modifyNoteRemoteRepository.addNote(encryptedData);
@@ -166,7 +166,7 @@ class AddNoteUseCase {
   }
 
   Future<List<NoteDataForServer>> _encryptNoteForEachRecipient({
-    required Note note,
+    required DecryptedNote note,
   }) async {
     final futureEncryptedDeviceList =
         remoteDeviceList.map((remoteDevice) async {

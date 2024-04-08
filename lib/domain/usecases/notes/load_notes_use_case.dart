@@ -186,7 +186,7 @@ class LoadNoteUseCase {
     }
   }
 
-  Future<Either<Failure, Note>> loadNoteById(int noteId) async {
+  Future<Either<Failure, DecryptedNote>> loadNoteById(int noteId) async {
     try {
       final loadedNote = await _modifyNoteLocalRepository.getNoteById(noteId);
       if (loadedNote == null) {
@@ -202,7 +202,7 @@ class LoadNoteUseCase {
       );
 
       return right(
-          _notesMapper.encryptedNoteToNote(loadedNote, decryptedMessage));
+          _notesMapper.encryptedNoteToDecryptedNote(loadedNote, decryptedMessage));
     } catch (e) {
       return left(GeneralFailure(message: "error"));
     }

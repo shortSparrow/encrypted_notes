@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ModifyNoteState {
-  Note? get editableNote => throw _privateConstructorUsedError;
+  DecryptedNote? get editableNote => throw _privateConstructorUsedError;
   RequestStatus get loadingEditNote => throw _privateConstructorUsedError;
   RequestStatus get loadingSaveNote => throw _privateConstructorUsedError;
   ModifyNoteMode get mode => throw _privateConstructorUsedError;
@@ -33,12 +33,12 @@ abstract class $ModifyNoteStateCopyWith<$Res> {
       _$ModifyNoteStateCopyWithImpl<$Res, ModifyNoteState>;
   @useResult
   $Res call(
-      {Note? editableNote,
+      {DecryptedNote? editableNote,
       RequestStatus loadingEditNote,
       RequestStatus loadingSaveNote,
       ModifyNoteMode mode});
 
-  $NoteCopyWith<$Res>? get editableNote;
+  $DecryptedNoteCopyWith<$Res>? get editableNote;
 }
 
 /// @nodoc
@@ -63,7 +63,7 @@ class _$ModifyNoteStateCopyWithImpl<$Res, $Val extends ModifyNoteState>
       editableNote: freezed == editableNote
           ? _value.editableNote
           : editableNote // ignore: cast_nullable_to_non_nullable
-              as Note?,
+              as DecryptedNote?,
       loadingEditNote: null == loadingEditNote
           ? _value.loadingEditNote
           : loadingEditNote // ignore: cast_nullable_to_non_nullable
@@ -81,12 +81,12 @@ class _$ModifyNoteStateCopyWithImpl<$Res, $Val extends ModifyNoteState>
 
   @override
   @pragma('vm:prefer-inline')
-  $NoteCopyWith<$Res>? get editableNote {
+  $DecryptedNoteCopyWith<$Res>? get editableNote {
     if (_value.editableNote == null) {
       return null;
     }
 
-    return $NoteCopyWith<$Res>(_value.editableNote!, (value) {
+    return $DecryptedNoteCopyWith<$Res>(_value.editableNote!, (value) {
       return _then(_value.copyWith(editableNote: value) as $Val);
     });
   }
@@ -101,13 +101,13 @@ abstract class _$$ModifyNoteStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {Note? editableNote,
+      {DecryptedNote? editableNote,
       RequestStatus loadingEditNote,
       RequestStatus loadingSaveNote,
       ModifyNoteMode mode});
 
   @override
-  $NoteCopyWith<$Res>? get editableNote;
+  $DecryptedNoteCopyWith<$Res>? get editableNote;
 }
 
 /// @nodoc
@@ -130,7 +130,7 @@ class __$$ModifyNoteStateImplCopyWithImpl<$Res>
       editableNote: freezed == editableNote
           ? _value.editableNote
           : editableNote // ignore: cast_nullable_to_non_nullable
-              as Note?,
+              as DecryptedNote?,
       loadingEditNote: null == loadingEditNote
           ? _value.loadingEditNote
           : loadingEditNote // ignore: cast_nullable_to_non_nullable
@@ -157,7 +157,7 @@ class _$ModifyNoteStateImpl implements _ModifyNoteState {
       this.mode = ModifyNoteMode.add});
 
   @override
-  final Note? editableNote;
+  final DecryptedNote? editableNote;
   @override
   @JsonKey()
   final RequestStatus loadingEditNote;
@@ -201,13 +201,13 @@ class _$ModifyNoteStateImpl implements _ModifyNoteState {
 
 abstract class _ModifyNoteState implements ModifyNoteState {
   const factory _ModifyNoteState(
-      {final Note? editableNote,
+      {final DecryptedNote? editableNote,
       final RequestStatus loadingEditNote,
       final RequestStatus loadingSaveNote,
       final ModifyNoteMode mode}) = _$ModifyNoteStateImpl;
 
   @override
-  Note? get editableNote;
+  DecryptedNote? get editableNote;
   @override
   RequestStatus get loadingEditNote;
   @override

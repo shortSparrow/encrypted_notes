@@ -43,14 +43,14 @@ class EditNoteUseCase {
   final MessageEncryptionUseCase _messageEncryptionUseCase;
   final RemoteDeviceRepositoryLocal _remoteDeviceRepositoryLocal;
 
-  EditNoteResponse editNote({required Note note}) async {
+  EditNoteResponse editNote({required DecryptedNote note}) async {
     return CombinedLocalRemoteResponse(
       local: _editNoteLocally(note: note),
       remote: _editNoteRemote(note: note),
     );
   }
 
-  LocalEditResponse _editNoteLocally({required Note note}) async {
+  LocalEditResponse _editNoteLocally({required DecryptedNote note}) async {
     try {
       final syncedDevices = note.syncedDevices
           .map((syncedDevice) => syncedDevice.copyWith(isSynced: false))
@@ -80,7 +80,7 @@ class EditNoteUseCase {
     }
   }
 
-  RemoteEditResponse _editNoteRemote({required Note note}) async {
+  RemoteEditResponse _editNoteRemote({required DecryptedNote note}) async {
     try {
       if (note.syncedDevices.isEmpty) {
         return left(GeneralFailure(message: "syncedDevices is empty"));
@@ -122,7 +122,7 @@ class EditNoteUseCase {
   }
 
   Future<List<NoteDataForServer>> _encryptNoteForEachRecipient({
-    required Note note,
+    required DecryptedNote note,
   }) async {
     final remoteDevices =
         await _remoteDeviceRepositoryLocal.getListRemoteDeviceById(

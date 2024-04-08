@@ -6,7 +6,7 @@ import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 
 class NotesMapper {
-  Note dbNoteToNote(NoteDb noteDb) {
+  DecryptedNote dbNoteToNote(NoteDb noteDb) {
     // TODO find better way
     List<SyncedDevice> syncedDevices = [];
 
@@ -16,7 +16,7 @@ class NotesMapper {
       syncedDevices.add(SyncedDevice.fromJson(e));
     }
 
-    return Note(
+    return DecryptedNote(
       message: noteDb.message,
       title: noteDb.title,
       createdAt: noteDb.createdAt,
@@ -49,9 +49,9 @@ class NotesMapper {
     );
   }
 
-  Note encryptedNoteToNote(
+  DecryptedNote encryptedNoteToDecryptedNote(
       EncryptedNote encryptedNote, String decryptedMessage) {
-    return Note(
+    return DecryptedNote(
       title: encryptedNote.title,
       message: decryptedMessage,
       createdAt: encryptedNote.createdAt,

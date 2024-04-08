@@ -14,10 +14,9 @@ class SyncedDevice with _$SyncedDevice {
       _$SyncedDeviceFromJson(json);
 }
 
-// TODO rename to decryptedNote
 @freezed
-class Note with _$Note {
-  const factory Note({
+class DecryptedNote with _$DecryptedNote {
+  const factory DecryptedNote({
     required String title,
     // Note stored into encryption DB, and when we get it message still encrypted by E2E (only when isDecrypted = true message are ready for reading)
     required String message,

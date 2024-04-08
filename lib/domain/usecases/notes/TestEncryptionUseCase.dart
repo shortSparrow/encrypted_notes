@@ -89,7 +89,7 @@ class TestEncryptionUseCase {
     final alicePair = await getAliceDeviceKeyPair();
     final alicePublic = await alicePair.extractPublicKey();
 
-    final note = Note(
+    final note = DecryptedNote(
       title: 'From bob to Alice',
       message: 'Message from Bob to Alice',
       createdAt: '1',
@@ -140,7 +140,7 @@ class TestEncryptionUseCase {
     final bobPair = await getBobDeviceKeyPair();
     final bobPublic = await bobPair.extractPublicKey();
 
-    final note = Note(
+    final note = DecryptedNote(
       title: 'From Alice to Bob',
       message: 'Message from Alice to Bob',
       createdAt: '1',

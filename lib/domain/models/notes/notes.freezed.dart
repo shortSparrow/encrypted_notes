@@ -171,7 +171,7 @@ abstract class _SyncedDevice implements SyncedDevice {
 }
 
 /// @nodoc
-mixin _$Note {
+mixin _$DecryptedNote {
   String get title =>
       throw _privateConstructorUsedError; // Note stored into encryption DB, and when we get it message still encrypted by E2E (only when isDecrypted = true message are ready for reading)
   String get message => throw _privateConstructorUsedError;
@@ -182,13 +182,15 @@ mixin _$Note {
   List<SyncedDevice> get syncedDevices => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $NoteCopyWith<Note> get copyWith => throw _privateConstructorUsedError;
+  $DecryptedNoteCopyWith<DecryptedNote> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $NoteCopyWith<$Res> {
-  factory $NoteCopyWith(Note value, $Res Function(Note) then) =
-      _$NoteCopyWithImpl<$Res, Note>;
+abstract class $DecryptedNoteCopyWith<$Res> {
+  factory $DecryptedNoteCopyWith(
+          DecryptedNote value, $Res Function(DecryptedNote) then) =
+      _$DecryptedNoteCopyWithImpl<$Res, DecryptedNote>;
   @useResult
   $Res call(
       {String title,
@@ -201,9 +203,9 @@ abstract class $NoteCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$NoteCopyWithImpl<$Res, $Val extends Note>
-    implements $NoteCopyWith<$Res> {
-  _$NoteCopyWithImpl(this._value, this._then);
+class _$DecryptedNoteCopyWithImpl<$Res, $Val extends DecryptedNote>
+    implements $DecryptedNoteCopyWith<$Res> {
+  _$DecryptedNoteCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -255,7 +257,8 @@ class _$NoteCopyWithImpl<$Res, $Val extends Note>
 }
 
 /// @nodoc
-abstract class _$$NoteImplCopyWith<$Res> implements $NoteCopyWith<$Res> {
+abstract class _$$NoteImplCopyWith<$Res>
+    implements $DecryptedNoteCopyWith<$Res> {
   factory _$$NoteImplCopyWith(
           _$NoteImpl value, $Res Function(_$NoteImpl) then) =
       __$$NoteImplCopyWithImpl<$Res>;
@@ -273,7 +276,7 @@ abstract class _$$NoteImplCopyWith<$Res> implements $NoteCopyWith<$Res> {
 
 /// @nodoc
 class __$$NoteImplCopyWithImpl<$Res>
-    extends _$NoteCopyWithImpl<$Res, _$NoteImpl>
+    extends _$DecryptedNoteCopyWithImpl<$Res, _$NoteImpl>
     implements _$$NoteImplCopyWith<$Res> {
   __$$NoteImplCopyWithImpl(_$NoteImpl _value, $Res Function(_$NoteImpl) _then)
       : super(_value, _then);
@@ -358,7 +361,7 @@ class _$NoteImpl implements _Note {
 
   @override
   String toString() {
-    return 'Note(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, noteGlobalId: $noteGlobalId, syncedDevices: $syncedDevices)';
+    return 'DecryptedNote(title: $title, message: $message, createdAt: $createdAt, updatedAt: $updatedAt, id: $id, noteGlobalId: $noteGlobalId, syncedDevices: $syncedDevices)';
   }
 
   @override
@@ -397,7 +400,7 @@ class _$NoteImpl implements _Note {
       __$$NoteImplCopyWithImpl<_$NoteImpl>(this, _$identity);
 }
 
-abstract class _Note implements Note {
+abstract class _Note implements DecryptedNote {
   const factory _Note(
       {required final String title,
       required final String message,
