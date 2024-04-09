@@ -2,6 +2,7 @@ import 'package:encrypted_notes/data/database/dao/failed_deleted_notes.dart';
 import 'package:encrypted_notes/data/database/dao/remote_device_dao.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/remote_device_mapper.dart';
+import 'package:encrypted_notes/data/remote/token_service.dart';
 import 'package:encrypted_notes/data/repositories/modify_note/modify_note_local_repository.dart';
 import 'package:encrypted_notes/data/repositories/remote_device_repository/remote_device_repository_local_impl.dart';
 import 'package:encrypted_notes/data/repositories/remote_device_repository/remote_device_repository_remote_impl.dart';
@@ -137,6 +138,7 @@ Future<void> init() async {
       secretSharedPreferencesRepository: sl(),
       userLocalRepository: sl(),
       remoteDeviceRepositoryLocal: sl(),
+      tokenService: sl(),
     ),
   );
   // TODO remove
@@ -217,4 +219,8 @@ Future<void> init() async {
   sl.registerSingleton(GenerateDeviceId());
   sl.registerSingleton(NotesMapper());
   sl.registerSingleton(RemoteDeviceMapper());
+  sl.registerSingleton(TokenService(
+    userLocalRepository: sl(),
+    sharedPreferencesRepositoryImpl: sl(),
+  ));
 }

@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:encrypted_notes/constants/storage_keys.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/data/remote/token_service.dart';
 import 'package:encrypted_notes/data/repositories/shared_preferences/shared_preferences_repository_impl.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
@@ -43,14 +44,18 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   final SharedPreferencesRepository sharedPreferencesRepositoryImpl = sl();
+  setupApiClientInterceptors();
 
   if (sharedPreferencesRepositoryImpl.getUserState().isLogged) {
-    setHTTPAccessToken();
+    final TokenService tokenService = sl();
     final GetUserRemoteDevicesUseCase getUserDevicesUseCase = sl();
     final DeleteFailedRemoteDeletedNotesUseCase
         deleteFailedRemoteDeletedNotesUseCase = sl();
+
+    await tokenService.checkTokensExpiration();
+    tokenService.setHTTPAuthorizationAccessToken();
+
     getUserDevicesUseCase.updateRemoteDevicesLocalData();
-    
     deleteFailedRemoteDeletedNotesUseCase.deleteAllFailedDeletedNotes();
   }
 
