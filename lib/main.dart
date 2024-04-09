@@ -143,7 +143,6 @@ void main() async {
   // }
 
   runApp(const MyApp());
-  // runApp(const SizedBox());
 }
 
 class MyApp extends StatelessWidget {
