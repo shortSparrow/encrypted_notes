@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:encrypted_notes/data/remote/interceptors/unauthorize_error_interceptor.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/injection.dart';
 
-// TODO коли отримуємо 401 беремо refresh-token і йдемо поновий access-token
 final apiClient = Dio(
   BaseOptions(
     // baseUrl: dotenv.get("API_URL"),
@@ -20,11 +20,6 @@ final apiClient = Dio(
   ),
 );
 
-void setHTTPAccessToken() {
-  final UserLocalRepository userLocalRepository = sl();
-  final tokens = userLocalRepository.getUserTokens();
-  if (tokens != null) {
-    print("set token: ${tokens.accessToken}");
-    apiClient.options.headers['Authorization'] = 'Bearer ${tokens.accessToken}';
-  }
+setupApiClientInterceptors() {
+  addUnauthorizeErrorInterceptor();
 }

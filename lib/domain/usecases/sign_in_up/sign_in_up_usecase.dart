@@ -2,7 +2,7 @@ import 'package:cryptography/cryptography.dart';
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
-import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/data/remote/token_service.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
@@ -22,6 +22,7 @@ class SignInUpUseCase {
   final SharedPreferencesRepository _sharedPreferencesRepository;
   final UserLocalRepository _userLocalRepository;
   final RemoteDeviceRepositoryLocal _remoteDeviceRepositoryLocal;
+  final TokenService _tokenService;
 
   SignInUpUseCase({
     required this.signInUpRepository,
@@ -32,11 +33,13 @@ class SignInUpUseCase {
     required SharedPreferencesRepository sharedPreferencesRepository,
     required UserLocalRepository userLocalRepository,
     required RemoteDeviceRepositoryLocal remoteDeviceRepositoryLocal,
+    required TokenService tokenService,
   })  : _messageEncryptionUseCase = messageEncryptionUseCase,
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
         _sharedPreferencesRepository = sharedPreferencesRepository,
         _remoteDeviceRepositoryLocal = remoteDeviceRepositoryLocal,
-        _userLocalRepository = userLocalRepository;
+        _userLocalRepository = userLocalRepository,
+        _tokenService = tokenService;
 
   Future<Either<GeneralFailure, User>> signUp(
     String phone,
@@ -72,7 +75,6 @@ class SignInUpUseCase {
           GeneralFailure(message: "can't register user, unknown error happen"));
     }
   }
-
 
   Future<Either<GeneralFailure, User>> login(
     String phone,
@@ -120,7 +122,7 @@ class SignInUpUseCase {
         id: Value(deviceId),
         devicePublicKey: Value(devicePublicKey),
         deviceName: Value.absent(), // TODO add devicename,
-        systemVersion: Value.absent(), // TODO add systemVersion 
+        systemVersion: Value.absent(), // TODO add systemVersion
         userId: Value(user.id),
       ),
     );
@@ -136,6 +138,6 @@ class SignInUpUseCase {
     await _secretSharedPreferencesRepository.setLocalSymmetricKey(localKey);
 
     await _sharedPreferencesRepository.setIsLogged(true);
-    setHTTPAccessToken();
+    _tokenService.setHTTPAuthorizationAccessToken();
   }
 }
