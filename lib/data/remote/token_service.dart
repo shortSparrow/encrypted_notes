@@ -8,13 +8,13 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class TokenService {
   final UserLocalRepository _userLocalRepository;
-  final SharedPreferencesRepository _sharedPreferencesRepositoryImpl;
+  final SharedPreferencesRepository _sharedPreferencesRepository;
 
   TokenService({
     required UserLocalRepository userLocalRepository,
-    required SharedPreferencesRepository sharedPreferencesRepositoryImpl,
+    required SharedPreferencesRepository sharedPreferencesRepository,
   })  : _userLocalRepository = userLocalRepository,
-        _sharedPreferencesRepositoryImpl = sharedPreferencesRepositoryImpl;
+        _sharedPreferencesRepository = sharedPreferencesRepository;
 
   Future<UserTokens?>? currentRefreshPromise;
 
@@ -78,7 +78,7 @@ class TokenService {
     final tokens = _userLocalRepository.getUserTokens();
     if (tokens == null) {
       // TODO not delete keys just navigate to login. But what happens if user login with another credentials?
-      await _sharedPreferencesRepositoryImpl.setIsLogged(false);
+      await _sharedPreferencesRepository.setIsLogged(false);
       return;
     }
 
@@ -87,7 +87,7 @@ class TokenService {
 
     if (isExpiredRefresh) {
       // TODO not delete keys just navigate to login. But what happens if user login with another credentials?
-      await _sharedPreferencesRepositoryImpl.setIsLogged(false);
+      await _sharedPreferencesRepository.setIsLogged(false);
       return;
     }
 
