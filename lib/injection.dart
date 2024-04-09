@@ -221,6 +221,6 @@ Future<void> init() async {
   sl.registerSingleton(RemoteDeviceMapper());
   sl.registerSingleton(TokenService(
     userLocalRepository: sl(),
-    sharedPreferencesRepositoryImpl: sl(),
+    sharedPreferencesRepository: sl(),
   ));
 }
