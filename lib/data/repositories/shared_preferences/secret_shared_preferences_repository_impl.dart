@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:encrypted_notes/data/models/secret_shared_preferences_data/secret_shared_preferences_data.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
+import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/generate_keys.dart';
@@ -13,13 +14,20 @@ class SecretSharedPreferencesRepositoryImpl
     extends SecretSharedPreferencesRepository {
   final UserLocalRepository _userLocalRepository;
 
-  SecretSharedPreferencesRepositoryImpl(
-      {required UserLocalRepository userLocalRepository})
-      : _userLocalRepository = userLocalRepository;
+  SecretSharedPreferencesRepositoryImpl({
+    required UserLocalRepository userLocalRepository,
+  }) : _userLocalRepository = userLocalRepository;
+
+  @override
+  Future clearAllUserData() async {
+    final String key = _userLocalRepository.getUser()!.id.toString();
+    await secureStorage.delete(key: key);
+  }
 
   Future<SecretSharedPreferencesData> _getStorageForCurrentUser() async {
-    final String? userData =
-        await secureStorage.read(key: _userLocalRepository.getUser()!.id.toString());
+    final String? userData = await secureStorage.read(
+      key: _userLocalRepository.getUser()!.id.toString(),
+    );
     final data = jsonDecode(userData ?? '{}');
     return SecretSharedPreferencesData.fromJson(data);
   }
@@ -85,5 +93,27 @@ class SecretSharedPreferencesRepositoryImpl
     final storage = await _getStorageForCurrentUser();
     final json = jsonEncode(webBioId);
     await writeToStorage(storage.copyWith(webBioId: json));
+  }
+
+  @override
+  Future<UserTokens?> getUserTokens() async {
+    final storage = await _getStorageForCurrentUser();
+    if (storage.userTokens == null) {
+      return null;
+    }
+
+    return UserTokens.fromJson(storage.userTokens!);
+  }
+
+  @override
+  Future setUserTokens(UserTokens userTokens) async {
+    final storage = await _getStorageForCurrentUser();
+    await writeToStorage(storage.copyWith(userTokens: userTokens.toJson()));
+  }
+  
+  @override
+  Future<void> clearUserTokens() async {
+    final storage = await _getStorageForCurrentUser();
+    await writeToStorage(storage.copyWith(userTokens: null));
   }
 }

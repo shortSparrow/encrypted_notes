@@ -26,6 +26,7 @@ mixin _$SecretSharedPreferencesData {
   Map<String, Object?>? get localSymmetricKey =>
       throw _privateConstructorUsedError;
   String? get webBioId => throw _privateConstructorUsedError;
+  Map<String, Object?>? get userTokens => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +45,8 @@ abstract class $SecretSharedPreferencesDataCopyWith<$Res> {
   $Res call(
       {Map<String, Object?>? deviceKeyPairForNotes,
       Map<String, Object?>? localSymmetricKey,
-      String? webBioId});
+      String? webBioId,
+      Map<String, Object?>? userTokens});
 }
 
 /// @nodoc
@@ -64,6 +66,7 @@ class _$SecretSharedPreferencesDataCopyWithImpl<$Res,
     Object? deviceKeyPairForNotes = freezed,
     Object? localSymmetricKey = freezed,
     Object? webBioId = freezed,
+    Object? userTokens = freezed,
   }) {
     return _then(_value.copyWith(
       deviceKeyPairForNotes: freezed == deviceKeyPairForNotes
@@ -78,6 +81,10 @@ class _$SecretSharedPreferencesDataCopyWithImpl<$Res,
           ? _value.webBioId
           : webBioId // ignore: cast_nullable_to_non_nullable
               as String?,
+      userTokens: freezed == userTokens
+          ? _value.userTokens
+          : userTokens // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object?>?,
     ) as $Val);
   }
 }
@@ -94,7 +101,8 @@ abstract class _$$SecretSharedPreferencesDataImplCopyWith<$Res>
   $Res call(
       {Map<String, Object?>? deviceKeyPairForNotes,
       Map<String, Object?>? localSymmetricKey,
-      String? webBioId});
+      String? webBioId,
+      Map<String, Object?>? userTokens});
 }
 
 /// @nodoc
@@ -113,6 +121,7 @@ class __$$SecretSharedPreferencesDataImplCopyWithImpl<$Res>
     Object? deviceKeyPairForNotes = freezed,
     Object? localSymmetricKey = freezed,
     Object? webBioId = freezed,
+    Object? userTokens = freezed,
   }) {
     return _then(_$SecretSharedPreferencesDataImpl(
       deviceKeyPairForNotes: freezed == deviceKeyPairForNotes
@@ -127,6 +136,10 @@ class __$$SecretSharedPreferencesDataImplCopyWithImpl<$Res>
           ? _value.webBioId
           : webBioId // ignore: cast_nullable_to_non_nullable
               as String?,
+      userTokens: freezed == userTokens
+          ? _value._userTokens
+          : userTokens // ignore: cast_nullable_to_non_nullable
+              as Map<String, Object?>?,
     ));
   }
 }
@@ -138,9 +151,11 @@ class _$SecretSharedPreferencesDataImpl
   _$SecretSharedPreferencesDataImpl(
       {required final Map<String, Object?>? deviceKeyPairForNotes,
       required final Map<String, Object?>? localSymmetricKey,
-      required this.webBioId})
+      required this.webBioId,
+      required final Map<String, Object?>? userTokens})
       : _deviceKeyPairForNotes = deviceKeyPairForNotes,
-        _localSymmetricKey = localSymmetricKey;
+        _localSymmetricKey = localSymmetricKey,
+        _userTokens = userTokens;
 
   factory _$SecretSharedPreferencesDataImpl.fromJson(
           Map<String, dynamic> json) =>
@@ -170,10 +185,19 @@ class _$SecretSharedPreferencesDataImpl
 
   @override
   final String? webBioId;
+  final Map<String, Object?>? _userTokens;
+  @override
+  Map<String, Object?>? get userTokens {
+    final value = _userTokens;
+    if (value == null) return null;
+    if (_userTokens is EqualUnmodifiableMapView) return _userTokens;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
 
   @override
   String toString() {
-    return 'SecretSharedPreferencesData(deviceKeyPairForNotes: $deviceKeyPairForNotes, localSymmetricKey: $localSymmetricKey, webBioId: $webBioId)';
+    return 'SecretSharedPreferencesData(deviceKeyPairForNotes: $deviceKeyPairForNotes, localSymmetricKey: $localSymmetricKey, webBioId: $webBioId, userTokens: $userTokens)';
   }
 
   @override
@@ -186,7 +210,9 @@ class _$SecretSharedPreferencesDataImpl
             const DeepCollectionEquality()
                 .equals(other._localSymmetricKey, _localSymmetricKey) &&
             (identical(other.webBioId, webBioId) ||
-                other.webBioId == webBioId));
+                other.webBioId == webBioId) &&
+            const DeepCollectionEquality()
+                .equals(other._userTokens, _userTokens));
   }
 
   @JsonKey(ignore: true)
@@ -195,7 +221,8 @@ class _$SecretSharedPreferencesDataImpl
       runtimeType,
       const DeepCollectionEquality().hash(_deviceKeyPairForNotes),
       const DeepCollectionEquality().hash(_localSymmetricKey),
-      webBioId);
+      webBioId,
+      const DeepCollectionEquality().hash(_userTokens));
 
   @JsonKey(ignore: true)
   @override
@@ -215,9 +242,11 @@ class _$SecretSharedPreferencesDataImpl
 abstract class _SecretSharedPreferencesData
     implements SecretSharedPreferencesData {
   factory _SecretSharedPreferencesData(
-      {required final Map<String, Object?>? deviceKeyPairForNotes,
-      required final Map<String, Object?>? localSymmetricKey,
-      required final String? webBioId}) = _$SecretSharedPreferencesDataImpl;
+          {required final Map<String, Object?>? deviceKeyPairForNotes,
+          required final Map<String, Object?>? localSymmetricKey,
+          required final String? webBioId,
+          required final Map<String, Object?>? userTokens}) =
+      _$SecretSharedPreferencesDataImpl;
 
   factory _SecretSharedPreferencesData.fromJson(Map<String, dynamic> json) =
       _$SecretSharedPreferencesDataImpl.fromJson;
@@ -228,6 +257,8 @@ abstract class _SecretSharedPreferencesData
   Map<String, Object?>? get localSymmetricKey;
   @override
   String? get webBioId;
+  @override
+  Map<String, Object?>? get userTokens;
   @override
   @JsonKey(ignore: true)
   _$$SecretSharedPreferencesDataImplCopyWith<_$SecretSharedPreferencesDataImpl>

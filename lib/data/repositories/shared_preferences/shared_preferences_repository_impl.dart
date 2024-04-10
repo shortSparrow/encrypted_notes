@@ -1,27 +1,26 @@
 import 'package:encrypted_notes/constants/storage_keys.dart';
-import 'package:encrypted_notes/data/models/user_state/user_state.dart';
+import 'package:encrypted_notes/data/models/app_state/app_state.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class SharedPreferencesRepositoryImpl extends SharedPreferencesRepository {
-  final userState = Hive.box(HiveBoxes.userStateBox);
+class AppStateSharedPreferencesRepositoryImpl extends AppStateSharedPreferencesRepository {
+  final appState = Hive.box(HiveBoxes.appStateBox);
 
   @override
-  UserStateDb getUserState() {
-    final isLogged = userState.get(UserStateKeys.isLogged, defaultValue: false);
-    final deviceId = userState.get(UserStateKeys.deviceId, defaultValue: '');
+  AppState getAppState() {
+    final isLogged = appState.get(AppStateKeys.isLogged, defaultValue: false);
 
-    return UserStateDb(isLogged: isLogged, deviceId: deviceId);
+    return AppState(isLogged: isLogged);
   }
 
   @override
   setIsLogged(bool isLogged) async {
-    await userState.put(UserStateKeys.isLogged, isLogged);
+    await appState.put(AppStateKeys.isLogged, isLogged);
   }
 
-// FIXME note used now
+
   @override
-  Future setUniqueDeviceId(String deviceId) async {
-    await userState.put(UserStateKeys.deviceId, deviceId);
+  Future clearData() async {
+    await appState.clear();
   }
 }

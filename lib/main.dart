@@ -38,22 +38,22 @@ const secureStorage = FlutterSecureStorage(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox(HiveBoxes.userStateBox);
+  await Hive.openBox(HiveBoxes.appStateBox);
   await Hive.openBox(HiveBoxes.userBox);
   await di.init();
   await dotenv.load(fileName: ".env");
 
-  final SharedPreferencesRepository sharedPreferencesRepositoryImpl = sl();
+  final AppStateSharedPreferencesRepository sharedPreferencesRepositoryImpl = sl();
   setupApiClientInterceptors();
 
-  if (sharedPreferencesRepositoryImpl.getUserState().isLogged) {
+  if (sharedPreferencesRepositoryImpl.getAppState().isLogged) {
     final TokenService tokenService = sl();
     final GetUserRemoteDevicesUseCase getUserDevicesUseCase = sl();
     final DeleteFailedRemoteDeletedNotesUseCase
         deleteFailedRemoteDeletedNotesUseCase = sl();
 
     await tokenService.checkTokensExpiration();
-    tokenService.setHTTPAuthorizationAccessToken();
+    await tokenService.setHTTPAuthorizationAccessToken();
 
     getUserDevicesUseCase.updateRemoteDevicesLocalData();
     deleteFailedRemoteDeletedNotesUseCase.deleteAllFailedDeletedNotes();
@@ -147,6 +147,9 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  static BuildContext? get ctx =>
+      router.routerDelegate.navigatorKey.currentContext;
 
   @override
   Widget build(BuildContext context) {

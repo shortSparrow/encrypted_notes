@@ -5,6 +5,6 @@ abstract class SecureStorageKeys {
 }
 
 abstract class HiveBoxes {
-  static const userStateBox = 'userStateBox';
+  static const appStateBox = 'appStateBox';
   static const userBox = 'userBox';
 }

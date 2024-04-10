@@ -1,7 +1,7 @@
-import 'package:encrypted_notes/data/models/user_state/user_state.dart';
+import 'package:encrypted_notes/data/models/app_state/app_state.dart';
 
-abstract class SharedPreferencesRepository {
-  UserStateDb getUserState();
+abstract class AppStateSharedPreferencesRepository {
+  AppState getAppState();
   Future setIsLogged(bool isLogged);
-  Future setUniqueDeviceId(String deviceId);
+  Future clearData();
 }

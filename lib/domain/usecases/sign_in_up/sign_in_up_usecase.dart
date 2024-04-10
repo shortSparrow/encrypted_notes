@@ -15,44 +15,46 @@ import 'package:encrypted_notes/extensions/encryption_key_extension.dart';
 import 'package:encrypted_notes/utils/generate_device_id/generate_device_id.dart';
 
 class SignInUpUseCase {
-  final SignInUpRepository signInUpRepository;
-  final GenerateDeviceId generateDeviceId;
+  final SignInUpRepository _signInUpRepository;
+  final GenerateDeviceId _generateDeviceId;
   final MessageEncryptionUseCase _messageEncryptionUseCase;
   final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
-  final SharedPreferencesRepository _sharedPreferencesRepository;
+  final AppStateSharedPreferencesRepository _sharedPreferencesRepository;
   final UserLocalRepository _userLocalRepository;
   final RemoteDeviceRepositoryLocal _remoteDeviceRepositoryLocal;
   final TokenService _tokenService;
 
   SignInUpUseCase({
-    required this.signInUpRepository,
-    required this.generateDeviceId,
+    required SignInUpRepository signInUpRepository,
+    required GenerateDeviceId generateDeviceId,
     required MessageEncryptionUseCase messageEncryptionUseCase,
     required SecretSharedPreferencesRepository
         secretSharedPreferencesRepository,
-    required SharedPreferencesRepository sharedPreferencesRepository,
+    required AppStateSharedPreferencesRepository sharedPreferencesRepository,
     required UserLocalRepository userLocalRepository,
     required RemoteDeviceRepositoryLocal remoteDeviceRepositoryLocal,
     required TokenService tokenService,
-  })  : _messageEncryptionUseCase = messageEncryptionUseCase,
+  })  : _signInUpRepository = signInUpRepository,
+        _generateDeviceId = generateDeviceId,
+        _messageEncryptionUseCase = messageEncryptionUseCase,
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
         _sharedPreferencesRepository = sharedPreferencesRepository,
         _remoteDeviceRepositoryLocal = remoteDeviceRepositoryLocal,
         _userLocalRepository = userLocalRepository,
         _tokenService = tokenService;
 
-  Future<Either<GeneralFailure, User>> signUp(
+  Future<Either<GeneralFailure, User>> register(
     String phone,
     String password,
   ) async {
     // todo add validation maybe here as well
     try {
-      final deviceId = await generateDeviceId.generateUniqueDeviceId();
+      final deviceId = await _generateDeviceId.generateUniqueDeviceId();
       final newKeyPair =
           await _messageEncryptionUseCase.generateNewE2EKeyPair();
       final newKeyPairData = await newKeyPair.extract();
 
-      final registerResponse = await signInUpRepository.signUp(
+      final registerResponse = await _signInUpRepository.signUp(
         deviceId: deviceId,
         phone: phone,
         password: password,
@@ -76,17 +78,20 @@ class SignInUpUseCase {
     }
   }
 
-  Future<Either<GeneralFailure, User>> login(
+  Future<Either<GeneralFailure, User>> loginFromCleanDevice(
     String phone,
     String password,
   ) async {
     try {
-      final deviceId = await generateDeviceId.generateUniqueDeviceId();
+      final oldDeviceId = _userLocalRepository.getUser()?.deviceId;
+      final deviceId =
+          oldDeviceId ?? await _generateDeviceId.generateUniqueDeviceId();
+
       final newKeyPair =
           await _messageEncryptionUseCase.generateNewE2EKeyPair();
       final newKeyPairData = await newKeyPair.extract();
 
-      final loginResult = await signInUpRepository.singIn(
+      final loginResult = await _signInUpRepository.singIn(
         deviceId: deviceId,
         phone: phone,
         password: password,
@@ -110,6 +115,41 @@ class SignInUpUseCase {
     }
   }
 
+  Future<Either<GeneralFailure, User>> reloginForGetNewTokens(
+    String phone,
+    String password,
+  ) async {
+    try {
+      final oldDeviceId = _userLocalRepository.getUser()?.deviceId;
+      if (oldDeviceId == null) {
+        return left(GeneralFailure(message: "deviceId is null"));
+      }
+
+      final e2eKeyPair =
+          await _secretSharedPreferencesRepository.getE2EKeyPair();
+      final keyPairData = await e2eKeyPair.extract();
+
+      final loginResult = await _signInUpRepository.singIn(
+        deviceId: oldDeviceId,
+        phone: phone,
+        password: password,
+        noteEncryptionPublicKey: keyPairData.publicKey,
+      );
+
+      await _tokenService.setUserTokens(
+        accessToken: loginResult.tokens.accessToken,
+        refreshToken: loginResult.tokens.refreshToken,
+      );
+
+      await _sharedPreferencesRepository.setIsLogged(true);
+
+      return right(loginResult.user);
+    } catch (err) {
+      return left(GeneralFailure(
+          message: "loginFromExistingDevice failed, unknown error happen"));
+    }
+  }
+
   Future _setupUserData({
     required String deviceId,
     required String devicePublicKey,
@@ -128,7 +168,7 @@ class SignInUpUseCase {
     );
 
     await _userLocalRepository.setUser(user);
-    await _userLocalRepository.setUserTokens(
+    await _tokenService.setUserTokens(
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     );

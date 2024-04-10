@@ -2,21 +2,39 @@ import 'dart:convert';
 
 import 'package:encrypted_notes/data/remote/apiClient.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
-import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
-import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
+import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
+import 'package:encrypted_notes/domain/usecases/auth/logout_usecase.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class TokenService {
-  final UserLocalRepository _userLocalRepository;
-  final SharedPreferencesRepository _sharedPreferencesRepository;
+  final SecretSharedPreferencesRepository _secretSharedPreferencesRepository;
+  final LogoutUsecase _logoutUsecase;
+  UserTokens? _userTokens;
 
   TokenService({
-    required UserLocalRepository userLocalRepository,
-    required SharedPreferencesRepository sharedPreferencesRepository,
-  })  : _userLocalRepository = userLocalRepository,
-        _sharedPreferencesRepository = sharedPreferencesRepository;
+    required SecretSharedPreferencesRepository
+        secretSharedPreferencesRepository,
+    required LogoutUsecase logoutUsecase,
+  })  : _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
+        _logoutUsecase = logoutUsecase;
 
   Future<UserTokens?>? currentRefreshPromise;
+
+  setUserTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    _userTokens = UserTokens(
+      refreshToken: refreshToken,
+      accessToken: accessToken,
+    );
+    await _secretSharedPreferencesRepository.setUserTokens(_userTokens!);
+  }
+
+  Future<UserTokens?> getUserTokens() async {
+    _userTokens ??= await _secretSharedPreferencesRepository.getUserTokens();
+    return _userTokens;
+  }
 
   Future<UserTokens?> tryRefreshToken() {
     currentRefreshPromise ??= _refreshToken().then((value) {
@@ -27,9 +45,37 @@ class TokenService {
     return currentRefreshPromise!;
   }
 
+  Future<void> setHTTPAuthorizationAccessToken() async {
+    final userTokens = await getUserTokens();
+    if (userTokens != null) {
+      apiClient.options.headers['Authorization'] =
+          'Bearer ${userTokens.accessToken}';
+    }
+  }
+
+  checkTokensExpiration() async {
+    final userTokens = await getUserTokens();
+
+    if (userTokens == null) {
+      await _logoutUsecase.logoutSoftLocally();
+      return;
+    }
+
+    bool isExpiredAccess = JwtDecoder.isExpired(userTokens.accessToken);
+    bool isExpiredRefresh = JwtDecoder.isExpired(userTokens.refreshToken);
+
+    if (isExpiredRefresh) {
+      await _logoutUsecase.logoutSoftLocally();
+      return;
+    }
+
+    if (isExpiredAccess) {
+      await tryRefreshToken();
+    }
+  }
+
   Future<UserTokens?> _refreshToken() async {
-    final oldTokens = _userLocalRepository.getUserTokens();
-    final refreshToken = oldTokens?.refreshToken;
+    final refreshToken = (await getUserTokens())?.refreshToken;
 
     if (refreshToken == null) {
       return null;
@@ -38,7 +84,7 @@ class TokenService {
     final newTokens = await _requestNewAccessToken(refreshToken);
 
     if (newTokens != null) {
-      _userLocalRepository.setUserTokens(
+      setUserTokens(
         accessToken: newTokens.accessToken,
         refreshToken: newTokens.refreshToken,
       );
@@ -63,36 +109,6 @@ class TokenService {
     } catch (err) {
       print("requestNewAccessToken error: ${err}");
       return null;
-    }
-  }
-
-  void setHTTPAuthorizationAccessToken() {
-    final tokens = _userLocalRepository.getUserTokens();
-    if (tokens != null) {
-      apiClient.options.headers['Authorization'] =
-          'Bearer ${tokens.accessToken}';
-    }
-  }
-
-  checkTokensExpiration() async {
-    final tokens = _userLocalRepository.getUserTokens();
-    if (tokens == null) {
-      // TODO not delete keys just navigate to login. But what happens if user login with another credentials?
-      await _sharedPreferencesRepository.setIsLogged(false);
-      return;
-    }
-
-    bool isExpiredAccess = JwtDecoder.isExpired(tokens.accessToken);
-    bool isExpiredRefresh = JwtDecoder.isExpired(tokens.refreshToken);
-
-    if (isExpiredRefresh) {
-      // TODO not delete keys just navigate to login. But what happens if user login with another credentials?
-      await _sharedPreferencesRepository.setIsLogged(false);
-      return;
-    }
-
-    if (isExpiredAccess) {
-      await tryRefreshToken();
     }
   }
 }

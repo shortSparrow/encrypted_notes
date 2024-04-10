@@ -22,6 +22,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   int get id => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
+  String get deviceId => throw _privateConstructorUsedError;
   List<int>? get bioWedId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -34,7 +35,7 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call({int id, String phone, List<int>? bioWedId});
+  $Res call({int id, String phone, String deviceId, List<int>? bioWedId});
 }
 
 /// @nodoc
@@ -52,6 +53,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? id = null,
     Object? phone = null,
+    Object? deviceId = null,
     Object? bioWedId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -62,6 +64,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
+              as String,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
               as String,
       bioWedId: freezed == bioWedId
           ? _value.bioWedId
@@ -78,7 +84,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$$UserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String phone, List<int>? bioWedId});
+  $Res call({int id, String phone, String deviceId, List<int>? bioWedId});
 }
 
 /// @nodoc
@@ -93,6 +99,7 @@ class __$$UserImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? phone = null,
+    Object? deviceId = null,
     Object? bioWedId = freezed,
   }) {
     return _then(_$UserImpl(
@@ -103,6 +110,10 @@ class __$$UserImplCopyWithImpl<$Res>
       phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
+              as String,
+      deviceId: null == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
               as String,
       bioWedId: freezed == bioWedId
           ? _value._bioWedId
@@ -118,6 +129,7 @@ class _$UserImpl implements _User {
   const _$UserImpl(
       {required this.id,
       required this.phone,
+      required this.deviceId,
       required final List<int>? bioWedId})
       : _bioWedId = bioWedId;
 
@@ -128,6 +140,8 @@ class _$UserImpl implements _User {
   final int id;
   @override
   final String phone;
+  @override
+  final String deviceId;
   final List<int>? _bioWedId;
   @override
   List<int>? get bioWedId {
@@ -140,7 +154,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, phone: $phone, bioWedId: $bioWedId)';
+    return 'User(id: $id, phone: $phone, deviceId: $deviceId, bioWedId: $bioWedId)';
   }
 
   @override
@@ -150,13 +164,15 @@ class _$UserImpl implements _User {
             other is _$UserImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId) &&
             const DeepCollectionEquality().equals(other._bioWedId, _bioWedId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, phone, const DeepCollectionEquality().hash(_bioWedId));
+  int get hashCode => Object.hash(runtimeType, id, phone, deviceId,
+      const DeepCollectionEquality().hash(_bioWedId));
 
   @JsonKey(ignore: true)
   @override
@@ -176,6 +192,7 @@ abstract class _User implements User {
   const factory _User(
       {required final int id,
       required final String phone,
+      required final String deviceId,
       required final List<int>? bioWedId}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
@@ -184,6 +201,8 @@ abstract class _User implements User {
   int get id;
   @override
   String get phone;
+  @override
+  String get deviceId;
   @override
   List<int>? get bioWedId;
   @override

@@ -16,7 +16,7 @@ class BiometricAuthUseCase {
     required BioAuthRepository bioAuthRepository,
     required SecretSharedPreferencesRepository
         secretSharedPreferencesRepository,
-    required SharedPreferencesRepository sharedPreferencesRepository,
+    required AppStateSharedPreferencesRepository sharedPreferencesRepository,
   })  : _bioAuthRepository = bioAuthRepository,
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository;
 

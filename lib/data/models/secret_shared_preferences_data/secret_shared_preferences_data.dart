@@ -11,6 +11,7 @@ class SecretSharedPreferencesData with _$SecretSharedPreferencesData {
     required Map<String, Object?>? deviceKeyPairForNotes,
     required Map<String, Object?>? localSymmetricKey,
     required String? webBioId,
+    required Map<String, Object?>? userTokens,
   }) = _SecretSharedPreferencesData;
 
   factory SecretSharedPreferencesData.fromJson(Map<String, dynamic> json) =>

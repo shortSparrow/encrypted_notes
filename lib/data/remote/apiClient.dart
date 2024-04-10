@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:encrypted_notes/data/remote/interceptors/unauthorize_error_interceptor.dart';
-import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
-import 'package:encrypted_notes/injection.dart';
 
 final apiClient = Dio(
   BaseOptions(

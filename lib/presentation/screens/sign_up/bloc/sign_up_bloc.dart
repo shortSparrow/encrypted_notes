@@ -46,7 +46,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     );
 
     final result =
-        await signInUpUseCase.signUp(state.phone.value, state.password.value);
+        await signInUpUseCase.register(state.phone.value, state.password.value);
 
     result.fold(
       (failure) {

@@ -8,6 +8,7 @@ class User with _$User {
   const factory User({
     required int id,
     required String phone,
+    required String deviceId,
     required List<int>? bioWedId,
   }) = _User;
 

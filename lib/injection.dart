@@ -16,6 +16,7 @@ import 'package:encrypted_notes/domain/repositories/shared_preferences_repositor
 import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
 import 'package:encrypted_notes/domain/repositories/synced_client_repository_remote.dart';
 import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
+import 'package:encrypted_notes/domain/usecases/auth/logout_usecase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/TestEncryptionUseCase.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/delete_failed_remote_deleted_notes_use_case.dart';
@@ -25,6 +26,7 @@ import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.da
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
+import 'package:encrypted_notes/presentation/screens/confirm_credentials/confirm_credentials_model.dart';
 import 'package:encrypted_notes/presentation/screens/home/bloc/home_bloc.dart';
 import 'package:encrypted_notes/presentation/screens/sign_up/bloc/sign_up_bloc.dart';
 import 'package:encrypted_notes/utils/generate_device_id/generate_device_id.dart';
@@ -79,6 +81,9 @@ Future<void> init() async {
       deleteNoteUseCase: sl(),
     ),
   );
+  sl.registerFactory<ConfirmCredentialsModel>(
+    () => ConfirmCredentialsModel(signInUpUseCase: sl()),
+  );
 
   // **************** DATA LAYER
   sl.registerSingleton<NotesDao>(AppDatabase.getInstance().notesDao);
@@ -94,8 +99,8 @@ Future<void> init() async {
   // ** repositories
   sl.registerSingleton<BioAuthRepository>(BioWebAuthRepositoryImpl());
   sl.registerSingleton<SignInUpRepository>(SignInUpRepositoryImpl());
-  sl.registerSingleton<SharedPreferencesRepository>(
-      SharedPreferencesRepositoryImpl());
+  sl.registerSingleton<AppStateSharedPreferencesRepository>(
+      AppStateSharedPreferencesRepositoryImpl());
 
   sl.registerSingleton<ModifyNoteLocalRepository>(ModifyNoteLocalRepositoryImpl(
     notesDao: sl(),
@@ -215,12 +220,22 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory<LogoutUsecase>(
+    () => LogoutUsecase(
+      sharedPreferencesRepository: sl(),
+      userLocalRepository: sl(),
+      secretSharedPreferencesRepository: sl(),
+    ),
+  );
+
   // **************** UTILS
   sl.registerSingleton(GenerateDeviceId());
   sl.registerSingleton(NotesMapper());
   sl.registerSingleton(RemoteDeviceMapper());
-  sl.registerSingleton(TokenService(
-    userLocalRepository: sl(),
-    sharedPreferencesRepository: sl(),
-  ));
+  sl.registerSingleton(
+    TokenService(
+      logoutUsecase: sl(),
+      secretSharedPreferencesRepository: sl(),
+    ),
+  );
 }

@@ -36,6 +36,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
           phone: phone,
           bioWedId: null,
           id: result.data?["userId"],
+          deviceId: deviceId,
         ),
         tokens: UserTokens(
           accessToken: result.data?["accessToken"],
@@ -78,6 +79,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
           phone: phone,
           bioWedId: null,
           id: result.data?["userId"],
+          deviceId: deviceId,
         ),
         tokens: UserTokens(
           accessToken: result.data?["accessToken"],

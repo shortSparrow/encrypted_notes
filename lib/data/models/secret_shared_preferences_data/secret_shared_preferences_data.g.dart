@@ -13,6 +13,7 @@ _$SecretSharedPreferencesDataImpl _$$SecretSharedPreferencesDataImplFromJson(
           json['deviceKeyPairForNotes'] as Map<String, dynamic>?,
       localSymmetricKey: json['localSymmetricKey'] as Map<String, dynamic>?,
       webBioId: json['webBioId'] as String?,
+      userTokens: json['userTokens'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$SecretSharedPreferencesDataImplToJson(
@@ -21,4 +22,5 @@ Map<String, dynamic> _$$SecretSharedPreferencesDataImplToJson(
       'deviceKeyPairForNotes': instance.deviceKeyPairForNotes,
       'localSymmetricKey': instance.localSymmetricKey,
       'webBioId': instance.webBioId,
+      'userTokens': instance.userTokens,
     };

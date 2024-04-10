@@ -46,7 +46,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     );
 
     final result =
-        await signInUpUseCase.login(state.phone.value, state.password.value);
+        await signInUpUseCase.loginFromCleanDevice(state.phone.value, state.password.value);
 
     result.fold(
       (failure) {
