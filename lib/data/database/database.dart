@@ -37,4 +37,13 @@ class AppDatabase extends _$AppDatabase {
       MigrationStrategy(beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       });
+
+  Future clearAllData() async {
+    return transaction(() async {
+      await customStatement('PRAGMA foreign_keys = OFF');
+      for (final table in allTables) {
+        await delete(table).go();
+      }
+    });
+  }
 }

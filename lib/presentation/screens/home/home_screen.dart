@@ -60,16 +60,27 @@ class _HomeViewState extends State<HomeView> {
         children: [
           const Center(child: Text("HOME")),
           Button(
-              text: "database",
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        DriftDbViewer(AppDatabase.getInstance())));
-              }),
+            text: "database",
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => DriftDbViewer(
+                    AppDatabase.getInstance(),
+                  ),
+                ),
+              );
+            },
+          ),
+          Button(
+            text: "logout",
+            onPressed: () {
+             bloc.add(const Logout());
+            },
+          ),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state.loadingLocalStatus == RequestStatus.loading) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
 
               return Expanded(

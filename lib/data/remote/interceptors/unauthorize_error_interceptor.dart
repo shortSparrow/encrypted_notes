@@ -21,18 +21,25 @@ addUnauthorizeErrorInterceptor() {
         final LogoutUsecase logoutUsecase = sl();
         print("ERROR: ${error.response}");
         print("error.requestOptions.path: ${error.requestOptions.path}");
-        final requestIsAvailable = error.requestOptions.path != '/login' &&
-            error.requestOptions.path != '/register' &&
-            error.requestOptions.path != '/get-new-access-token';
 
         if (error.requestOptions.path == '/get-new-access-token') {
-          // TODO maybe parse error (and logut only for 401 or 403)
-          await logoutUsecase.logoutSoftLocally();
-          MyApp.ctx?.go(AppScreens.confirm_credentials.path);
+          final statuesForRelogin = [401, 400, 404];
+          if (statuesForRelogin.contains(error.response?.statusCode)) {
+            await logoutUsecase.logoutSoftLocally();
+            MyApp.ctx?.go(AppScreens.confirm_credentials.path);
+          }
+
           return handler.reject(error);
         }
 
-        if (error.response?.statusCode == 401 && requestIsAvailable) {
+        final requestIsAvailableUnauthorizeError =
+            error.requestOptions.path != '/login' &&
+                error.requestOptions.path != '/register' &&
+                error.requestOptions.path != '/get-new-access-token';
+
+        final statuesForUpdateToken = [401, 402, 403];
+        if (statuesForUpdateToken.contains(error.response?.statusCode) &&
+            requestIsAvailableUnauthorizeError) {
           final tokens = await tokenService.tryRefreshToken();
           if (tokens != null) {
             await tokenService.setHTTPAuthorizationAccessToken();

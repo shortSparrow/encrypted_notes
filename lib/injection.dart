@@ -24,7 +24,7 @@ import 'package:encrypted_notes/domain/usecases/notes/delete_note_use_case.dart'
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.dart';
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
-import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
+import 'package:encrypted_notes/domain/usecases/auth/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/screens/auth/cubit/auth_cubit.dart';
 import 'package:encrypted_notes/presentation/screens/confirm_credentials/confirm_credentials_model.dart';
 import 'package:encrypted_notes/presentation/screens/home/bloc/home_bloc.dart';
@@ -70,7 +70,10 @@ Future<void> init() async {
   );
 
   sl.registerFactory<HomeBloc>(
-    () => HomeBloc(loadNoteUseCase: sl()),
+    () => HomeBloc(
+      loadNoteUseCase: sl(),
+      logoutUsecase: sl(),
+    ),
   );
 
   sl.registerFactory<ModifyNoteBloc>(
@@ -82,7 +85,10 @@ Future<void> init() async {
     ),
   );
   sl.registerFactory<ConfirmCredentialsModel>(
-    () => ConfirmCredentialsModel(signInUpUseCase: sl()),
+    () => ConfirmCredentialsModel(
+      signInUpUseCase: sl(),
+      logoutUsecase: sl(),
+    ),
   );
 
   // **************** DATA LAYER
@@ -225,6 +231,7 @@ Future<void> init() async {
       sharedPreferencesRepository: sl(),
       userLocalRepository: sl(),
       secretSharedPreferencesRepository: sl(),
+      signInUpRepository: sl(),
     ),
   );
 

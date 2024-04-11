@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:encrypted_notes/data/remote/apiClient.dart';
 import 'package:encrypted_notes/domain/models/login/login.dart';
@@ -60,7 +61,6 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     required String password,
     required SimplePublicKey noteEncryptionPublicKey,
   }) async {
-    await Future.delayed(const Duration(seconds: 2));
     try {
       final result = await apiClient.post<Map<String, dynamic>>(
         '/register',
@@ -86,6 +86,20 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
           refreshToken: result.data?["refreshToken"],
         ),
       );
+    } on DioException catch (e) {
+      throw NetworkFailure(
+        statusCode: e.response?.statusCode,
+        message: e.response?.data["message"],
+      );
+    } catch (e) {
+      throw UnexpectedFailure();
+    }
+  }
+
+  @override
+  Future logout() async {
+    try {
+      await apiClient.post('/logout');
     } on DioException catch (e) {
       throw NetworkFailure(
         statusCode: e.response?.statusCode,

@@ -1,4 +1,5 @@
-import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
+import 'package:encrypted_notes/domain/usecases/auth/logout_usecase.dart';
+import 'package:encrypted_notes/domain/usecases/auth/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/main.dart';
 import 'package:encrypted_notes/presentation/core/models/text_filed_validator.dart';
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
@@ -30,10 +31,14 @@ class State {
 }
 
 class ConfirmCredentialsModel extends ChangeNotifier {
-  SignInUpUseCase _signInUpUseCase;
+  final LogoutUsecase _logoutUsecase;
+  final SignInUpUseCase _signInUpUseCase;
 
-  ConfirmCredentialsModel({required SignInUpUseCase signInUpUseCase})
-      : _signInUpUseCase = signInUpUseCase;
+  ConfirmCredentialsModel({
+    required LogoutUsecase logoutUsecase,
+    required SignInUpUseCase signInUpUseCase,
+  })  : _logoutUsecase = logoutUsecase,
+        _signInUpUseCase = signInUpUseCase;
 
   var _phoneValue = '';
   var _passwordValue = '';
@@ -74,7 +79,8 @@ class ConfirmCredentialsModel extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    // TODO
+    await _logoutUsecase.logoutAndCleanUserData();
+    MyApp.ctx?.go(AppScreens.sign_in.path);
   }
 
   void onPasswordChanged(String value) {

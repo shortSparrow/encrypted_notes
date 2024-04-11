@@ -17,6 +17,5 @@ abstract class SignInUpRepository {
     required SimplePublicKey noteEncryptionPublicKey,
   });
 
-// TODO add logout
-// Future<Either<Failure, bool>> logout();
+  Future logout();
 }

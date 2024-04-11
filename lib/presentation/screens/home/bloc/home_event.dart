@@ -11,6 +11,10 @@ final class LoadNotes extends HomeEvent {
   const LoadNotes();
 }
 
+final class Logout extends HomeEvent {
+  const Logout();
+}
+
 final class RefetchNotes extends HomeEvent {
   const RefetchNotes();
 }

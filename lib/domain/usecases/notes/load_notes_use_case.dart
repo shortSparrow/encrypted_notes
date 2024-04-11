@@ -116,8 +116,6 @@ class LoadNoteUseCase {
             device.devicePublicKey,
           );
 
-          print("decryptedMessage: ${decryptedMessage}");
-
           final localSecretKey =
               await _secretSharedPreferencesRepository.getLocalSymmetricKey();
 
@@ -136,15 +134,11 @@ class LoadNoteUseCase {
                   .where((element) => element.isSynced == false)
                   .toList();
 
-          print("localNoteUnSyncedDevicesId: ${localNoteUnSyncedDevicesId}");
-
           final isUnSynced = localNoteUnSyncedDevicesId.any((element) {
             return data.syncedWithDevicesId.contains(element.deviceId) == true;
           });
-          print("isUnSynced: ${isUnSynced}");
           final isFailedDeleted = failedDeletedNote
               .any((element) => element.noteGlobalId == data.noteGlobalId);
-          print("isFailedDeleted: ${isFailedDeleted}");
 
           // ** If we have conflict between local and remote don't override local data
           if (isUnSynced || isFailedDeleted) {
@@ -201,8 +195,8 @@ class LoadNoteUseCase {
         localSecretKey,
       );
 
-      return right(
-          _notesMapper.encryptedNoteToDecryptedNote(loadedNote, decryptedMessage));
+      return right(_notesMapper.encryptedNoteToDecryptedNote(
+          loadedNote, decryptedMessage));
     } catch (e) {
       return left(GeneralFailure(message: "error"));
     }

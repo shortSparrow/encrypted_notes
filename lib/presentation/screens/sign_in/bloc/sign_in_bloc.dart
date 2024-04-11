@@ -1,5 +1,5 @@
 import 'package:encrypted_notes/domain/models/request_status.dart';
-import 'package:encrypted_notes/domain/usecases/sign_in_up/sign_in_up_usecase.dart';
+import 'package:encrypted_notes/domain/usecases/auth/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/presentation/core/models/edit_text.dart';
 import 'package:encrypted_notes/presentation/core/models/text_filed_validator.dart';
 import 'package:encrypted_notes/utils/validation/sign_in_up/password_validation.dart';
