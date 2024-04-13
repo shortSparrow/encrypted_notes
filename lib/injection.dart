@@ -171,6 +171,7 @@ Future<void> init() async {
       secretSharedPreferencesRepository: sl(),
       messageEncryptionUseCase: sl(),
       remoteDeviceRepositoryLocal: sl(),
+      userLocalRepository: sl(),
     ),
   );
 
