@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/remote/token_service.dart';
+import 'package:encrypted_notes/domain/failures/remote_repository_failures.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
@@ -13,6 +14,10 @@ import 'package:encrypted_notes/domain/repositories/user_local_repository.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 import 'package:encrypted_notes/extensions/encryption_key_extension.dart';
 import 'package:encrypted_notes/utils/generate_device_id/generate_device_id.dart';
+
+enum RegisterErrorCodes { unexpected, network }
+enum LoginErrorCodes { unexpected, network }
+enum ReLoginErrorCodes { unexpected, deviceIdNull, network }
 
 class SignInUpUseCase {
   final SignInUpRepository _signInUpRepository;
@@ -43,7 +48,7 @@ class SignInUpUseCase {
         _userLocalRepository = userLocalRepository,
         _tokenService = tokenService;
 
-  Future<Either<GeneralFailure, User>> register(
+  Future<Either<AppError<RegisterErrorCodes>, User>> register(
     String phone,
     String password,
   ) async {
@@ -70,15 +75,16 @@ class SignInUpUseCase {
       );
 
       return right(registerResponse.user);
-    } on NetworkFailure catch (e) {
-      return left(e);
+    } on NetworkError catch (e) {
+      return left(
+          AppError(code: RegisterErrorCodes.network, message: e.message));
     } catch (e) {
       return left(
-          GeneralFailure(message: "can't register user, unknown error happen"));
+          AppError(code: RegisterErrorCodes.unexpected, message: e.toString()));
     }
   }
 
-  Future<Either<GeneralFailure, User>> loginFromCleanDevice(
+  Future<Either<AppError<LoginErrorCodes>, User>> loginFromCleanDevice(
     String phone,
     String password,
   ) async {
@@ -107,22 +113,23 @@ class SignInUpUseCase {
       );
 
       return right(loginResult.user);
-    } on NetworkFailure catch (e) {
-      return left(e);
+    } on RemoteRepositoryError catch (e) {
+      return left(AppError(code: LoginErrorCodes.network, message: e.message));
     } catch (e) {
       return left(
-          GeneralFailure(message: "can't login user, unknown error happen"));
+          AppError(code: LoginErrorCodes.unexpected, message: e.toString()));
     }
   }
 
-  Future<Either<GeneralFailure, User>> reloginForGetNewTokens(
+  Future<Either<AppError<ReLoginErrorCodes>, User>> reloginForGetNewTokens(
     String phone,
     String password,
   ) async {
     try {
       final oldDeviceId = _userLocalRepository.getUser()?.deviceId;
       if (oldDeviceId == null) {
-        return left(GeneralFailure(message: "deviceId is null"));
+        return left(AppError(
+            message: "deviceId is null", code: ReLoginErrorCodes.deviceIdNull));
       }
 
       final e2eKeyPair =
@@ -144,9 +151,12 @@ class SignInUpUseCase {
       await _sharedPreferencesRepository.setIsLogged(true);
 
       return right(loginResult.user);
+    } on RemoteRepositoryError catch (err) {
+      return left(
+          AppError(message: err.message, code: ReLoginErrorCodes.network));
     } catch (err) {
-      return left(GeneralFailure(
-          message: "loginFromExistingDevice failed, unknown error happen"));
+      return left(AppError(
+          message: err.toString(), code: ReLoginErrorCodes.unexpected));
     }
   }
 

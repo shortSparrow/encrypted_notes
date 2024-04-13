@@ -7,6 +7,13 @@ import 'package:encrypted_notes/domain/repositories/synced_client_repository_loc
 import 'package:encrypted_notes/domain/repositories/synced_client_repository_remote.dart';
 import 'package:encrypted_notes/extensions/encryption_key_extension.dart';
 
+enum GetAllUserDevicesErrorCodes { unexpectedError }
+
+enum UpdateRemoteDevicesLocalErrorCodes { unexpectedError }
+
+typedef GetAllUserDevicesResponse
+    = Future<Either<AppError<GetAllUserDevicesErrorCodes>, List<RemoteDevice>>>;
+
 class GetUserRemoteDevicesUseCase {
   GetUserRemoteDevicesUseCase({
     required RemoteDeviceRepositoryRemote remoteDeviceRepositoryRemote,
@@ -17,13 +24,17 @@ class GetUserRemoteDevicesUseCase {
   final RemoteDeviceRepositoryRemote _remoteDeviceRepositoryRemote;
   final RemoteDeviceRepositoryLocal _remoteDeviceRepositoryLocal;
 
-  Future<Either<Failure, List<RemoteDevice>>> getAllUserDevices() async {
+  GetAllUserDevicesResponse getAllUserDevices() async {
     try {
       final devices = await _remoteDeviceRepositoryLocal.getAllRemoteDevices();
       return right(devices);
     } catch (e) {
-      print("getAllUserDevices error: ${e}");
-      return left(GeneralFailure(message: "oops"));
+      return left(
+        AppError(
+          code: GetAllUserDevicesErrorCodes.unexpectedError,
+          message: "Can't get remote devices",
+        ),
+      );
     }
   }
 
@@ -48,7 +59,10 @@ class GetUserRemoteDevicesUseCase {
         }
       }
     } catch (e) {
-      print("updateRemoteDevicesLocalData error: ${e}");
+      AppError(
+        code: UpdateRemoteDevicesLocalErrorCodes.unexpectedError,
+        message: e.toString(),
+      );
     }
   }
 }

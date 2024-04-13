@@ -6,7 +6,7 @@ abstract class SecretSharedPreferencesRepository {
   Future<void> setE2EKeyPair(SimpleKeyPair keyPair);
   Future<SecretKey> getLocalSymmetricKey();
   Future<void> setLocalSymmetricKey(SecretKey key);
-  Future<List<int>> getWebBioId();
+  Future<List<int>?> getWebBioId();
   Future<void> setWebBioId(List<int> webBioId);
   Future<void> clearAllUserData();
   Future<void> clearUserTokens();

@@ -21,7 +21,7 @@ class LogoutUsecase {
         _secretSharedPreferencesRepository = secretSharedPreferencesRepository,
         _signInUpRepository = signInUpRepository;
 
-  Future logoutAndCleanUserData() async {
+  Future<void> logoutAndCleanUserData() async {
     await Future.wait([
       _userLocalRepository.clearData(),
       _sharedPreferencesRepository.clearData(),
@@ -32,7 +32,7 @@ class LogoutUsecase {
   }
 
   // logout user and not delete all data
-  Future logoutSoftLocally() async {
+  Future<void> logoutSoftLocally() async {
     await _sharedPreferencesRepository.setIsLogged(false);
     await _secretSharedPreferencesRepository.clearUserTokens();
   }

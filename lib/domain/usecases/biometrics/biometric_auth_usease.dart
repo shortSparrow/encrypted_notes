@@ -1,12 +1,25 @@
 import 'package:dartz/dartz.dart';
-import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
+import 'package:encrypted_notes/data/repositories/bio_web_auth/bio_web_auth_repository_impl.dart';
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/shared_preferences_repository.dart';
-import 'package:encrypted_notes/extensions/Either.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../failures/failures.dart';
 import '../../repositories/bio_auth_repository.dart';
+
+enum RegisterBioForWebError {
+  bioNotSupported,
+  failedCreateWebAuth,
+  unexpected,
+  deviceIsNotBrowser
+}
+
+enum LoginBioForWebError {
+  webBioIdNoteSaved,
+  deviceIsNotBrowser,
+  unexpected,
+  authUsingBIO,
+}
 
 class BiometricAuthUseCase {
   final BioAuthRepository _bioAuthRepository;
@@ -22,54 +35,68 @@ class BiometricAuthUseCase {
 
   List<dynamic>? userRawId;
 
-  Future<Either<Failure, bool>> registerBioForWeb(
+  Future<Either<AppError<RegisterBioForWebError>, Unit>> registerBioForWeb(
     String userName,
   ) async {
-    if (kIsWeb) {
-      final userRawIdArray = await _bioAuthRepository.registerWebBio(
-        "randomStringFromServer",
-        [1, 2, 3, 4],
-        userName,
-      );
+    try {
+      if (kIsWeb) {
+        final userRawIdArray = await _bioAuthRepository.registerWebBio(
+          "randomStringFromServer",
+          [1, 2, 3, 4],
+          userName,
+        );
 
-      if (userRawIdArray.isRight()) {
-        await _secretSharedPreferencesRepository
-            .setWebBioId(userRawIdArray.asRight());
+        await _secretSharedPreferencesRepository.setWebBioId(userRawIdArray);
 
-        return right(true);
+        return right(unit);
+      } else {
+        return left(AppError(code: RegisterBioForWebError.deviceIsNotBrowser));
       }
-
-      return left(userRawIdArray.asLeft());
+    } on AppError<RegisterWebBioErrorCodes> catch (err) {
+      switch (err.code) {
+        case RegisterWebBioErrorCodes.bioNotSupported:
+          return left(AppError(code: RegisterBioForWebError.bioNotSupported));
+        case RegisterWebBioErrorCodes.failedCreateWebAuth:
+          return left(
+              AppError(code: RegisterBioForWebError.failedCreateWebAuth));
+        case RegisterWebBioErrorCodes.unexpected:
+          return left(AppError(code: RegisterBioForWebError.unexpected));
+      }
+    } catch (err) {
+      return left(AppError(code: RegisterBioForWebError.unexpected));
     }
-    return left(DeviceIsNotBrowser());
   }
 
-  Future<Either<Failure, bool>> loginBioForWeb() async {
-    if (kIsWeb) {
-      final userRawId = await _secretSharedPreferencesRepository.getWebBioId();
-      if (userRawId == null) {
-        return left(NoSavedUserId());
+  Future<Either<AppError<LoginBioForWebError>, Unit>> loginBioForWeb() async {
+    try {
+      if (kIsWeb) {
+        final userRawId =
+            await _secretSharedPreferencesRepository.getWebBioId();
+        if (userRawId == null) {
+          return left(AppError(code: LoginBioForWebError.webBioIdNoteSaved));
+        }
+        await _bioAuthRepository.loginWebBio(
+          "randomStringFromServer",
+          userRawId,
+        );
+
+        right(unit);
       }
-      final loginResult = await _bioAuthRepository.loginWebBio(
-        "randomStringFromServer",
-        userRawId,
-      );
-
-      loginResult.fold(
-        (failure) {},
-        (isSuccess) {
-          if (isSuccess) {
-            // TODO ADD global key that user authorized
-          }
-        },
-      );
-
-      return loginResult;
+      return left(AppError(code: LoginBioForWebError.deviceIsNotBrowser));
+    } on AppError<LoginWebBioErrorCodes> catch (err) {
+      switch (err.code) {
+        case LoginWebBioErrorCodes.authUsingBIO:
+          return left(AppError(
+              code: LoginBioForWebError.authUsingBIO, message: err.message));
+        case LoginWebBioErrorCodes.unexpected:
+          return left(AppError(code: LoginBioForWebError.unexpected));
+      }
+    } catch (err) {
+      return left(AppError(code: LoginBioForWebError.unexpected));
     }
-    return left(DeviceIsNotBrowser());
   }
 
-  Future<Either<Failure, bool>> isBiometricSupported() async {
+  Future<Either<UnexpectedError, bool>> isBiometricSupported() async {
     bool isDeviceSupported = false;
 
     try {
@@ -79,7 +106,7 @@ class BiometricAuthUseCase {
 
       // if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {} // TODO
     } catch (e) {
-      left(GeneralFailure(message: "Unknown Error"));
+      left(UnexpectedError(message: e.toString()));
     }
     return right(isDeviceSupported);
   }

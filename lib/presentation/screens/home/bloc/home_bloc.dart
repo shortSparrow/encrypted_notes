@@ -39,31 +39,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     LoadNotes event,
     Emitter<HomeState> emit,
   ) async {
-    try {
-      print("load notes");
-      emit(state.copyWith(
-        loadingLocalStatus: RequestStatus.loading,
-      ));
+    emit(
+      state.copyWith(loadingLocalStatus: RequestStatus.loading),
+    );
 
-      final response = _loadNoteUseCase.getNotes();
-      response.loadingNotesFromServerStatus.listen((status) {
-        this.emit(state.copyWith(loadingFromServerStatus: status));
-        print("loading fromserver status: ${status}");
-      });
+    final response = _loadNoteUseCase.getNotes();
+    response.loadingNotesFromServerStatus.handleError((error) {
+      print("ERRORXXXXX: ${error}");
+      // TODO ger error info if needed
+    }).listen((status) {
+      this.emit(state.copyWith(loadingFromServerStatus: status));
+    });
 
-      notesStream = response.notesStream.listen((notes) {
-        // print("note: ${notes}");
-        this.emit(
-          state.copyWith(
-            loadingLocalStatus: RequestStatus.success,
-            loadNotes: notes,
-            filteredNotes: notes,
-          ),
-        );
-      });
-    } catch (e) {
-      print("failed _onLoadNotes");
-    }
+    notesStream = response.localNotesStream.listen((notes) {
+      this.emit(
+        state.copyWith(
+          loadingLocalStatus: RequestStatus.success,
+          loadNotes: notes,
+          filteredNotes: notes,
+        ),
+      );
+    });
   }
 
   Future<void> _onLogout(

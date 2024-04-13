@@ -10,6 +10,10 @@ import 'package:encrypted_notes/domain/usecases/encryption/generate_keys.dart';
 import 'package:encrypted_notes/main.dart';
 import 'package:jwk/jwk.dart';
 
+enum GetE2EKeyPairErrorCodes { keyPairNotExist }
+
+enum GetLocalSymmetricKeyErrorCodes { noSecretKey }
+
 class SecretSharedPreferencesRepositoryImpl
     extends SecretSharedPreferencesRepository {
   final UserLocalRepository _userLocalRepository;
@@ -47,7 +51,10 @@ class SecretSharedPreferencesRepositoryImpl
       return parsedKeyPair.toKeyPair() as SimpleKeyPair;
     }
 
-    throw GeneralFailure(message: "keypair not exist");
+    throw AppError(
+      message: "keypair not exist",
+      code: GetE2EKeyPairErrorCodes.keyPairNotExist,
+    );
   }
 
   @override
@@ -63,7 +70,10 @@ class SecretSharedPreferencesRepositoryImpl
   Future<SecretKey> getLocalSymmetricKey() async {
     final storage = await _getStorageForCurrentUser();
     if (storage.localSymmetricKey == null) {
-      throw GeneralFailure(message: "no secret key");
+      throw AppError(
+        message: "no secret key",
+        code: GetLocalSymmetricKeyErrorCodes.noSecretKey,
+      );
     }
     final key = Jwk.fromJson(storage.localSymmetricKey!);
 
@@ -110,7 +120,7 @@ class SecretSharedPreferencesRepositoryImpl
     final storage = await _getStorageForCurrentUser();
     await writeToStorage(storage.copyWith(userTokens: userTokens.toJson()));
   }
-  
+
   @override
   Future<void> clearUserTokens() async {
     final storage = await _getStorageForCurrentUser();

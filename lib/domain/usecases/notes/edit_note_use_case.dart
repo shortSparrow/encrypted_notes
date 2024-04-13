@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
+import 'package:encrypted_notes/domain/failures/remote_repository_failures.dart';
 import 'package:encrypted_notes/domain/models/notes/modify_notes.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_local_repository.dart';
@@ -11,12 +12,19 @@ import 'package:encrypted_notes/domain/repositories/modify_note_remote_repositor
 import 'package:encrypted_notes/domain/repositories/secret_shared_preferences_repository.dart';
 import 'package:encrypted_notes/domain/repositories/synced_client_repository_local.dart';
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
+import 'package:encrypted_notes/domain/usecases/notes/util/modify_note/prepare_synchronize_remote_response.dart';
 
 import '../../failures/failures.dart';
 import '../../models/combined_local_remote_response/combined_local_remote_response.dart';
 
-typedef LocalEditResponse = Future<Either<Failure, bool>>;
-typedef RemoteEditResponse = Future<Either<Failure, bool>>;
+enum EditNoteLocalErrorCodes { unexpectedError, cantSaveNote }
+
+enum EditNoteRemoteErrorCodes { syncedDevicesIsEmpty, network, unexpected }
+
+typedef LocalEditResponse
+    = Future<Either<AppError<EditNoteLocalErrorCodes>, Unit>>;
+typedef RemoteEditResponse
+    = Future<Either<AppError<EditNoteRemoteErrorCodes>, Unit>>;
 typedef EditNoteResponse = Future<
     CombinedLocalRemoteResponse<LocalEditResponse, RemoteEditResponse>>;
 
@@ -65,7 +73,7 @@ class EditNoteUseCase {
         localSecretKey,
       );
 
-      final result = await _modifyNoteLocalRepository.editNote(
+      final isSuccess = await _modifyNoteLocalRepository.editNote(
         NotesCompanion(
           id: Value(note.id),
           message: Value(jsonEncode(encryptedMessage.toJson())),
@@ -74,16 +82,33 @@ class EditNoteUseCase {
         ),
       );
 
-      return right(result);
+      return isSuccess
+          ? right(unit)
+          : left(
+              AppError(
+                message: "Can't edit note locally",
+                code: EditNoteLocalErrorCodes.cantSaveNote,
+              ),
+            );
     } catch (e) {
-      return left(GeneralFailure(message: "local error: ${e}"));
+      return left(
+        AppError(
+          message: "Can't edit note locally",
+          code: EditNoteLocalErrorCodes.unexpectedError,
+        ),
+      );
     }
   }
 
   RemoteEditResponse _editNoteRemote({required DecryptedNote note}) async {
     try {
       if (note.syncedDevices.isEmpty) {
-        return left(GeneralFailure(message: "syncedDevices is empty"));
+        return left(
+          AppError(
+            message: "There are no one synced device with this note",
+            code: EditNoteRemoteErrorCodes.syncedDevicesIsEmpty,
+          ),
+        );
       }
 
       final encryptedNoteList = await _encryptNoteForEachRecipient(note: note);
@@ -115,9 +140,21 @@ class EditNoteUseCase {
         );
       }
 
-      return right(true);
-    } catch (e) {
-      return left(GeneralFailure(message: "remote error"));
+      return right(unit);
+    } on RemoteRepositoryError catch (e) {
+      switch (e) {
+        case ParseServerDataError():
+          return left(AppError(code: EditNoteRemoteErrorCodes.unexpected));
+        case NetworkError():
+          return left(
+            AppError(
+              message: e.message,
+              code: EditNoteRemoteErrorCodes.network,
+            ),
+          );
+      }
+    } catch (err) {
+      return left(AppError(code: EditNoteRemoteErrorCodes.unexpected));
     }
   }
 
@@ -165,31 +202,8 @@ class EditNoteUseCase {
     EditNotesResponse response,
     int noteId,
   ) async {
-    final syncingDeviceStatusList = response.notes
-        .map((item) => SyncedDevice(
-              deviceId: item.deviceId,
-              isSynced: item.isSuccess,
-            ))
-        .toList();
-
     final note = await _modifyNoteLocalRepository.getNoteById(noteId);
-    final newSyncedDevices = note?.syncedDevices ?? List.empty();
-
-    final updated = newSyncedDevices.map((_device) {
-      final indexExistingDevice = syncingDeviceStatusList
-          .indexWhere((element) => element.deviceId == _device.deviceId);
-
-      if (indexExistingDevice != -1) {
-        final updatedDevice =
-            syncingDeviceStatusList.removeAt(indexExistingDevice);
-        return updatedDevice;
-      } else {
-        return _device;
-      }
-    }).toList();
-
-    updated.addAll(syncingDeviceStatusList);
-    print("updated AFTER: ${updated}");
+    final updated = prepareSynchronizeRemoteResponse(response.notes, note);
 
     await AppDatabase.getInstance().transaction(() async {
       await _modifyNoteLocalRepository.updateSyncingDeviceForNote(

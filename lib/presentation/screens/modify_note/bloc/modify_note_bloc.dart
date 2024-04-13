@@ -5,6 +5,7 @@ import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/load_notes_use_case.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/bloc/modify_note_state.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/modify_note_screen.dart';
+import 'package:encrypted_notes/presentation/screens/modify_note/utils/get_snackbar_message_for_deleting_note.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,12 +37,11 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     OnDeleteNote event,
     Emitter<ModifyNoteState> emit,
   ) async {
-    try {
-      final deletionResult = await _deleteNoteUseCase.deleteNote(state.editableNote!.id, state.editableNote?.noteGlobalId);
-      // TODO handle result
-    } catch(err) {
-      print("_onDeleteNote err: ${err}");
-    }
+    final deletionResult = await _deleteNoteUseCase.deleteNote(
+        state.editableNote!.id, state.editableNote?.noteGlobalId);
+
+    final snackbarMessage = getSnackbarMessageForDeletingNote(deletionResult);
+    // TODO show snackbar
   }
 
   Future _onSetParams(
@@ -61,13 +61,20 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     emit(state.copyWith(loadingEditNote: RequestStatus.loading));
     final response = await _loadNoteUseCase.loadNoteById(event.noteId);
     response.fold(
-      (l) {
-        print("error: ${l}");
-        this.emit(state.copyWith(loadingEditNote: RequestStatus.failed));
+      (error) {
+        switch (error.code) {
+          case LoadByIdErrorCodes.noteNotExist:
+          case LoadByIdErrorCodes.unexpectedError:
+            this.emit(state.copyWith(loadingEditNote: RequestStatus.failed));
+        }
       },
-      (r) {
-        this.emit(state.copyWith(
-            editableNote: r, loadingEditNote: RequestStatus.success));
+      (decryptedNote) {
+        this.emit(
+          state.copyWith(
+            editableNote: decryptedNote,
+            loadingEditNote: RequestStatus.success,
+          ),
+        );
       },
     );
   }
@@ -86,7 +93,6 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
   }
 
   Future _editNote(String message, String title) async {
-    print("NOTE: ${message}");
     final response = await _editNoteUseCase.editNote(
       note: state.editableNote!.copyWith(
         message: message,
@@ -95,33 +101,34 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     );
 
     response.local.then((value) {
+      emit(
+        state.copyWith(
+          loadingSaveNote: RequestStatus.success,
+          mode: ModifyNoteMode.edit,
+        ),
+      );
       value.fold(
-        (l) {
-          print("Error edit note local: ${l}");
+        (error) {
+          print("Error edit note local: ${error}");
+          // TODO show snackbar failed save locally
         },
-        (r) {
-          print("Success edit note local: ${r}");
+        (_) {
+    
         },
       );
     });
-
     response.remote.then((value) {
       value.fold(
-        (l) {
-          print("Error edit note remote: ${l}");
+        (error) {
+          print("Error edit note remote: ${error}");
+          // TODO show snackbar
         },
-        (r) {
-          print("Success edit note remote: ${r}");
+        (_) {
+          print("Success edit note remote:");
+          // TODO show snackbar
         },
       );
     });
-
-    emit(
-      state.copyWith(
-        loadingSaveNote: RequestStatus.success,
-        mode: ModifyNoteMode.edit,
-      ),
-    ); // TODO fix it, may be not success
   }
 
   Future _addNote({required String message, required String title}) async {
@@ -132,11 +139,11 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
 
     response.local.then((value) {
       value.fold(
-        (l) {
-          print("Error local: ${l}");
+        (error) {
+          print("Error local: ${error}");
         },
-        (r) {
-          print("Success local: ${r}");
+        (id) {
+          print("Success local: ${id}");
           //  TODO set editablde note or go from screen
           if (this.isClosed) {
             // TODO show global error
@@ -147,12 +154,12 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
 
     response.remote.then((value) {
       value.fold(
-        (l) {
-          print("Error remote: ${l}");
+        (error) {
+          print("Error remote: ${error}");
         },
-        (r) {
+        (_) {
           //  TODO set editablde note or go from screen
-          print("Success remote: ${r}");
+          print("Success remote:");
         },
       );
     });

@@ -5,8 +5,8 @@ import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
-import 'package:encrypted_notes/domain/models/notes/modify_notes.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
+import 'package:encrypted_notes/domain/models/notes/modify_notes.dart';
 import 'package:encrypted_notes/domain/models/failedDeletedNotes/failedDeletedNotes.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
@@ -17,13 +17,22 @@ import 'package:encrypted_notes/domain/repositories/synced_client_repository_loc
 import 'package:encrypted_notes/domain/usecases/encryption/message_encryption_use_case.dart';
 
 class GetNotesResponse {
-  final Stream<List<EncryptedNote>> notesStream;
+  final Stream<List<EncryptedNote>> localNotesStream;
   final Stream<RequestStatus> loadingNotesFromServerStatus;
 
   GetNotesResponse({
     required this.loadingNotesFromServerStatus,
-    required this.notesStream,
+    required this.localNotesStream,
   });
+}
+
+enum LoadByIdErrorCodes { noteNotExist, unexpectedError }
+
+class LoadByIdError {
+  final LoadByIdErrorCodes code;
+  final String message;
+
+  LoadByIdError({required this.code, required this.message});
 }
 
 class LoadNoteUseCase {
@@ -51,7 +60,7 @@ class LoadNoteUseCase {
 
   GetNotesResponse getNotes() {
     return GetNotesResponse(
-      notesStream: _modifyNoteLocalRepository.getNotes(),
+      localNotesStream: _modifyNoteLocalRepository.getNotes(),
       loadingNotesFromServerStatus: _getLoadingNotesFromServer(),
     );
   }
@@ -76,7 +85,8 @@ class LoadNoteUseCase {
             .then((value) => failedDeletedNote = value),
         _modifyNoteRemoteRepository
             .getRemovingNotes()
-            .then((value) => deletedNotesForLocalSync = value),
+            .then((value) => deletedNotesForLocalSync = value)
+            .catchError((err) => deletedNotesForLocalSync = List.empty()),
       ]);
 
       final List<String> deletedNoteSync = [];
@@ -170,21 +180,26 @@ class LoadNoteUseCase {
           .where((element) => element != null)
           .toList()
           .cast<NotesCompanion>();
-// Зараз оверрайдтиь , але може бути так що локально все ок, а на сервер не відправилось в такому випадку сервер знищить локальні дані (треба дивитися чи isSinced: tue)
       _modifyNoteLocalRepository.replaceLocalNotesWithRemote(notes);
 
       yield RequestStatus.success;
     } catch (e) {
       print("_getLoadingNotesFromServer error: ${e}");
       yield RequestStatus.failed;
+      rethrow; // TODO pass error to stream and we can get  all error info in bloc
     }
   }
 
-  Future<Either<Failure, DecryptedNote>> loadNoteById(int noteId) async {
+  Future<Either<LoadByIdError, DecryptedNote>> loadNoteById(int noteId) async {
     try {
       final loadedNote = await _modifyNoteLocalRepository.getNoteById(noteId);
       if (loadedNote == null) {
-        return left(GeneralFailure(message: "can't find note"));
+        return left(
+          LoadByIdError(
+            code: LoadByIdErrorCodes.noteNotExist,
+            message: "can't find note",
+          ),
+        );
       }
 
       final localSecretKey =
@@ -198,7 +213,12 @@ class LoadNoteUseCase {
       return right(_notesMapper.encryptedNoteToDecryptedNote(
           loadedNote, decryptedMessage));
     } catch (e) {
-      return left(GeneralFailure(message: "error"));
+      return left(
+        LoadByIdError(
+          code: LoadByIdErrorCodes.unexpectedError,
+          message: e.toString(),
+        ),
+      );
     }
   }
 }

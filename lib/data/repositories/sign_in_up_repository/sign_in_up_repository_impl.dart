@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/data/repositories/error_handling.dart';
 import 'package:encrypted_notes/domain/models/login/login.dart';
 import 'package:encrypted_notes/domain/models/register/register.dart';
-import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/user/user.dart';
 import 'package:encrypted_notes/domain/repositories/sign_in_up_repository.dart';
 import 'package:encrypted_notes/extensions/encryption_key_extension.dart';
@@ -19,7 +17,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     required String password,
     required SimplePublicKey noteEncryptionPublicKey,
   }) async {
-    try {
+    return performNetworkOperation(() async {
       final result = await apiClient.post<Map<String, dynamic>>(
         '/login',
         data: jsonEncode(
@@ -44,14 +42,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
           refreshToken: result.data?["refreshToken"],
         ),
       );
-    } on DioException catch (e) {
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data["message"],
-      );
-    } catch (e) {
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
@@ -61,7 +52,7 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
     required String password,
     required SimplePublicKey noteEncryptionPublicKey,
   }) async {
-    try {
+    return performNetworkOperation(() async {
       final result = await apiClient.post<Map<String, dynamic>>(
         '/register',
         data: jsonEncode(
@@ -86,27 +77,13 @@ class SignInUpRepositoryImpl extends SignInUpRepository {
           refreshToken: result.data?["refreshToken"],
         ),
       );
-    } on DioException catch (e) {
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data["message"],
-      );
-    } catch (e) {
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
   Future logout() async {
-    try {
+    performNetworkOperation(() async {
       await apiClient.post('/logout');
-    } on DioException catch (e) {
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data["message"],
-      );
-    } catch (e) {
-      throw UnexpectedFailure();
-    }
+    });
   }
 }

@@ -1,6 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
-import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/usecases/biometrics/biometric_auth_usease.dart';
 import 'auth_state.dart';
 
@@ -29,18 +27,12 @@ class AuthCubit extends Cubit<AuthState> {
 
     return didAuthenticate.fold(
       (failure) {
-        // TODO handle error, probably show toast
-        if (failure is GeneralFailure) {
-          print("ERROR: ${failure.message}");
-        }
-        if (failure is DeviceIsNotBrowser) {
-          print("DeviceIsNotBrowser");
-        }
-        if (failure is BioNotSupported) {
-          print("BioNotSupported");
-        }
-        if (failure is FailedCreateWebAuth) {
-          print("FailedCreateWebAuth");
+        switch (failure.code) {
+          case RegisterBioForWebError.bioNotSupported:
+          case RegisterBioForWebError.failedCreateWebAuth:
+          case RegisterBioForWebError.unexpected:
+          case RegisterBioForWebError.deviceIsNotBrowser:
+            print("registerBioForWeb error: ${failure.message}");
         }
 
         return false;
@@ -56,18 +48,14 @@ class AuthCubit extends Cubit<AuthState> {
     final loginResult = await getAvailableBiometricsUseCase.loginBioForWeb();
     loginResult.fold(
       (failure) {
-        if (failure is GeneralFailure) {
-          print("${failure.message}");
+        switch (failure.code) {
+          case LoginBioForWebError.webBioIdNoteSaved:
+          case LoginBioForWebError.deviceIsNotBrowser:
+          case LoginBioForWebError.unexpected:
+          case LoginBioForWebError.authUsingBIO:
+            print("callBiometricAuth error: ${failure.message}");
         }
-        if (failure is DeviceIsNotBrowser) {
-          print("DeviceIsNotBrowser");
-        }
-        if (failure is NoSavedUserId) {
-          print("NoSavedUserId");
-        }
-        if (failure is FailureAuthUsingBIO) {
-          print("FailureAuthUsingBIO");
-        }
+
         print("FAILED LOGIN");
       },
       (r) {

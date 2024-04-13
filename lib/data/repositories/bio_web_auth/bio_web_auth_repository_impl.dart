@@ -1,9 +1,15 @@
-import 'package:dartz/dartz.dart';
-import 'package:encrypted_notes/domain/failures/biometrics_failures.dart';
 import 'package:encrypted_notes/domain/failures/failures.dart';
 
 import '../../../domain/repositories/bio_auth_repository.dart';
 import 'web_dummy.dart' if (dart.library.js) 'web_js.dart'; // <-For web
+
+enum LoginWebBioErrorCodes { authUsingBIO, unexpected }
+
+enum RegisterWebBioErrorCodes {
+  bioNotSupported,
+  failedCreateWebAuth,
+  unexpected
+}
 
 class BioWebAuthRepositoryImpl extends BioAuthRepository {
   final js = Js();
@@ -20,25 +26,30 @@ class BioWebAuthRepositoryImpl extends BioAuthRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> loginWebBio(
+  Future<void> loginWebBio(
     String randomStringFromServer,
     dynamic rawId,
   ) async {
     try {
       await js.loginBio(randomStringFromServer, rawId);
-      return right(true);
     } catch (e) {
       JsFailure jsFailure = JsFailure.decodeFromJson(e as String);
       if (jsFailure.reason == "FAILED_LOGIN") {
-        return left(FailureAuthUsingBIO());
+        throw AppError(
+          code: LoginWebBioErrorCodes.authUsingBIO,
+          message: jsFailure.message,
+        );
       }
 
-      return left(GeneralFailure(message: jsFailure.message));
+      throw AppError(
+        code: LoginWebBioErrorCodes.unexpected,
+        message: jsFailure.message,
+      );
     }
   }
 
   @override
-  Future<Either<Failure, List<int>>> registerWebBio(
+  Future<List<int>> registerWebBio(
     String randomStringFromServer,
     List<int> userIdArray,
     String userName,
@@ -46,20 +57,24 @@ class BioWebAuthRepositoryImpl extends BioAuthRepository {
     try {
       List<int> rawId =
           await js.registerBio(randomStringFromServer, userIdArray, userName);
-      return right(rawId);
+      return rawId;
     } catch (e) {
       JsFailure jsFailure = JsFailure.decodeFromJson(e as String);
       if (jsFailure.reason == 'BIO_NOT_SUPPORTED') {
-        return left(BioNotSupported());
+        // return left(AppError(code: RegisterWebBioErrorCodes.bioNotSupported));
+        throw AppError(code: RegisterWebBioErrorCodes.bioNotSupported);
       }
       if (jsFailure.reason == 'FAILED_CREATE_WEBAUTH') {
-        return left(FailedCreateWebAuth());
+        // return left(
+        //     AppError(code: RegisterWebBioErrorCodes.failedCreateWebAuth));
+        throw AppError(code: RegisterWebBioErrorCodes.failedCreateWebAuth);
       }
 
-      return left(GeneralFailure(message: "unkown error"));
+      // return left(AppError(code: RegisterWebBioErrorCodes.unexpected));
+      throw AppError(code: RegisterWebBioErrorCodes.unexpected);
     }
   }
-  
+
   @override
   Future<bool> loginBio() {
     // TODO: implement loginBio. Use library

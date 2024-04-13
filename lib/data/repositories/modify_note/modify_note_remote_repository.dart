@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
 import 'package:encrypted_notes/data/remote/apiClient.dart';
+import 'package:encrypted_notes/data/repositories/error_handling.dart';
+import 'package:encrypted_notes/domain/failures/remote_repository_failures.dart';
 import 'package:encrypted_notes/domain/models/notes/modify_notes.dart';
-import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
 import 'package:encrypted_notes/domain/repositories/modify_note_remote_repository.dart';
 
@@ -16,7 +16,7 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
   @override
   Future<List<DeleteNotesResponse>> deleteNotes(
       List<String> globalNoteIds) async {
-    try {
+    return performNetworkOperation(() async {
       final response = await apiClient.delete<List<dynamic>>(
         '/delete-notes',
         data: jsonEncode(globalNoteIds),
@@ -30,20 +30,12 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
               )
               .toList() ??
           List.empty();
-    } on DioException catch (e) {
-      print("deleteNote error ${e}");
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data,
-      );
-    } catch (e) {
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
   Future<List<GetRemovingNotesResponse>> getRemovingNotes() async {
-    try {
+    return performNetworkOperation(() async {
       final response =
           await apiClient.get<List<dynamic>>('/get-all-removing-notes');
 
@@ -53,38 +45,20 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
                 sendToDeviceId: e['sendToDeviceId']);
           }).toList() ??
           List.empty();
-    } on DioException catch (e) {
-      print("addNote DioException ${e}");
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data,
-      );
-    } catch (e) {
-      print("getNotes unexpected Error");
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
   Future<void> confirmRemovingNoteFromDevice(List<String> globalNoteIds) async {
-    try {
+    return performNetworkOperation(() async {
       await apiClient.post<List<dynamic>>('/confirm-removing-notes',
           data: jsonEncode(globalNoteIds));
-    } on DioException catch (e) {
-      print("addNote DioException ${e}");
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data,
-      );
-    } catch (e) {
-      print("getNotes unexpected Error");
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
   Future<List<GetAllNotesResponse>> getNotes() async {
-    try {
+    return performNetworkOperation(() async {
       final response = await apiClient.get<List<dynamic>>('/get-all-notes');
 
       final allNotes = response.data?.map((note) {
@@ -104,25 +78,16 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
       }).toList();
 
       if (allNotes == null) {
-        throw UnexpectedFailure();
+        throw ParseServerDataError(message: "notes is null");
       }
 
       return allNotes;
-    } on DioException catch (e) {
-      print("addNote DioException ${e}");
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data,
-      );
-    } catch (e) {
-      print("getNotes unexpected Error");
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
   Future<AddNotesResponse> addNote(List<NoteDataForServer> data) async {
-    try {
+    return performNetworkOperation(() async {
       final response = await apiClient.post<Map<String, dynamic>>(
         '/add-notes',
         data: jsonEncode(data),
@@ -139,20 +104,12 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
         noteGlobalId: noteGlobalId,
         notes: List<NoteResponse>.from(parsedResponse),
       );
-    } on DioException catch (e) {
-      print("addNote error ${e}");
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data,
-      );
-    } catch (e) {
-      throw UnexpectedFailure();
-    }
+    });
   }
 
   @override
   Future<EditNotesResponse> editNote(List<NoteDataForServer> data) async {
-    try {
+    return performNetworkOperation(() async {
       final response = await apiClient.put<Map<String, dynamic>>(
         '/edit-notes',
         data: jsonEncode(data),
@@ -169,14 +126,6 @@ class ModifyNoteRemoteRepositoryImpl extends ModifyNoteRemoteRepository {
         noteGlobalId: noteGlobalId,
         notes: List<NoteResponse>.from(parsedResponse),
       );
-    } on DioException catch (e) {
-      print("editNote error ${e}");
-      throw NetworkFailure(
-        statusCode: e.response?.statusCode,
-        message: e.response?.data,
-      );
-    } catch (e) {
-      throw UnexpectedFailure();
-    }
+    });
   }
 }

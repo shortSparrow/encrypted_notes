@@ -1,18 +1,11 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
 
-abstract class Failure extends Equatable {
-  @override
-  List<Object> get props => [];
-}
+abstract class Failure {}
 
-class GeneralFailure extends Failure {
+class UnexpectedError extends Failure {
   final String message;
-  GeneralFailure({required this.message});
-
-  @override
-  List<Object> get props => [message];
+  UnexpectedError({this.message = "Unexpected Error"});
 }
 
 class JsFailure extends Failure {
@@ -28,24 +21,11 @@ class JsFailure extends Failure {
     Map<String, dynamic> failure = jsonDecode(e);
     return JsFailure.fromJson(failure);
   }
-
-  @override
-  List<Object> get props => [message, reason];
 }
 
-class UnexpectedFailure extends Failure {}
+class AppError<T> {
+  final T code;
+  final String message;
 
-class NetworkFailure extends GeneralFailure {
-  int statusCode;
-  String message;
-
-  NetworkFailure({
-    int? statusCode,
-    String? message,
-  })  : statusCode = statusCode ?? 0,
-        message = message ?? 'Unknown error',
-        super(message: message ?? 'Unknown error');
-
-  @override
-  List<Object> get props => [statusCode, message];
+  AppError({required this.code, this.message = ""});
 }
