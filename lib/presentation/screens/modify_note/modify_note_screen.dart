@@ -66,6 +66,7 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
   Widget build(BuildContext context) {
     final state = context.watch<ModifyNoteBloc>().state;
     final editableNoteMessage = state.editableNote?.message ?? '';
+    print("state: ${state}");
 
     final title = state.editableNote?.title ?? '';
 
@@ -75,9 +76,9 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
 
     return BlocListener<ModifyNoteBloc, ModifyNoteState>(
       listener: (context, state) {
-        if (state.loadingSaveNote == RequestStatus.success) {
-          context.pop();
-        }
+        // if (state.loadingSaveNote == RequestStatus.success) {
+        //   context.pop();
+        // }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -95,8 +96,6 @@ class _ModifyNoteViewState extends State<ModifyNoteView> {
             IconButton(
                 onPressed: () {
                   context.read<ModifyNoteBloc>().add(const OnDeleteNote());
-
-                  // _dialogBuilder(context);
                 },
                 icon: const Icon(Icons.add_task_sharp)),
           ],

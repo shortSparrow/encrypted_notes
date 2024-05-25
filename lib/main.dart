@@ -20,6 +20,7 @@ import 'package:encrypted_notes/domain/usecases/notes/get_user_remote_devices.da
 import 'package:encrypted_notes/domain/usecases/notes/get_synced_device_list.dart';
 import 'package:encrypted_notes/extensions/ColorExtension.dart';
 import 'package:encrypted_notes/injection.dart';
+import 'package:encrypted_notes/presentation/core/widgets/snackbar.dart';
 import 'package:encrypted_notes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypted_notes/injection.dart' as di;
@@ -43,7 +44,8 @@ void main() async {
   await di.init();
   await dotenv.load(fileName: ".env");
 
-  final AppStateSharedPreferencesRepository sharedPreferencesRepositoryImpl = sl();
+  final AppStateSharedPreferencesRepository sharedPreferencesRepositoryImpl =
+      sl();
   setupApiClientInterceptors();
 
   if (sharedPreferencesRepositoryImpl.getAppState().isLogged) {
@@ -156,6 +158,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: router,
       theme: AppTheme.getTheme(),
+      scaffoldMessengerKey: scaffoldMessengerKey,
     );
   }
 }

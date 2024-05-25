@@ -5,6 +5,8 @@ import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:encrypted_notes/data/database/database.dart';
 import 'package:encrypted_notes/data/mapper/notes_mapper.dart';
+import 'package:encrypted_notes/domain/failures/failures.dart';
+import 'package:encrypted_notes/domain/failures/remote_repository_failures.dart';
 import 'package:encrypted_notes/domain/models/notes/modify_notes.dart';
 import 'package:encrypted_notes/domain/models/failedDeletedNotes/failedDeletedNotes.dart';
 import 'package:encrypted_notes/domain/models/notes/notes.dart';
@@ -28,14 +30,9 @@ class GetNotesResponse {
   });
 }
 
-enum LoadByIdErrorCodes { noteNotExist, unexpectedError }
+enum GetNotesErrorCodes { unexpected, network }
 
-class LoadByIdError {
-  final LoadByIdErrorCodes code;
-  final String message;
-
-  LoadByIdError({required this.code, required this.message});
-}
+enum LoadByIdErrorCodes { noteNotExist, unexpected }
 
 class LoadNoteUseCase {
   LoadNoteUseCase({
@@ -70,12 +67,13 @@ class LoadNoteUseCase {
     );
   }
 
-  Future<Either<LoadByIdError, DecryptedNote>> loadNoteById(int noteId) async {
+  Future<Either<AppError<LoadByIdErrorCodes>, DecryptedNote>> loadNoteById(
+      int noteId) async {
     try {
       final loadedNote = await _modifyNoteLocalRepository.getNoteById(noteId);
       if (loadedNote == null) {
         return left(
-          LoadByIdError(
+          AppError(
             code: LoadByIdErrorCodes.noteNotExist,
             message: "can't find note",
           ),
@@ -94,8 +92,8 @@ class LoadNoteUseCase {
           loadedNote, decryptedMessage));
     } catch (e) {
       return left(
-        LoadByIdError(
-          code: LoadByIdErrorCodes.unexpectedError,
+        AppError(
+          code: LoadByIdErrorCodes.unexpected,
           message: e.toString(),
         ),
       );
@@ -130,30 +128,35 @@ class LoadNoteUseCase {
         }),
       ]);
 
-      final List<String> notesIdForRemoving =
-          await _getNotesIdForRemoving(removedNotesFromServer);
-
-      if (notesIdForRemoving.isNotEmpty) {
-        _modifyNoteRemoteRepository
-            .confirmRemovingNoteFromDevice(notesIdForRemoving);
-      }
-
       List<NotesCompanion> notesForUpdating = await _getNotesForUpdating(
         notesFromServer,
         failedDeletedNotes,
         unSyncedNotesForThisDevice,
       );
-      _modifyNoteLocalRepository.replaceLocalNotesWithRemote(notesForUpdating);
+      await _modifyNoteLocalRepository
+          .replaceLocalNotesWithRemote(notesForUpdating);
 
+      final List<String> notesIdForRemoving =
+          await _getNotesIdForConfirmRemoving(removedNotesFromServer);
+
+      if (notesIdForRemoving.isNotEmpty) {
+        await _modifyNoteRemoteRepository
+            .confirmRemovingNoteFromDevice(notesIdForRemoving);
+      }
       yield RequestStatus.success;
-    } catch (e) {
-      print("_getLoadingNotesFromServer error: ${e}");
+    } on RemoteRepositoryError catch (e) {
       yield RequestStatus.failed;
-      rethrow; // TODO pass error to stream and we can get  all error info in bloc
+      throw AppError(code: GetNotesErrorCodes.network, message: e.message);
+    } catch (e) {
+      yield RequestStatus.failed;
+      throw AppError(
+        code: GetNotesErrorCodes.unexpected,
+        message: "Unexpected error happens",
+      );
     }
   }
 
-  Future<List<String>> _getNotesIdForRemoving(
+  Future<List<String>> _getNotesIdForConfirmRemoving(
       List<GetRemovingNotesResponse> removedNotesFromServer) async {
     final List<String> deletedNoteSync = [];
     for (var deletedNote in removedNotesFromServer) {

@@ -2,7 +2,9 @@ import 'package:encrypted_notes/domain/usecases/auth/logout_usecase.dart';
 import 'package:encrypted_notes/domain/usecases/auth/sign_in_up_usecase.dart';
 import 'package:encrypted_notes/main.dart';
 import 'package:encrypted_notes/presentation/core/models/text_filed_validator.dart';
+import 'package:encrypted_notes/presentation/core/widgets/snackbar.dart';
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
+import 'package:encrypted_notes/presentation/screens/confirm_credentials/utils/login.util.dart';
 import 'package:encrypted_notes/utils/validation/sign_in_up/password_validation.dart';
 import 'package:encrypted_notes/utils/validation/sign_in_up/phone_validation.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +69,15 @@ class ConfirmCredentialsModel extends ChangeNotifier {
         _phoneValue, _passwordValue);
     response.fold(
       (error) {
-        print("FAIL CONGIRM CREDS: ${error}");
+        if (error.code == ReLoginErrorCodes.deviceIdNull) {
+          logout();
+        }
+        final snackbarData = getSnackbarMessageForLoginError(error);
+        openSnackbar(
+          title: snackbarData.title,
+          message: snackbarData.message,
+          contentType: snackbarData.contentType,
+        );
       },
       (user) {
         print("SUCCESS CONGIRM CREDS");

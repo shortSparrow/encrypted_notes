@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:encrypted_notes/domain/failures/failures.dart';
 import 'package:encrypted_notes/domain/usecases/auth/logout_usecase.dart';
 import 'package:encrypted_notes/main.dart';
+import 'package:encrypted_notes/presentation/core/widgets/snackbar.dart';
 import 'package:encrypted_notes/presentation/navigation/screens.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,8 +48,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final response = _loadNoteUseCase.getNotes();
     response.loadingNotesFromServerStatus.handleError((error) {
-      print("ERRORXXXXX: ${error}");
-      // TODO ger error info if needed
+      if (error is AppError) {
+        openSnackbar(
+          title: "Fail update notes",
+          message: error.message,
+          contentType: ContentType.failure,
+        );
+      }
     }).listen((status) {
       this.emit(state.copyWith(loadingFromServerStatus: status));
     });

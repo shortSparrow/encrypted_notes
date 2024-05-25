@@ -74,7 +74,7 @@ class _HomeViewState extends State<HomeView> {
           Button(
             text: "logout",
             onPressed: () {
-             bloc.add(const Logout());
+              bloc.add(const Logout());
             },
           ),
           BlocBuilder<HomeBloc, HomeState>(

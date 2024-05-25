@@ -10,9 +10,16 @@ Future<T> performNetworkOperation<T>(Future<T> Function() operation) async {
     print("Network error ${e}");
     throw NetworkError(
       statusCode: e.response?.statusCode ?? NO_INTERNET_CODE,
-      message: e.response?.data?["message"] ?? "",
+      message: getErrorMessage(e),
     );
   } catch (e) {
     throw ParseServerDataError(message: "Unexpected Error: ${e}");
   }
+}
+
+String getErrorMessage(DioException e) {
+  if(e.response?.statusCode == null && e.response?.data?["message"] == null) {
+    return "Problem with internet connection";
+  }
+  return e.response?.data?["message"] ?? "";
 }

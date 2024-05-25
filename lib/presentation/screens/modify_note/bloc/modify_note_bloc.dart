@@ -1,8 +1,10 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:encrypted_notes/domain/models/request_status.dart';
 import 'package:encrypted_notes/domain/usecases/notes/add_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/delete_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/edit_note_use_case.dart';
 import 'package:encrypted_notes/domain/usecases/notes/load_notes_use_case.dart';
+import 'package:encrypted_notes/presentation/core/widgets/snackbar.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/bloc/modify_note_state.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/modify_note_screen.dart';
 import 'package:encrypted_notes/presentation/screens/modify_note/utils/get_snackbar_message_for_deleting_note.dart';
@@ -41,7 +43,13 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
         state.editableNote!.id, state.editableNote?.noteGlobalId);
 
     final snackbarMessage = getSnackbarMessageForDeletingNote(deletionResult);
-    // TODO show snackbar
+    if (snackbarMessage != null) {
+      openSnackbar(
+        title: snackbarMessage.title,
+        message: snackbarMessage.message,
+        contentType: snackbarMessage.contentType,
+      );
+    }
   }
 
   Future _onSetParams(
@@ -64,8 +72,18 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
       (error) {
         switch (error.code) {
           case LoadByIdErrorCodes.noteNotExist:
-          case LoadByIdErrorCodes.unexpectedError:
+            openSnackbar(
+              title: "Failed load note",
+              message: "This note note exist",
+              contentType: ContentType.warning,
+            );
+          case LoadByIdErrorCodes.unexpected:
             this.emit(state.copyWith(loadingEditNote: RequestStatus.failed));
+            openSnackbar(
+              title: "Failed load note",
+              message: "Unexpected error happens",
+              contentType: ContentType.failure,
+            );
         }
       },
       (decryptedNote) {
@@ -101,31 +119,50 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     );
 
     response.local.then((value) {
-      emit(
-        state.copyWith(
-          loadingSaveNote: RequestStatus.success,
-          mode: ModifyNoteMode.edit,
-        ),
-      );
       value.fold(
         (error) {
-          print("Error edit note local: ${error}");
-          // TODO show snackbar failed save locally
+          emit(state.copyWith(loadingSaveNote: RequestStatus.failed));
+          switch (error.code) {
+            case EditNoteLocalErrorCodes.unexpectedError:
+            case EditNoteLocalErrorCodes.cantSaveNote:
+              openSnackbar(
+                title: "Failed edit note",
+                message: "We can't save note locally",
+                contentType: ContentType.failure,
+              );
+          }
         },
         (_) {
-    
+          emit(state.copyWith(
+              loadingSaveNote: RequestStatus.success,
+              editableNote: state.editableNote
+                  ?.copyWith(message: message, title: title)));
         },
       );
     });
+
     response.remote.then((value) {
       value.fold(
         (error) {
-          print("Error edit note remote: ${error}");
-          // TODO show snackbar
+          switch (error.code) {
+            case EditNoteRemoteErrorCodes.syncedDevicesIsEmpty:
+              openSnackbar(
+                title: "Failed sync note",
+                message: "There are not devices for synchronize note",
+                contentType: ContentType.warning,
+              );
+            case EditNoteRemoteErrorCodes.network:
+            case EditNoteRemoteErrorCodes.unexpected:
+              openSnackbar(
+                title: "Failed sync note",
+                message: "We can't sync note with other your devices",
+                contentType: ContentType.failure,
+              );
+          }
         },
         (_) {
-          print("Success edit note remote:");
-          // TODO show snackbar
+          // TODO show checkmark on layout
+      
         },
       );
     });
@@ -140,14 +177,18 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     response.local.then((value) {
       value.fold(
         (error) {
-          print("Error local: ${error}");
+          switch (error.code) {
+            case LocalAddErrorCodes.noSymmetricKey:
+            case LocalAddErrorCodes.unexpectedError:
+              openSnackbar(
+                title: "Fail save note",
+                message: "Unexpected error happens",
+                contentType: ContentType.failure,
+              );
+          }
         },
         (id) {
-          print("Success local: ${id}");
-          //  TODO set editablde note or go from screen
-          if (this.isClosed) {
-            // TODO show global error
-          }
+          // TODO I must revive note
         },
       );
     });
@@ -155,20 +196,28 @@ class ModifyNoteBloc extends Bloc<ModifyNoteEvent, ModifyNoteState> {
     response.remote.then((value) {
       value.fold(
         (error) {
-          print("Error remote: ${error}");
+          openSnackbar(
+            title: "Failed sync note",
+            message: "We can't send this note to server",
+            contentType: ContentType.warning,
+          );
+          emit(
+            state.copyWith(
+              loadingSaveNote: RequestStatus.failed,
+              mode: ModifyNoteMode.edit,
+            ),
+          );
         },
         (_) {
-          //  TODO set editablde note or go from screen
-          print("Success remote:");
+          // TODO show checkmark on layout
+          emit(
+            state.copyWith(
+              loadingSaveNote: RequestStatus.success,
+              mode: ModifyNoteMode.edit,
+            ),
+          );
         },
       );
     });
-
-    emit(
-      state.copyWith(
-        loadingSaveNote: RequestStatus.success,
-        mode: ModifyNoteMode.edit,
-      ),
-    ); // TODO fix it, may be not success
   }
 }

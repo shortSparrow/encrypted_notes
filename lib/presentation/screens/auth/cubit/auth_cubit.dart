@@ -1,5 +1,7 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bloc/bloc.dart';
 import 'package:encrypted_notes/domain/usecases/biometrics/biometric_auth_usease.dart';
+import 'package:encrypted_notes/presentation/core/widgets/snackbar.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -32,7 +34,11 @@ class AuthCubit extends Cubit<AuthState> {
           case RegisterBioForWebError.failedCreateWebAuth:
           case RegisterBioForWebError.unexpected:
           case RegisterBioForWebError.deviceIsNotBrowser:
-            print("registerBioForWeb error: ${failure.message}");
+            openSnackbar(
+                title: "Failed register biometric",
+                message: failure.message,
+                contentType: ContentType.failure,
+                duration: SnackbarDuration.extraLong);
         }
 
         return false;
@@ -53,10 +59,13 @@ class AuthCubit extends Cubit<AuthState> {
           case LoginBioForWebError.deviceIsNotBrowser:
           case LoginBioForWebError.unexpected:
           case LoginBioForWebError.authUsingBIO:
-            print("callBiometricAuth error: ${failure.message}");
+            openSnackbar(
+                title: "Failed use biometric",
+                message: failure.message,
+                contentType: ContentType.failure,
+                duration: SnackbarDuration.extraLong);
         }
 
-        print("FAILED LOGIN");
       },
       (r) {
         print("LOGIN SUCCESS");
